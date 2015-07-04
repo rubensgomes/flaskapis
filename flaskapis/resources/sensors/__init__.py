@@ -20,15 +20,6 @@ __status__ = "Experimental"
 
 __all__ = ["sensor"]
 
-from flask import current_app
-
-if "SENSOR_REST_API_USERNAME" not in current_app.config:
-    raise EnvironmentError("SENSOR_REST_API_USERNAME property missing "
-                           "in application.cfg")
-
-if "SENSOR_REST_API_PASSWORD" not in current_app.config:
-    raise EnvironmentError("SENSOR_REST_API_PASSWORD property missing "
-                           "in application.cfg")
 
 if __name__ == '__main__':
     pass

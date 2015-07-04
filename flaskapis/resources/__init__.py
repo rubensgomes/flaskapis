@@ -35,6 +35,14 @@ def _basicAuthentication():
     current_app.logger.debug("Authenticating HTTP Basic Authentication "
                              "using Authorization [{0}]".format(auth))
 
+    if "SENSOR_REST_API_USERNAME" not in current_app.config:
+        raise EnvironmentError("SENSOR_REST_API_USERNAME property missing "
+                               "in application.cfg")
+
+    if "SENSOR_REST_API_PASSWORD" not in current_app.config:
+        raise EnvironmentError("SENSOR_REST_API_PASSWORD property missing "
+                               "in application.cfg")
+
     valid_username = current_app.config['SENSOR_REST_API_USERNAME']
     valid_password = current_app.config['SENSOR_REST_API_PASSWORD']
 

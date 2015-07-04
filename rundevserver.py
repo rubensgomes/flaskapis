@@ -29,7 +29,8 @@ if __name__ == '__main__':
                     instance_path=FLASKAPIS_INSTANCE_PATH,
                     instance_relative_config=True)
 
-        app.config.from_pyfile('application.cfg', silent=True)
+        # devsettings.cfg is local and only available in the DEV environment
+        app.config.from_pyfile('devsettings.cfg', silent=True)
 
         with app.app_context():
             from flaskapis.config import set_up_environment

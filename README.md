@@ -103,7 +103,7 @@ of the flaskapis application folder in a Windows DOS shell prompt
 
     fab pack
 
-#### To Deploy the FLASKAPIs RESTful APIs to a Remote Server Host
+#### To Deploy the RESTFul service to a Remote Server Host
 
 To deploy the flaskapis RESTFul service to a remote server, run the following
 command from the root of the flaskapis application folder in a Windows DOS
@@ -115,7 +115,7 @@ remote server.
     fab -u <username> -p <password> -H <host:port> deploy_flaskapis
 
 
-#### To Deploy the FLASKAPIs REST API documentation to a Remote Server Host
+#### To Deploy the REST API documentation to a Remote Server Host
 
 To deploy the flaskapis swagger-doc site files to a remote server, run the following
 command from the root of the flaskapis application folder in a Windows DOS

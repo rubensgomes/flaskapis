@@ -35,14 +35,18 @@ updated by running the following command:
 The following configuration were applied on the following Raspberry Pi files.
 
 /boot/config.txt:
-# added the following line to allow DS18B20 to connect to GPIO#4
-dtoverlay=w1-gpio
+
+added the following line to allow DS18B20 to connect to GPIO#4
+
+    dtoverlay=w1-gpio
 
 /etc/modules:
-# device drivers required to drive the DS18B20 Temperature Sensor
-wire
-w1_gpio
-w1_therm
+
+device drivers required to drive the DS18B20 Temperature Sensor
+
+    wire
+    w1_gpio
+    w1_therm
 
 
 ## Home Router Configuration

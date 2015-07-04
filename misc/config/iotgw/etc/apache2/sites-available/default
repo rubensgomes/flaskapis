@@ -1,0 +1,34 @@
+# Using port 7088 (instead of 80) for security reasons
+<VirtualHost *:7088>
+
+  ServerName iotgw.rubens.home
+  ServerAdmin rubens.s.gomes@gmail.com
+  DocumentRoot /var/www/flaskapis
+
+  # Possible values: debug, info, notice, warn, error, crit, alert, emerg.
+  #LogLevel debug
+  LogLevel info
+  CustomLog ${APACHE_LOG_DIR}/flaskapis.access_log combined
+  ErrorLog ${APACHE_LOG_DIR}/flaskapis.error_log
+  Options All MultiViews
+  AddDefaultCharset UTF-8
+  DirectoryIndex index.html
+
+  <Directory /var/www/flaskapis>
+    AllowOverride All
+    Order deny,allow
+    Allow from all
+  </Directory>
+
+  # --- > WSGI Settings < ---
+  WSGIScriptAlias /api /home/wsgi/flaskapis/flaskapis.wsgi
+
+  <Directory /home/wsgi/flaskapis>
+    # ensure any request to the RESTFul flaskapis is within SSL
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} /api/ [NC]
+    RewriteCond %{SERVER_PORT} !^7433$
+    RewriteRule ^.*$ https://%{SERVER_NAME}:7433%{REQUEST_URI} [R,L]
+  </Directory>
+
+</VirtualHost>

@@ -1,0 +1,53 @@
+# Using port 7433 (instead of default 443) for security reasons
+<VirtualHost _default_:7433>
+
+  ServerName iotgw.rubens.home
+  ServerAdmin rubens.s.gomes@gmail.com
+  DocumentRoot /var/www/flaskapis
+
+  # Possible values: debug, info, notice, warn, error, crit, alert, emerg.
+  #LogLevel warn
+  #LogLevel debug
+  LogLevel info
+  CustomLog ${APACHE_LOG_DIR}/flaskapis.ssl_access_log combined
+  ErrorLog ${APACHE_LOG_DIR}/flaskapis.ssl_error_log
+  Options All MultiViews
+  AddDefaultCharset UTF-8
+  DirectoryIndex index.html
+
+  SSLEngine on
+  SSLCertificateFile    /etc/apache2/ssl/server.crt
+  SSLCertificateKeyFile /etc/apache2/ssl/server.key
+
+  <Directory /var/www/flaskapis>
+    AllowOverride All
+    Order deny,allow
+    Allow from all
+  </Directory>
+
+  # --- > WSGI Settings < ---
+  WSGIScriptAlias /api /home/wsgi/flaskapis/flaskapis.wsgi
+
+  # inactivity-timeout = 18000 (5 hours)
+  WSGIDaemonProcess wsgi-group \
+    user=wsgi group=wsgi \
+    processes=2 threads=10 \
+    home=/home/wsgi/flaskapis \
+    python-path=/home/wsgi/flaskapis/venv/lib/python2.7/site-packages \
+    maximum-requests=1000 \
+    inactivity-timeout=18000 \
+    deadlock-timeout=60 \
+    display-name=mod_wsgi
+
+  <Directory /home/wsgi/flaskapis>
+    WSGIApplicationGroup wsgi-scripts
+    WSGIProcessGroup wsgi-group 
+    WSGIPassAuthorization On
+    WSGIScriptReloading On
+    # Add CORS authorization to enable CORS
+    Header set Access-Control-Allow-Origin "*"
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+</VirtualHost>

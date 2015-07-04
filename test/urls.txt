@@ -1,0 +1,71 @@
+# a file containing some URLs used for testing
+
+======================================================
+LOCALHOST TESTING
+
+# sensors
+http://localhost:8080/information/sensors/000006c01f0b
+http://localhost:8080/information/sensors/bad
+
+http://localhost:8080/temperature/sensors/000006c01f0b
+http://localhost:8080/temperature/sensors/bad
+
+http://localhost:8080/analytics/temperature/sensors/000006c01f0b?duration=last1Year
+http://localhost:8080/analytics/temperature/sensors/000006c01f0b?duration=lastHour
+http://localhost:8080/analytics/temperature/sensors/000006c01f0b?duration=lastDaya
+
+# units
+http://localhost:8080/temperature/degC?from_unit=degF&from_value=12
+http://localhost:8080/temperature/degC?from_unit=bad&from_value=12
+
+http://localhost:8080/length/km?from_unit=mi&from_value=12
+http://localhost:8080/length/bad?from_unit=bad&from_value=12
+http://localhost:8080/length/bad?from_unit=bad2&from_value=12
+
+http://localhost:8080/weight/kg?from_unit=lb&from_value=12
+http://localhost:8080/weight/kg?from_unit=lb&from_value=11a
+
+# product
+http://localhost:8080/information/product
+
+# resource
+http://localhost:8080/resource?httpurl=http://www.rubens-gomes.com
+
+======================================================
+REMOTE TESTING (iotgw.duckdns.org)
+
+# sensors
+http://iotgw.duckdns.org:7088/api/information/sensors/000006c01f0b
+http://iotgw.duckdns.org:7088/api/information/sensors/bad
+
+http://iotgw.duckdns.org:7088/api/temperature/sensors/000006c01f0b
+http://iotgw.duckdns.org:7088/api/temperature/sensors/bad
+
+# product
+http://iotgw.duckdns.org:7088/api/information/product
+
+======================================================
+REMOTE TESTING (restportal.com)
+
+# units
+http://restportal.com/api/temperature/degC?from_unit=degF&from_value=12
+http://restportal.com/api/temperature/degC?from_unit=bad&from_value=12
+
+http://restportal.com/api/length/km?from_unit=mi&from_value=12
+http://restportal.com/api/length/bad?from_unit=bad&from_value=12
+http://restportal.com/api/length/bad?froma_unit=bad2&from_value=12
+
+http://restportal.com/api/weight/kg?from_unit=lb&from_value=12
+http://restportal.com/api/weight/kg?from_unit=lb&from_value=11a
+
+
+# sensors
+http://restportal.com/api/information/sensors/000006c01f0b
+
+http://restportal.com/api/analytics/temperature/sensors/000006c01f0b?duration=last1Year
+
+# product
+http://restportal.com/api/information/product
+
+# resource
+http://restportal.com:80/api/resource?httpurl=http%3A%2F%2Fwww.rubens-gomes.com

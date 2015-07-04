@@ -1,0 +1,309 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "RESTful API Portal",
+        "description": "A portal of simple RESTFul APIs. This is a work in progress.",
+        "termsOfService": "http://restportal.com/terms/",
+        "contact": {
+            "name": "Rubens Gomes <rubens.s.gomes@gmail.com>",
+            "url": "http://www.rubens-gomes.com/",
+            "email": "rubens.s.gomes@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "0.1"
+    },
+    "host": "restportal.com",
+    "basePath": "/api",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/length/{to_unit}": {
+            "get": {
+                "tags": [
+                    "units"
+                ],
+                "summary": "A RESTFul API to convert lengths.",
+                "description": "Converts the value of the from_unit to the unit defined in to_unit.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "to_unit",
+                        "in": "path",
+                        "description": "The length unit being converted to: km (kilometers) or mi (miles)...",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "from_unit",
+                        "in": "query",
+                        "description": "The length unit being converted from: km (kilometers) or mi (miles)...",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "from_value",
+                        "in": "query",
+                        "description": "The value of the from_unit being converted from.",
+                        "required": true,
+                        "type": "number",
+                        "format": "double"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The input length along with the converted result."
+                    },
+                    "400": {
+                        "description": "The length to_unit or from_unit is not valid. Or when the to_unit and from_unit are the same."
+                    },
+                    "404": {
+                        "description": "The length to_unit unit was not provided."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        },
+        "/temperature/{to_unit}": {
+            "get": {
+                "tags": [
+                    "units"
+                ],
+                "summary": "A RESTFul API to convert temperature.",
+                "description": "Converts the value of the from_unit temperature to the unit defined in to_unit.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "to_unit",
+                        "in": "path",
+                        "description": "The temperature unit being converted to: degC (Celsius), degF (Fahrenheit) or degK (Kelvin).",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "from_unit",
+                        "in": "query",
+                        "description": "The temperature unit being converted from: degC (Celsius), degF (Fahrenheit) or degK (Kelvin).",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "from_value",
+                        "in": "query",
+                        "description": "The value of the from_unit being converted from.",
+                        "required": true,
+                        "type": "number",
+                        "format": "double"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The input temperature along with the converted result."
+                    },
+                    "400": {
+                        "description": "The temperature to_unit or from_unit is not valid. Or when the to_unit and from_unit are the same."
+                    },
+                    "404": {
+                        "description": "The temperature to_unit was not provided."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        },
+        "/weight/{to_unit}": {
+            "get": {
+                "tags": [
+                    "units"
+                ],
+                "summary": "A RESTFul API to convert weight.",
+                "description": "Converts the value of the from_unit weight to the unit defined in to_unit.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "to_unit",
+                        "in": "path",
+                        "description": "The mass unit being converted to: kg (kilograms), or lb (pounds).",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "from_unit",
+                        "in": "query",
+                        "description": "The mass unit being converted from: kg (kilograms), or lb (pounds).",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "from_value",
+                        "in": "query",
+                        "description": "The value of the from_unit weight being converted from.",
+                        "required": true,
+                        "type": "number",
+                        "format": "double"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The input weight along with the converted result."
+                    },
+                    "400": {
+                        "description": "The mass to_unit or from_unit unit is not valid. Or when the to_unit and from_unit are the same."
+                    },
+                    "404": {
+                        "description": "The mass to_unit unit was not provided."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        },
+        "/information/product": {
+            "get": {
+                "tags": [
+                    "product"
+                ],
+                "summary": "A RESTFul API to retrieve general information the software",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The software product information consisting of name, version, and author."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        },
+        "/information/sensors/{serial}": {
+            "get": {
+                "tags": [
+                    "sensor"
+                ],
+                "summary": "A RESTFul API to retrieve general information about a sensor.",
+                "description": "Retrieves general information about a sensor.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "serial",
+                        "in": "path",
+                        "description": "A valid sensor serial number.  For example, 000006c01f0b",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The sensor information consisting of name, location, address and others."
+                    },
+                    "400": {
+                        "description": "Some invalid parameter."
+                    },
+                    "404": {
+                        "description": "The sensor serial is not valid or not found."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        },
+        "/analytics/temperature/sensors/{serial}": {
+            "get": {
+                "tags": [
+                    "analytics"
+                ],
+                "summary": "A RESTFul API to retrieve historical temperature sensor readings.",
+                "description": "Retrieves past temperature sensor readings.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "serial",
+                        "in": "path",
+                        "description": "A valid sensor serial number.  For example, 000006c01f0b",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "duration",
+                        "in": "query",
+                        "description": "The duration (last5Years, last1Year, last6Months, last90Days, last60Days, last30Days, last21Days, last7Days, last3Days, lastDay, last24Hours, last12Hours, last6Hours, lastHour) for the past sensor readings.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The sensor historical readings."
+                    },
+                    "400": {
+                        "description": "Some invalid parameter."
+                    },
+                    "404": {
+                        "description": "The sensor serial is not valid or not found."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        },
+        "/resource": {
+            "get": {
+                "tags": [
+                    "resource"
+                ],
+                "summary": "A RESTFul API to retrieve an HTTP resource given its URL.",
+                "description": "Retrieves the resource defined by the given URL.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "httpurl",
+                        "in": "query",
+                        "description": "A valid HTTP URL",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The resource data."
+                    },
+                    "400": {
+                        "description": "An invalid URL parameter or an error opening the resource defined by the given URL parameter."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        }
+    }
+}

@@ -167,7 +167,7 @@ There is no need to have a CA (Certification Authority) SSL certificate because
 the domain of the IOT-GW home device (Raspberry Pi) is a private domain.
 
 Some of the relevant SSL apache2 configuration may be found in the
-[apache2 folder] (apache2/README.md).
+[apache2 folder] (misc/config/iotgw/etc/apache2).
 
 
 

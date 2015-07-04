@@ -17,7 +17,7 @@ For information on the IOT please project go to:
 
 ## Project Source Code
 
-In order to see this project Python library source code go to
+In order to see this project library source code go to
 
 [flaskapis](flaskapis)
 

@@ -16,7 +16,7 @@ http://restportal.com/
 
 For information on the IOT project go to:
 
-[IoT](https://github.com/rubensgomes/flaskapis/IoT)
+[IoT](misc/IoT)
 
 **Notice** that this documentation may not be current.
 
@@ -24,7 +24,7 @@ For information on the IOT project go to:
 
 In order to see the source code go to
 
-[flaskapis](https://github.com/rubensgomes/flaskapis/flaskapis)
+[flaskapis](flaskapis)
 
 
 ### CLIENT DEVELOPMENT MACHINE CONFIGURATION

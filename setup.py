@@ -18,7 +18,7 @@ from setuptools import setup
 
 setup(
     name="FlaskAPIs",
-    version="2015.3.dev7",
+    version="2015.7.dev1",
     author="Rubens S. Gomes",
     author_email="rubens.s.gomes@gmail.com",
     contact_email="rubens.s.gomes@gmail.com",

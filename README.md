@@ -22,10 +22,13 @@ For information on the IOT project go to:
 
 ## Project Source Code
 
-In order to see the Python library source code go to
+In order to see this project Python library source code go to
 
 [flaskapis](flaskapis)
 
+You may also see the source code for the RESTFul [Apache WSGI] (flaskapis.wsgi) file and 
+the [sensorserver] (sensorserver.py) background process responsible for collecting
+sensor data.
 
 ### CLIENT DEVELOPMENT MACHINE CONFIGURATION
 

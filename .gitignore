@@ -46,4 +46,6 @@ Thumbs.db
 ####################
 devsettings.cfg
 prodsettings.cfg
+flaskapis_prodsettings.cfg
+sensorserver_prodsettings.cfg
 

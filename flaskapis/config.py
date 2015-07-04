@@ -77,26 +77,10 @@ def set_up_environment():
         raise EnvironmentError("SQLITE_DB_ENABLE property missing "
                                "in application.cfg")
 
-    if "GMAIL_ACCOUNT" not in current_app.config:
-        raise EnvironmentError("GMAIL_ACCOUNT property missing "
-                               "in application.cfg")
-
-    if "GMAIL_PASSWORD" not in current_app.config:
-        raise EnvironmentError("GMAIL_PASSWORD property missing "
-                               "in application.cfg")
-
     if current_app.config['SQLITE_DB_ENABLE']:
         if "SQLITE_DB" not in current_app.config:
             raise EnvironmentError("SQLITE_DB property missing "
                                    "in application.cfg")
-
-    # ensure valid GMail Account
-    from validate_email import validate_email
-    is_valid = validate_email(current_app.config['GMAIL_ACCOUNT'].strip())
-
-    if(not is_valid):
-        raise EnvironmentError("GMail Account [{0}] is not valid email address"
-                               .format(current_app.config['GMAIL_ACCOUNT']))
 
     # ensure working dir folder is available
     if not os.path.exists(current_app.config['WORKING_DIR'].strip()):

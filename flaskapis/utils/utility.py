@@ -15,8 +15,8 @@ __all__ = ["get_log_file_handles", "is_number",
 
 
 from decimal import Decimal
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import smtplib
 
 from flask import current_app
@@ -61,6 +61,22 @@ class EMail:
             The server replied with an unexpected error code (other than a
             refusal of a recipient).
         """
+
+        if "GMAIL_ACCOUNT" not in current_app.config:
+            raise EnvironmentError("GMAIL_ACCOUNT property missing "
+                                   "in application.cfg")
+
+        # ensure valid GMail Account
+        is_valid = validate_email(current_app.config['GMAIL_ACCOUNT'].strip())
+
+        if(not is_valid):
+            raise EnvironmentError(
+                                "GMail Account [{0}] is not valid email address"
+                               .format(current_app.config['GMAIL_ACCOUNT']))
+
+        if "GMAIL_PASSWORD" not in current_app.config:
+            raise EnvironmentError("GMAIL_PASSWORD property missing "
+                                   "in application.cfg")
 
         gmail_user = current_app.config['GMAIL_ACCOUNT'].strip()
         gmail_password = current_app.config['GMAIL_PASSWORD'].strip()

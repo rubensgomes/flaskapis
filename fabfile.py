@@ -74,6 +74,7 @@ def deploy_flaskapis():
     # figure out the release name and version
     fullname = local("python setup.py --fullname", capture=True)
     with cd("{0}".format(REMOTE_HOME)):
+        print("---installing w1thermsensor")
         run("if [ -d w1thermsensor ]; then rm -fr w1thermsensor; fi")
         run("git clone https://github.com/timofurrer/w1thermsensor.git")
         run(("cd w1thermsensor; {0}/bin/python -v setup.py install")
@@ -116,6 +117,7 @@ def deploy_sensorserver():
     # figure out the release name and version
     fullname = local("python setup.py --fullname", capture=True)
     with cd("/tmp/flaskapis/dist/{0}".format(fullname)):
+        print("------installing sensorserver in the sensorserver remote server")
         run("if [ ! -f /home/wsgi/sensorserver/application.cfg ]; then "
             "cp -v application.cfg /home/wsgi/sensorserver;"
             "fi")
@@ -125,6 +127,16 @@ def deploy_sensorserver():
     # now that all is set up, delete the folder again
     run("rm -fr /tmp/flaskapis/dist; rm -f /tmp/flaskapis.tar.gz")
     run("rm -fr /tmp/flaskapis")
+    # run 2to3 if needed
+    with cd("{0}/sensorserver".format(REMOTE_HOME)):
+        print("---running python 2to3 if needed.")
+        run("source venv/bin/activate; "
+            "python --version | grep -n -i \"python 3\"; "
+            "if [ ${?} -eq 0 ]; then "
+            "2to3 -v -W venv/lib/python3.4/site-packages/flaskapis; "
+            "2to3 -v -W venv/lib/python3.4/site-packages/validate_email.py; "
+            "fi; "
+            "deactivate")
 
 
 @task

@@ -142,6 +142,27 @@ def before_request():
 
     return
 
+@current_app.after_request
+def after_request(response):
+
+    # log the response for debugging purposes
+    current_app.logger.debug(("--------->>>RESPONSE<<<---------------\n"
+                             "status [{0}]\n"
+                             "charset [{1}]\n"
+                             "content_length [{2}]\n"
+                             "content_type [{3}]\n"
+                             "mimetye [{4}]\n"
+                             "data [{5}]\n")
+                             .format(response.status,
+                                     response.charset,
+                                     response.content_length,
+                                     response.content_type,
+                                     response.mimetype,
+                                     response.data,
+                                     ))
+
+    return response
+
 
 @current_app.teardown_request
 def teardown_request(exception):

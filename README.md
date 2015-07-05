@@ -9,9 +9,7 @@ You can see an application that is consuming the flaskapis RESTTful APIs at http
 
 And the swagger doc for the RESTFul APIs implemented are found at http://restportal.com/
 
-For information on the IOT please project go to:
-
-[IoT](misc/IoT)
+Further information about the IoT part can be found at [IoT](misc/IoT).
 
 **Notice** that this documentation may not be current.
 

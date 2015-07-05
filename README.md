@@ -7,7 +7,7 @@ RESTful APIs.
 
 You can see an application that is consuming the flaskapis RESTTful APIs at http://appsgo.mobi/
 
-And the swagger doc for the RESTFul APIs implemented are found at http://restportal.com/
+The swagger doc for the RESTFul APIs implemented are found at http://restportal.com/
 
 Further information about the IoT part can be found at [IoT](misc/IoT).
 

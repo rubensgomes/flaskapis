@@ -5,24 +5,17 @@ This is an **experimental** project created by
 IoT (Internet of Thing), Raspberry Pi, Python and to implement a few utility
 RESTful APIs.
 
-You can see an application that is consuming some of the RESTTful APIs
-implemented in this project at:
+You can see an application that is consuming the flaskapis RESTTful APIs at http://appsgo.mobi/
 
-http://appsgo.mobi/
+The swagger doc for the RESTFul APIs implemented are found at http://restportal.com/
 
-And the swagger doc for the RESTFul APIs implemented are found at:
-
-http://restportal.com/
-
-For information on the IOT project go to:
-
-[IoT](misc/IoT)
+Further information about the IoT part can be found at [IoT](misc/IoT).
 
 **Notice** that this documentation may not be current.
 
 ## Project Source Code
 
-In order to see this project Python library source code go to
+In order to see this project library source code go to
 
 [flaskapis](flaskapis)
 

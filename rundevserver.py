@@ -17,7 +17,8 @@ import sys
 
 from flask import Flask
 
-from flaskapis.constants import FLASKAPIS_INSTANCE_PATH
+from flaskapis.constants import FLASKAPIS_INSTANCE_PATH, DEFAULT_INI_FILE
+
 
 PORT = 8080
 
@@ -30,7 +31,7 @@ if __name__ == '__main__':
                     instance_relative_config=True)
 
         # devsettings.cfg is local and only available in the DEV environment
-        app.config.from_pyfile('devsettings.cfg', silent=True)
+        app.config.from_pyfile(DEFAULT_INI_FILE, silent=True)
 
         with app.app_context():
             from flaskapis.config import set_up_environment

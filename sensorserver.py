@@ -23,7 +23,8 @@ from requests.exceptions import (ConnectionError, Timeout,
                                  RequestException, HTTPError)
 
 from flaskapis.config import set_up_environment
-from flaskapis.constants import DATA_KEY, SENSOR_KEY, SENSORSERVER_INSTANCE_PATH
+from flaskapis.constants import DATA_KEY, SENSOR_KEY, \
+    SENSORSERVER_INSTANCE_PATH, DEFAULT_INI_FILE
 from flaskapis.db.sensor import SensorDb
 from flaskapis.utils.utility import write_to_file, EMail
 
@@ -33,7 +34,7 @@ app = Flask(__name__,
             instance_path=SENSORSERVER_INSTANCE_PATH,
             instance_relative_config=True)
 
-app.config.from_pyfile('application.cfg', silent=False)
+app.config.from_pyfile(DEFAULT_INI_FILE, silent=False)
 
 
 def read_store_readings():

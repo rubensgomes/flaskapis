@@ -22,21 +22,18 @@ import platform
 # Global constants
 
 # FLASKAPIS is used by apache mod_wsgi for the RESTFul API server
+# SENSORSERVER is used for a daemon to collect sensor readings periodically
+
 if platform.system() == "Linux":
     FLASKAPIS_INSTANCE_PATH = r"/home/wsgi/flaskapis"
+    SENSORSERVER_INSTANCE_PATH = r"/home/wsgi/sensorserver"
+    DEFAULT_INI_FILE = "application.cfg"
+    DEFAULT_LOG_LEVEL = logging.INFO
 else:  # Rubens development PC
     FLASKAPIS_INSTANCE_PATH = r"C:\projects\flaskapis"
-
-# SENSORSERVER is used for a daemon to collect sensor readings periodically
-if platform.system() == "Linux":
-    SENSORSERVER_INSTANCE_PATH = r"/home/wsgi/sensorserver"
-else:  # Rubens development PC
-    SENSORSERVER_INSTANCE_PATH = r"C:\projects\sensorserver"
-
-
-DEFAULT_INI_FILE = "application.cfg"
-DEFAULT_LOG_LEVEL = logging.INFO
-
+    SENSORSERVER_INSTANCE_PATH = r"C:\projects\flaskapis"
+    DEFAULT_INI_FILE = "devsettings.cfg"
+    DEFAULT_LOG_LEVEL = logging.DEBUG
 
 DATA_KEY = "data"
 NAME_KEY = "name"

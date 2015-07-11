@@ -185,7 +185,8 @@ class SensorTemperature(Resource):
 
         sensor_temperature = Temperature()
         data = sensor_temperature.get(serial)
-        return data
+        response = jsonify(data)
+        return response
 
 
 class Temperature():
@@ -195,7 +196,7 @@ class Temperature():
     def get(self, serial):
         """GET implementation to retrieve temperature sensors.
 
-        It returns a JSON data structure with the sensor serial id,
+        It returns OrderedDict data structure with the sensor serial id,
         temperature unit, value, and timestamp.
 
         Parameters
@@ -205,16 +206,10 @@ class Temperature():
 
         Raises:
         ------
-        BadRequest if sensor with serial is not registered or if sensor is
-        not enabled.
+        BadRequest if sensor serial is not provided.
         """
-        # retrieve sensor info from DB
-        sensor_db = SensorDb()
-        sensor = sensor_db.get_sensor_information(serial)
-
-        if sensor is None:
-            raise NotFound("No sensor registered for serial [{0}]"
-                           .format(serial))
+        if not serial:
+            raise BadRequest("No sensor serial provided.")
 
         if current_app.config["TESTING"] is True:
             temperature = 100
@@ -242,7 +237,7 @@ class Temperature():
             temperature_result = temperature_qty.magnitude
 
         sensor_data = dict()
-        sensor_data["serial"] = sensor["serial"]
+        sensor_data["serial"] = serial
 
         arrow_utcnow = arrow.utcnow()  # current UTC timestamp
 
@@ -256,9 +251,7 @@ class Temperature():
         response[SENSOR_KEY] = sensor_data
         response[DATA_KEY] = data
 
-        ordered_response = jsonify(response)
-
-        return ordered_response
+        return response
 
 
     def _get_sensor_temperature(self, serial):

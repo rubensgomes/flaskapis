@@ -6,6 +6,7 @@ Modules:
 -------
 email.py: Email related code.
 sms.py: SMS related code
+sensor.py: sensor related code
 
 Sub-Packages:
 ------------
@@ -20,7 +21,7 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["email", "sms", "units"]
+__all__ = ["email", "sms", "units", "sensor"]
 
 if __name__ == '__main__':
     pass

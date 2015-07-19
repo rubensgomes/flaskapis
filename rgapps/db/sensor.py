@@ -1,4 +1,4 @@
-"""flaskapis.db.sensor module
+"""rgapps.db.sensor module
 
 This is where all the sensor database code is place.
 """
@@ -6,10 +6,9 @@ import logging
 import sqlite3
 
 import arrow
-from flask import current_app
 
-from flaskapis.enums import DURATION_ENUM
-
+from rgapps.enums import DURATION_ENUM
+from rgapps.config import ini_config
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
 __copyright__ = "Copyright (c) 2015 Rubens S. Gomes"
@@ -70,9 +69,9 @@ class SensorDb:
                       "serial [{3}]"
                       .format(unit, value, utc, serial))
 
-        conn = sqlite3.connect(current_app.config['SQLITE_DB'])
+        conn = sqlite3.connect(ini_config.get("SqlLite", "SQLITE_DB"))
         logging.debug("Connected to DB [{0}]"
-                      .format(current_app.config['SQLITE_DB']))
+                      .format(ini_config.get("SqlLite", "SQLITE_DB")))
 
         c = conn.cursor()
         c.execute("INSERT INTO readings (id, unit, value, utc, serial) "
@@ -84,7 +83,7 @@ class SensorDb:
         conn.close()
 
         logging.debug("Disconnected from DB [{0}]"
-                      .format(current_app.config['SQLITE_DB']))
+                      .format(ini_config.get("SqlLite", "SQLITE_DB")))
 
         return
 
@@ -110,9 +109,9 @@ class SensorDb:
                       "from database."
                       .format(serial))
 
-        conn = sqlite3.connect(current_app.config['SQLITE_DB'])
+        conn = sqlite3.connect(ini_config.get("SqlLite", "SQLITE_DB"))
         logging.debug("Connected to DB [{0}]"
-                      .format(current_app.config['SQLITE_DB']))
+                      .format(ini_config.get("SqlLite", "SQLITE_DB")))
 
         c = conn.cursor()
         c.row_factory = dict_factory
@@ -124,7 +123,7 @@ class SensorDb:
         conn.close()
 
         logging.debug("Disconnected from DB [{0}]"
-                      .format(current_app.config['SQLITE_DB']))
+                      .format(ini_config.get("SqlLite", "SQLITE_DB")))
 
         return data
 
@@ -200,9 +199,9 @@ class SensorDb:
                "ORDER BY utc ASC"
                .format(serial, past_datetime, current_datetime))
 
-        conn = sqlite3.connect(current_app.config['SQLITE_DB'])
+        conn = sqlite3.connect(ini_config.get("SqlLite", "SQLITE_DB"))
         logging.debug("Connected to DB [{0}]"
-                      .format(current_app.config['SQLITE_DB']))
+                      .format(ini_config.get("SqlLite", "SQLITE_DB")))
 
         c = conn.cursor()
         c.row_factory = dict_factory
@@ -213,7 +212,7 @@ class SensorDb:
         conn.close()
 
         logging.debug("Disconnected from DB [{0}]"
-                      .format(current_app.config['SQLITE_DB']))
+                      .format(ini_config.get("SqlLite", "SQLITE_DB")))
 
         return data
 

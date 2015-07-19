@@ -13,9 +13,10 @@ __status__ = "Experimental"
 __all__ = ["Weight"]
 
 
-from rgapps.enums import UNIT_TYPES_ENUM
 from rgapps.domain.units import convert_unit
+from rgapps.enums import UNIT_TYPES_ENUM
 from rgapps.utils.utility import is_number
+
 
 class Weight:
     """to convert weights

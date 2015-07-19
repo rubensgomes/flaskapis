@@ -10,11 +10,32 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["get_log_file_handles", "is_number",
+__all__ = ["get_log_file_handles", "is_number", "dict_factory",
            "decimal_places", "write_to_file"]
 
 
 from decimal import Decimal
+
+
+def dict_factory(cursor, row):
+    """ a factory method used to construct the rows returned from SQLite
+
+    Parameters
+    ----------
+    cursor: SQLite cursor
+    row: SQLite row
+
+    Returns
+    -------
+    dict:
+        A dictionary containing column names as keys, and column values.
+    """
+
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
 
 
 def is_number(arg):

@@ -1,17 +1,17 @@
-"""flaskapis.mqtt.mqtt module
+"""rgapps.mqtt.mqtt module
 
 MQTT protocol code to publish messages from the IoT sensor to an MQTT broker
 """
 from collections import OrderedDict
 import json
+import logging
 
 from flask import current_app
 from paho.mqtt import publish
-from paho.mqtt.client import MQTT_ERR_SUCCESS
 from werkzeug.exceptions import BadRequest
 
-from flaskapis.resources.sensors.sensor import Temperature
 import paho.mqtt.client as mqtt
+from rgapps.domain.sensor import SensorTemperature
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -60,12 +60,12 @@ class MQTTPublisher():
                             protocol=mqtt.MQTTv31)
         mqttc.username_pw_set(user, password=pw)
 
-        current_app.logger.debug("Connecting to MQTT Broker: "
-                                 "host [{0}], port [{1}], client id [{2}], "
-                                 "user [{3}], sensor serial [{4}]"
-                                 .format(host, port, mqtt_id, user, serial))
+        logging.debug("Connecting to MQTT Broker: "
+                      "host [{0}], port [{1}], client id [{2}], "
+                      "user [{3}], sensor serial [{4}]"
+                      .format(host, port, mqtt_id, user, serial))
 
-        sensor_temperature = Temperature()
+        sensor_temperature = SensorTemperature()
         message = sensor_temperature.get(serial)
         json_message = json.dumps(message, indent=2, sort_keys=True)
 
@@ -78,10 +78,10 @@ class MQTTPublisher():
                        port=port, client_id=mqtt_id,
                        keepalive=20, auth=auth)
 
-        current_app.logger.debug("Message was published correctly: "
-                                 "host [{0}], port [{1}], client id [{2}], "
-                                 "user [{3}], sensor serial [{4}]"
-                                 .format(host, port, mqtt_id, user, serial))
+        logging.debug("Message was published correctly: "
+                      "host [{0}], port [{1}], client id [{2}], "
+                      "user [{3}], sensor serial [{4}]"
+                      .format(host, port, mqtt_id, user, serial))
 
         return
 

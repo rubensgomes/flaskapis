@@ -1,6 +1,6 @@
 """rgapps.mqtt subpackage
 
-This package contains code that is closely related with the MQTT protocol.
+This package contains code related to the MQTT protocol.
 
 Modules:
 -------

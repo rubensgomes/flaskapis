@@ -1,4 +1,4 @@
-"""flaskapis.utils subpackage
+"""rgapps.utils subpackage
 
 Package containing utility code
 

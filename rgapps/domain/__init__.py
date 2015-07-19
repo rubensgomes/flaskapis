@@ -9,7 +9,7 @@ sms.py: SMS related code
 
 Sub-Packages:
 ------------
-
+units: package containing units conversion code.
 
 """
 
@@ -20,7 +20,7 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["email", "sms"]
+__all__ = ["email", "sms", "units"]
 
 if __name__ == '__main__':
     pass

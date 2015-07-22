@@ -6,6 +6,9 @@
 
 
 -- sensor represents a remote device
+DELETE FROM sensor
+WHERE serial="000006c01f0b";
+
 INSERT INTO sensor (
   serial,
   geolocation,
@@ -17,6 +20,31 @@ INSERT INTO sensor (
   description
 ) VALUES (
   '000006c01f0b',
+  '51.5033630,-0.1276250',
+  'Living Room',
+  '4102 Drew Hill Lane, Chapel Hill, NC - USA',
+  'UP',
+  'DS18B20',
+  'TEMPERATURE',
+  'Dallas Semiconductor digital temperature sensor'            -- helps describe this sensor
+);
+
+
+-- sensor represents a remote device
+DELETE FROM sensor
+WHERE serial="testing";
+
+INSERT INTO sensor (
+  serial,
+  geolocation,
+  location,
+  address,
+  state,
+  name,
+  type,
+  description
+) VALUES (
+  'testing',
   '51.5033630,-0.1276250',
   'Living Room',
   '4102 Drew Hill Lane, Chapel Hill, NC - USA',

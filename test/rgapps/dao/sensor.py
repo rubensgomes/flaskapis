@@ -1,6 +1,6 @@
-"""test.rgapps.db.sensor module
+"""test.rgapps.dao.sensordao module
 
-Unit test for rgapps.db.sensor module
+Unit test for rgapps.dao.sensordao module
 """
 import logging
 import os
@@ -8,7 +8,7 @@ import unittest
 from datetime import datetime
 
 from rgapps.config.config import initialize_environment
-from rgapps.db.sensor import SensorDb
+from rgapps.dao.sensordao import SensorDAO
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -24,7 +24,7 @@ class ConfigTestCase(unittest.TestCase):
 
     def setUp(self):
         initialize_environment(log_file_path=LOG_FILE_PATH)
-        ConfigTestCase.sensor_db = SensorDb()
+        ConfigTestCase.sensor_db = SensorDAO()
         return
 
     def tearDown(self):

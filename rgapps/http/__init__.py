@@ -7,6 +7,7 @@ Modules:
 -------
 errors: a module to place error handlers
 routes: a module to define the HTTP routes
+wsgi: a module that implements the Apache WSGI code.
 
 Sub-Packages:
 ------------
@@ -28,9 +29,9 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["errors", "routes", "http_basic_authenticate"]
+__all__ = ["errors", "routes", "wsgi", "http_basic_authenticate"]
 
-def _basicAuthentication():
+def __basicAuthentication():
     """This is a private helper method used by the http_basic_authenticate.
     """
     auth = request.authorization
@@ -79,7 +80,7 @@ def http_basic_authenticate( func ):
         if not getattr( func, 'authenticated', True ):
             return func( *args, **kwargs )
 
-        authenticated = _basicAuthentication()
+        authenticated = __basicAuthentication()
 
         if authenticated:
             return func( *args, **kwargs )

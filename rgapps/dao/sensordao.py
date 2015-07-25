@@ -9,7 +9,9 @@ import arrow
 
 from rgapps.config import ini_config
 from rgapps.enums import DURATION_ENUM
-from rgapps.utils.utility import dict_factory
+from rgapps.utils.exception import IllegalArgumentException
+from rgapps.utils.utility import dict_factory, is_blank, is_number
+
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
 __copyright__ = "Copyright (c) 2015 Rubens S. Gomes"
@@ -24,7 +26,7 @@ class SensorDAO:
     """ Class API to provide sensor database API code
     """
 
-    def add_measurement(self, unit, value, utc, serial):
+    def add_measurement( self, unit, value, utc, serial ):
         """
         Adds given measurement data to sensor database
 
@@ -32,8 +34,8 @@ class SensorDAO:
         ----------
         unit:  str (required)
             degF, degC, degF.
-        value:  real (required)
-            a real number
+        value:  float (required)
+            a float number
         utc: str (required)
             UTC timestamp of the reading
         serial: str (required)
@@ -44,31 +46,46 @@ class SensorDAO:
             nothing.
         """
 
-        logging.debug("Inserting measurement in database: "
+        if is_blank( unit ):
+            raise IllegalArgumentException( "unit is required." )
+
+        if not value:
+            raise IllegalArgumentException( "utc is required." )
+
+        if not is_number( value ):
+            raise IllegalArgumentException( "value is not a numeric value." )
+
+        if is_blank( utc ):
+            raise IllegalArgumentException( "utc is required." )
+
+        if is_blank( serial ):
+            raise IllegalArgumentException( "serial is required." )
+
+        logging.debug( "Inserting measurement in database: "
                       "unit [{0}], value [{1}], utc [{2}], "
                       "serial [{3}]"
-                      .format(unit, value, utc, serial))
+                      .format( unit, value, utc, serial ) )
 
-        conn = sqlite3.connect(ini_config.get("SqlLite", "SQLITE_DB"))
-        logging.debug("Connected to DB [{0}]"
-                      .format(ini_config.get("SqlLite", "SQLITE_DB")))
+        conn = sqlite3.connect( ini_config.get( "SqlLite", "SQLITE_DB" ) )
+        logging.debug( "Connected to DB [{0}]"
+                      .format( ini_config.get( "SqlLite", "SQLITE_DB" ) ) )
 
         c = conn.cursor()
-        c.execute("INSERT INTO readings (id, unit, value, utc, serial) "
+        c.execute( "INSERT INTO readings (id, unit, value, utc, serial) "
                   "VALUES (?,?,?,?, ?)",
-                  (None, unit, value, utc, serial))
+                  ( None, unit, value, utc, serial ) )
 
         conn.commit()
-        logging.debug("Measurement has been committed in database")
+        logging.debug( "Measurement has been committed in database" )
         conn.close()
 
-        logging.debug("Disconnected from DB [{0}]"
-                      .format(ini_config.get("SqlLite", "SQLITE_DB")))
+        logging.debug( "Disconnected from DB [{0}]"
+                      .format( ini_config.get( "SqlLite", "SQLITE_DB" ) ) )
 
         return
 
 
-    def get_sensor_information(self, serial):
+    def get_sensor_information( self, serial ):
         """
         Returns a tuble corresponding to the sensor table in the database
         for the given sensor serial.
@@ -85,30 +102,33 @@ class SensorDAO:
             corresponding values.
         """
 
-        logging.debug("Retrieving sensor with serial [{0}] "
-                      "from database."
-                      .format(serial))
+        if is_blank( serial ):
+            raise IllegalArgumentException( "serial is required." )
 
-        conn = sqlite3.connect(ini_config.get("SqlLite", "SQLITE_DB"))
-        logging.debug("Connected to DB [{0}]"
-                      .format(ini_config.get("SqlLite", "SQLITE_DB")))
+        logging.debug( "Retrieving sensor with serial [{0}] "
+                      "from database."
+                      .format( serial ) )
+
+        conn = sqlite3.connect( ini_config.get( "SqlLite", "SQLITE_DB" ) )
+        logging.debug( "Connected to DB [{0}]"
+                      .format( ini_config.get( "SqlLite", "SQLITE_DB" ) ) )
 
         c = conn.cursor()
         c.row_factory = dict_factory
-        cursor = c.execute("SELECT * FROM sensor WHERE serial = '{0}'"
-                           .format(serial))
+        cursor = c.execute( "SELECT * FROM sensor WHERE serial = '{0}'"
+                           .format( serial ) )
         data = cursor.fetchone()
 
         conn.commit()
         conn.close()
 
-        logging.debug("Disconnected from DB [{0}]"
-                      .format(ini_config.get("SqlLite", "SQLITE_DB")))
+        logging.debug( "Disconnected from DB [{0}]"
+                      .format( ini_config.get( "SqlLite", "SQLITE_DB" ) ) )
 
         return data
 
 
-    def get_sensor_readings(self, serial, duration):
+    def get_sensor_readings( self, serial, duration ):
         """
         Returns .....
 
@@ -126,73 +146,79 @@ class SensorDAO:
             corresponding values.
         """
 
-        logging.debug("Retrieving readings from sensor with serial [{0}] using "
+        if is_blank( serial ):
+            raise IllegalArgumentException( "serial is required." )
+
+        if is_blank( duration ):
+            raise IllegalArgumentException( "duration is required." )
+
+        logging.debug( "Retrieving readings from sensor with serial [{0}] using "
                       "duration [{1}] from database."
-                      .format(serial, duration))
+                      .format( serial, duration ) )
 
         arrow_utcnow = arrow.utcnow()
-        logging.debug("current UTC now [{0}]"
-                      .format(str(arrow_utcnow)))
+        logging.debug( "current UTC now [{0}]".format( str( arrow_utcnow ) ) )
 
         arrow_utcpast = None
 
 
         if duration.lower().strip() == DURATION_ENUM.last5Years.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(years=-5)
+            arrow_utcpast = arrow_utcnow.replace( years=-5 )
         elif duration.lower().strip() == DURATION_ENUM.last1Year.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(years=-1)
+            arrow_utcpast = arrow_utcnow.replace( years=-1 )
         elif duration.lower().strip() == DURATION_ENUM.last6Months.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(months=-6)
+            arrow_utcpast = arrow_utcnow.replace( months=-6 )
         elif duration.lower().strip() == DURATION_ENUM.last90Days.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(days=-90)
+            arrow_utcpast = arrow_utcnow.replace( days=-90 )
         elif duration.lower().strip() == DURATION_ENUM.last60Days.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(days=-60)
+            arrow_utcpast = arrow_utcnow.replace( days=-60 )
         elif duration.lower().strip() == DURATION_ENUM.last30Days.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(days=-30)
+            arrow_utcpast = arrow_utcnow.replace( days=-30 )
         elif duration.lower().strip() == DURATION_ENUM.last21Days.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(days=-21)
+            arrow_utcpast = arrow_utcnow.replace( days=-21 )
         elif duration.lower().strip() == DURATION_ENUM.last7Days.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(days=-7)
+            arrow_utcpast = arrow_utcnow.replace( days=-7 )
         elif duration.lower().strip() == DURATION_ENUM.last3Days.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(days=-3)
+            arrow_utcpast = arrow_utcnow.replace( days=-3 )
         elif duration.lower().strip() == DURATION_ENUM.lastDay.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(days=-1)
+            arrow_utcpast = arrow_utcnow.replace( days=-1 )
         elif duration.lower().strip() == DURATION_ENUM.last24Hours.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(hours=-24)
+            arrow_utcpast = arrow_utcnow.replace( hours=-24 )
         elif duration.lower().strip() == DURATION_ENUM.last12Hours.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(hours=-12)
+            arrow_utcpast = arrow_utcnow.replace( hours=-12 )
         elif duration.lower().strip() == DURATION_ENUM.last6Hours.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(hours=-6)
+            arrow_utcpast = arrow_utcnow.replace( hours=-6 )
         elif duration.lower().strip() == DURATION_ENUM.lastHour.name.lower():
-            arrow_utcpast = arrow_utcnow.replace(hours=-1)
+            arrow_utcpast = arrow_utcnow.replace( hours=-1 )
         else:
-            raise ValueError("duration [{0}] is not valid".format(duration))
+            raise IllegalArgumentException( "duration [{0}] is not valid"
+                                           .format( duration ) )
 
-        logging.debug("current UTC [{0}], past UTC [{1}], duration[{2}]"
-                      .format(str(arrow_utcnow), str(arrow_utcpast), duration))
+        logging.debug( "current UTC [{0}], past UTC [{1}], duration[{2}]"
+                      .format( str( arrow_utcnow ), str( arrow_utcpast ), duration ) )
 
-        current_datetime = str(arrow_utcnow)
-        past_datetime = str(arrow_utcpast)
+        current_datetime = str( arrow_utcnow )
+        past_datetime = str( arrow_utcpast )
 
-        sql = ("SELECT utc, unit, value FROM readings WHERE serial = '{0}' "
+        sql = ( "SELECT utc, unit, value FROM readings WHERE serial = '{0}' "
                "AND utc BETWEEN '{1}' AND '{2}' "
                "ORDER BY utc ASC"
-               .format(serial, past_datetime, current_datetime))
+               .format( serial, past_datetime, current_datetime ) )
 
-        conn = sqlite3.connect(ini_config.get("SqlLite", "SQLITE_DB"))
-        logging.debug("Connected to DB [{0}]"
-                      .format(ini_config.get("SqlLite", "SQLITE_DB")))
+        conn = sqlite3.connect( ini_config.get( "SqlLite", "SQLITE_DB" ) )
+        logging.debug( "Connected to DB [{0}]"
+                      .format( ini_config.get( "SqlLite", "SQLITE_DB" ) ) )
 
         c = conn.cursor()
         c.row_factory = dict_factory
-        cursor = c.execute(sql)
+        cursor = c.execute( sql )
         data = cursor.fetchall()
 
         conn.commit()
         conn.close()
 
-        logging.debug("Disconnected from DB [{0}]"
-                      .format(ini_config.get("SqlLite", "SQLITE_DB")))
+        logging.debug( "Disconnected from DB [{0}]"
+                      .format( ini_config.get( "SqlLite", "SQLITE_DB" ) ) )
 
         return data
 

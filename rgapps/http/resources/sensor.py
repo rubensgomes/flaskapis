@@ -11,8 +11,8 @@ from werkzeug.exceptions import BadRequest, NotFound
 from rgapps.constants import STATUS_KEY, STATUS_SUCCESS, SENSOR_KEY, DATA_KEY
 from rgapps.dao.sensordao import SensorDAO
 from rgapps.domain.ds18b20sensor import DS18B20Sensor
-from rgapps.enums import TEMPERATURE_ENUM, DURATION_ENUM
-from rgapps.rest import http_basic_authenticate
+from rgapps.enums import DURATION_ENUM
+from rgapps.http import http_basic_authenticate
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"

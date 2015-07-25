@@ -1,4 +1,4 @@
-"""rgapps.rest.resources.sensor module
+"""rgapps.http.resources.sensor module
 
 This is where all the sensor flask-rest Resource code is placed.
 """
@@ -9,7 +9,8 @@ from flask.ext.restful import Resource
 from werkzeug.exceptions import BadRequest, NotFound
 
 from rgapps.constants import STATUS_KEY, STATUS_SUCCESS, SENSOR_KEY, DATA_KEY
-from rgapps.domain.sensor import SensorDb
+from rgapps.dao.sensordao import SensorDAO
+from rgapps.domain.ds18b20sensor import DS18B20Sensor
 from rgapps.enums import TEMPERATURE_ENUM, DURATION_ENUM
 from rgapps.rest import http_basic_authenticate
 
@@ -25,14 +26,11 @@ __all__ = ["SensorInformation", "SensorTemperature",
            "SensorTemperatureAnalytics"]
 
 
-DEFAULT_TEMPERATURE_UNIT = TEMPERATURE_ENUM.degC
-
-
-class SensorTemperatureAnalytics(Resource):
+class SensorTemperatureAnalytics( Resource ):
     """REST API Resource to retrieve historical sensor temperature readings.
     """
 
-    def get(self, serial):
+    def get( self, serial ):
         """REST GET implementation for the URI:
 
         http://<server>:<port>/analytics/temperature/sensors/<string:serial>?
@@ -57,29 +55,29 @@ class SensorTemperatureAnalytics(Resource):
         """
         params = request.args
         if not params:
-            raise BadRequest("Parameter duration=<duration> is missing")
+            raise BadRequest( "Parameter duration=<duration> is missing" )
 
-        if not isinstance(params, dict):
-            raise BadRequest("params must be an instance of dict")
+        if not isinstance( params, dict ):
+            raise BadRequest( "params must be an instance of dict" )
 
         if "duration" not in params:
-            raise BadRequest("Missing required duration parameter")
+            raise BadRequest( "Missing required duration parameter" )
 
-        duration = params.get("duration")
+        duration = params.get( "duration" )
 
-        is_valid = DURATION_ENUM.is_valid(duration)
+        is_valid = DURATION_ENUM.is_valid( duration )
         if not is_valid:
-            raise BadRequest("duration=[{0}] is not valid".format(duration))
+            raise BadRequest( "duration=[{0}] is not valid".format( duration ) )
 
         # retrieve sensor info from DB
-        sensor_db = SensorDb()
-        sensor = sensor_db.get_sensor_information(serial)
+        sensor_db = SensorDAO()
+        sensor = sensor_db.get_sensor_information( serial )
 
         if sensor is None:
-            raise NotFound("No sensor registered for serial [{0}]"
-                           .format(serial))
+            raise NotFound( "No sensor registered for serial [{0}]"
+                           .format( serial ) )
 
-        readings = sensor_db.get_sensor_readings(serial, duration)
+        readings = sensor_db.get_sensor_readings( serial, duration )
 
         sensor_data = dict()
         sensor_data["serial"] = sensor["serial"]
@@ -89,17 +87,16 @@ class SensorTemperatureAnalytics(Resource):
         response[SENSOR_KEY] = sensor_data
         response[DATA_KEY] = readings
 
-        ordered_response = jsonify(response)
+        json_response = jsonify( response )
+        return json_response
 
-        return ordered_response
 
-
-class SensorInformation(Resource):
+class SensorInformation( Resource ):
     """REST API Resource to retrieve general information about a specific
     sensor.
     """
 
-    def get(self, serial):
+    def get( self, serial ):
         """REST GET implementation for the URI:
 
         http://<server>:<port>/information/sensors/<string:serial>
@@ -111,16 +108,15 @@ class SensorInformation(Resource):
 
         Raises:
         ------
-        BadRequest if sensor with serial is not registered or if sensor is
-        not enabled.
+        NotFound if sensor with serial is not found.
         """
         # retrieve sensor info from DB
-        sensor_db = SensorDb()
-        sensor = sensor_db.get_sensor_information(serial)
+        sensor_db = SensorDAO()
+        sensor = sensor_db.get_sensor_information( serial )
 
         if sensor is None:
-            raise NotFound("No sensor registered for serial [{0}]"
-                           .format(serial))
+            raise NotFound( "No sensor registered for serial [{0}]"
+                           .format( serial ) )
 
         data = OrderedDict()
         data["serial"] = sensor["serial"]
@@ -135,12 +131,11 @@ class SensorInformation(Resource):
         response[STATUS_KEY] = STATUS_SUCCESS
         response[SENSOR_KEY] = data
 
-        ordered_response = jsonify(response)
+        json_response = jsonify( response )
+        return json_response
 
-        return ordered_response
 
-
-class SensorTemperature(Resource):
+class SensorTemperature( Resource ):
     """REST API Resource to retrieve the IoT sensor temperature.
 
     Notice that all communication with the actual sensor device should be
@@ -151,7 +146,7 @@ class SensorTemperature(Resource):
 
     method_decorators = [http_basic_authenticate]
 
-    def get(self, serial):
+    def get( self, serial ):
         """REST GET implementation for the URI:
 
         http://<server>:<port>/temperature/sensors/<string:serial>
@@ -161,15 +156,23 @@ class SensorTemperature(Resource):
         serial:  str (required)
             sensor serial number
 
-        Raises:
-        ------
-        BadRequest if sensor with serial is not registered or if sensor is
-        not enabled.
         """
+        temperature_sensor = DS18B20Sensor( serial )
+        measurement = temperature_sensor.get_measurement()
 
-        sensor_temperature = SensorTemperature()
-        data = sensor_temperature.get(serial)
-        response = jsonify(data)
+        sensor_data = dict()
+        sensor_data["serial"] = serial
 
-        return response
+        data = OrderedDict()
+        data["utc"] = measurement.get_utc()
+        data["value"] = measurement.get_value()
+        data["unit"] = measurement.get_unit()
+
+        response = OrderedDict()
+        response[STATUS_KEY] = STATUS_SUCCESS
+        response[SENSOR_KEY] = sensor_data
+        response[DATA_KEY] = data
+
+        json_response = jsonify( response )
+        return json_response
 

@@ -3,6 +3,9 @@
 This module contains common utility functions.
 """
 from decimal import Decimal
+import logging
+
+from pint.unit import UnitRegistry, UnitsContainer
 
 from rgapps.utils.exception import IllegalArgumentException
 
@@ -15,7 +18,100 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 __all__ = ["get_log_file_handles", "is_number", "dict_factory",
-           "decimal_places", "write_to_file", "isNotBlank"]
+           "decimal_places", "write_to_file", "isNotBlank",
+           "convert_unit"]
+
+
+def convert_unit( unit_type, from_unit, from_value, to_unit ):
+    """Converts value/unit found in params to the given to_unit.
+
+    It validates the input parameters to ensure that they
+    contain the expected types of data.  Then, it converts
+    the given unit value to the requested to_unit.  And it
+    returns the converted result.
+
+    Parameters
+    ----------
+    unit_type: str (required)
+        It  is a valid pint unit type
+    from_unit: str (required)
+        It is a valid pint unit to be converted from.
+    from_value: str (required)
+        It is a number corresponding to the from_unit to be converted from.
+    to_unit : str (required)
+        It is a valid pint unit to be converted to.
+
+    Returns
+    -------
+    float:
+        the converted unit value.
+    """
+
+    if is_blank( unit_type ):
+        raise IllegalArgumentException( "unit_type is required." )
+
+    if is_blank( from_unit ):
+        raise IllegalArgumentException( "from_unit is required." )
+
+    if is_blank( from_value ):
+        raise IllegalArgumentException( "from_value is required." )
+
+    if is_blank( to_unit ):
+        raise IllegalArgumentException( "to_unit is required." )
+
+
+    # pint unit_reg unit converter object
+    unit_reg = UnitRegistry( autoconvert_offset_to_baseunit=True )
+
+    # an exception is raised if the to_unit is not valid
+    to_unit_name = unit_reg.get_name( to_unit )
+    to_unit_dimension = unit_reg.get_dimensionality( to_unit_name )
+
+    if to_unit_dimension != UnitsContainer( {"[" + unit_type.name + "]": 1} ):
+        raise IllegalArgumentException( 
+            ( "Parameter to_unit=[{0}] not valid. [{1}] unit required." )
+            .format( to_unit, unit_type.name ) )
+
+    # an exception is raised if the from_unit is not valid
+    from_unit_name = unit_reg.get_name( from_unit )
+    from_unit_dimension = unit_reg.get_dimensionality( from_unit_name )
+
+    if from_unit_dimension != UnitsContainer( {"[" + unit_type.name + "]": 1} ):
+        raise IllegalArgumentException( 
+            ( "Parameter from_unit=[{0}] not valid. [{1}] unit required." )
+            .format( from_unit, unit_type.name ) )
+
+    logging.debug( "converting [{0} {1}] to [{2}]"
+                  .format( from_value, from_unit_name, to_unit_name ) )
+
+    from_value_float = float( from_value )
+    from_value_quantity = from_value_float * unit_reg( from_unit_name )
+
+    to_value_quantity = from_value_quantity.to( unit_reg( to_unit_name ) )
+
+    result = to_value_quantity.magnitude
+    decimals = decimal_places( to_value_quantity.magnitude )
+
+    final_result = result
+    # restrict results to 2 decimal places.
+    if( decimals > 2 ):
+        final_result = round( result, 2 )
+
+    if final_result == 0:
+        # do not return 0 (zero) when rounding gives 0 value.
+        final_result = result
+
+    # convert the string type of from_value to a number type
+    if len( set( ['.', 'e', 'E'] ).intersection( from_value ) ) > 0:
+        from_value = float( from_value )
+    else:
+        from_value = int( from_value )
+
+    logging.debug( "input [{0} {1}] result [{2} {3}]"
+                  .format( from_value, from_unit_name, result, to_unit_name ) )
+
+    return final_result
+
 
 
 def is_blank ( someString ):

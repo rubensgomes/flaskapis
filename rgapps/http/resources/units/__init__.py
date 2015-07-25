@@ -1,12 +1,12 @@
-"""rgapss.domain.units subpackage
+"""rgapps.http.resources.units subpackage
 
-Sub-package containing units conversion code
+Sub-package containing REST API units Resources conversion code
 
 Modules:
 -------
-length: a module containing length converting code.
-temperature: a module containing temperature  converting code.
-weight: a module containing weight converting code.
+length: a module containing length REST API Resource converting code.
+temperature: a module containing temperature REST API Resource converting code.
+weight: a module containing weight REST API REsource converting code.
 
 Sub-Packages:
 ------------

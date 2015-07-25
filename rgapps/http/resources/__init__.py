@@ -1,13 +1,10 @@
-"""rgapps.rest.resources subpackage
+"""rgapps.http.resources subpackage
 
-This package contains the RESTFul Resources code.
+This package contains all the REST resource implementations.
 
 Modules:
 -------
-sensor: a module to place all the Sensor RESTful Resource code
-
-Sub-Packages:
-------------
+sensor: RESTFul Resource sensor implementation
 """
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -17,7 +14,7 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["sensor" ]
+__all__ = ["sensor"]
 
 if __name__ == '__main__':
     pass

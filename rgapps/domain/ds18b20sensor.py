@@ -65,7 +65,7 @@ class DS18B20Sensor ( Sensor ):
         else:
             logging.debug( "Reading temperature from sensor [{0}]."
                           .format( self.serial ) )
-            temperature = self._get_sensor_temperature( self.serial )
+            temperature = self.__get_sensor_temperature( self.serial )
 
         logging.debug( "Sensor temperature in [{0}] is [{1}]"
                        .format( DEFAULT_TEMPERATURE_UNIT.name, temperature ) )
@@ -90,7 +90,7 @@ class DS18B20Sensor ( Sensor ):
         return reading
 
 
-    def _get_sensor_temperature( self, serial ):
+    def __get_sensor_temperature( self, serial ):
         """ Private method used to retrieve temperature from real sensor
         """
         ds18b20Sensor = None

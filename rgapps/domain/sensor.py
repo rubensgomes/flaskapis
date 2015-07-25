@@ -1,17 +1,11 @@
 """rgapps.domain.sensor module
 
-This is where all the sensor domain code is placed.
+This module defines some abstractions used by concrete sensor objects.
 """
-import logging
+from abc import ABCMeta, abstractmethod
 
-from pint.unit import UnitRegistry
-from w1thermsensor import (W1ThermSensor, NoSensorFoundError,
-                           SensorNotReadyError, UnsupportedUnitError)
-
-from rgapps.config import ini_config
-from rgapps.domain.units import convert_unit
-from rgapps.enums import TEMPERATURE_ENUM, UNIT_TYPES_ENUM
-from rgapps.utils.utility import decimal_places
+from rgapps.utils.exception import IllegalArgumentException
+from rgapps.utils.utility import is_number, is_blank
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -21,124 +15,83 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["SensorTemperature"]
+__all__ = ["Measurement", "Sensor"]
 
 
-DEFAULT_TEMPERATURE_UNIT = TEMPERATURE_ENUM.degC
 
-class SensorTemperature:
-    """Class to retrieve the sensor temperature.
+class Measurement:
+    """An data structure to represent a device (sensor) reading measurement.
     """
 
-    def measure_temperature(self, serial):
-        """to retrieve temperature sensors.
+    def __init__( self, value, unit, utc ):
+        """constructor.
 
         Parameters
         ----------
-        serial:  str (required)
-            sensor serial number
+        value:  float (required)
+            the measurement reading numeric value
+        value:  string (required)
+            the measurement reading unit
+        utc: string (required)
+            the UTC timestamp
+        """
+        if not is_number( value ):
+            raise IllegalArgumentException( "value is invalid." )
+
+        if is_blank( unit ):
+            raise IllegalArgumentException( "unit is required." )
+
+        if is_blank( utc ):
+            raise IllegalArgumentException( "utc is required." )
+
+        self.value = value
+        self.unit = unit
+        self.utc = utc
+
+        def __str__( self ):
+            # to string method.
+            return str( "value [%0], unit [%1], utc[%2]"
+                       .format( str( value ), unit, utc ) )
+
+        def get_value( self ):
+            # the reading numeric float value
+            return self.value
+
+        def get_unit( self ):
+            # the reading string text unit
+            return self.unit
+
+        def get_utc( self ):
+            # the reading string text UTC timestamp
+            return self.utc
+
+
+class Sensor:
+    """An abastract base class to represent a device (sensor).
+    """
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def get_serial( self ):
+        """The sensor serial or other identification .
 
         Returns
         -------
-        float:
-            the temperature
-
-        Raises:
-        ------
-        ValueError if sensor serial is not provided.
-        Exception for some other errors.
+            string:
+                sensor identification.
         """
+        pass
 
-        if not serial:
-            raise ValueError("No sensor serial provided.")
+    @abstractmethod
+    def get_measurement( self ):
+        """The sensor reading measurement.
 
-        if ini_config.get("Flask", "TESTING") is True:
-            temperature = 100
-            logging.debug("Testing temperature in [{0}] is [{1}]"
-                          .format(DEFAULT_TEMPERATURE_UNIT.name, temperature))
-        else:
-            logging.debug("Reading temperature from sensor [{0}]."
-                          .format(serial))
-            temperature = self._get_sensor_temperature(serial)
-            logging.debug("Sensor temperature in [{0}] is [{1}]"
-                          .format(DEFAULT_TEMPERATURE_UNIT.name,
-                                  temperature))
-
-        # use pint to represent temperature
-        unit_reg = UnitRegistry(autoconvert_offset_to_baseunit=True)
-
-        temperature_qty = temperature * unit_reg(DEFAULT_TEMPERATURE_UNIT.name)
-
-        # restrict results to 2 decimal places.
-        decimals = decimal_places(temperature_qty.magnitude)
-        if(decimals > 2):
-            temperature_result = round(temperature_qty.magnitude, 2)
-        else:
-            temperature_result = temperature_qty.magnitude
-
-        return temperature_result
-
-
-    def _get_sensor_temperature(self, serial):
-        """ Private method used to retrieve temperature from real sensor
+        Returns
+        -------
+            Measurement:
+                measurement.
         """
-        ds18b20Sensor = None
-        logging.debug("Reading temperature from DS18B20 sensor "
-                      "with Serial [{0}]".format(serial))
+        pass
 
-        try:
-            ds18b20Sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20,
-                                          serial)
-            logging.debug("Instantiated DS18B20 temperature sensor "
-                          "with Serial [{0}]"
-                          .format(serial))
-
-            if (DEFAULT_TEMPERATURE_UNIT == TEMPERATURE_ENUM.degC):
-                temperature = ds18b20Sensor.get_temperature(
-                    W1ThermSensor.DEGREES_C
-                    )
-            elif (DEFAULT_TEMPERATURE_UNIT == TEMPERATURE_ENUM.degK):
-                degF_temperature = ds18b20Sensor.get_temperature(
-                    W1ThermSensor.DEGREES_F
-                    )
-                # sensor only supports Celsius and Fahrenheit.
-                # We should therefore use pint to convert to Kelvin
-                logging.debug("Kevin unit is not supporte by sensor "
-                              "with serial [{0}]. Using pint to "
-                              "convert [{1}] to degK"
-                              .format(serial, degF_temperature))
-                temperature = convert_unit(UNIT_TYPES_ENUM.temperature,
-                                           TEMPERATURE_ENUM.degF,
-                                           temperature,
-                                           TEMPERATURE_ENUM.degK)
-            elif (DEFAULT_TEMPERATURE_UNIT == TEMPERATURE_ENUM.degF):
-                temperature = ds18b20Sensor.get_temperature(
-                    W1ThermSensor.DEGREES_F)
-            else:
-                # should never get here (sanity only).
-                raise Exception("Invalid [{0}]"
-                                .format(DEFAULT_TEMPERATURE_UNIT))
-
-        except NoSensorFoundError as err:
-            logging.warn("Sensor with serial [{0}] not found. Error [{1}]."
-                         .format(serial, err))
-            raise Exception("Sensor with serial [{0}] not found. "
-                           "Ensure request is sent to the IoT sensor "
-                           "HTTP Gateway server"
-                           .format(serial))
-
-        except SensorNotReadyError as err:
-            msg = ("Sensor with serial [{0}] not ready yet. Error [{1}]."
-                   .format(serial, err))
-            logging.warn(msg)
-            raise Exception(msg)
-
-        except UnsupportedUnitError as err:
-            msg = ("Sensor with serial [{0}] does not support requested unit."
-                   " Error [{1}]"
-                   .format(serial, err))
-            logging.warn(msg)
-            raise Exception(msg)
-
-
-        return temperature
+if __name__ == '__main__':
+    pass

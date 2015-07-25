@@ -4,7 +4,8 @@ This module contains SMS functionality.
 """
 import logging
 
-from rgapps.utils.utility import is_number
+from rgapps.utils.exception import IllegalArgumentException
+from rgapps.utils.utility import is_number, is_blank
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -24,54 +25,56 @@ class SMS:
     MAX_MSG_LENGTH = 40
     MAX_PHONE_LENGTH = 20
 
-    def send_text(self, phone_number, message):
+    def send_text( self, phone_number, message ):
         """Sends given SMS message using http://textbelt.com/
 
         Parameters
         ----------
         phone_number:  str (required)
-            recipient valid phone number. It cannot be greater than 20 digits
+            recipient numeric string for a valid phone number. It cannot be
+            greater than 20 digits
         message: str (optional)
             message to send. It cannot be greater than 40 characters.
 
         Returns
         -------
             nothing.
-
-        Raises
-        ------
-        BadRequest if an argument is invalid.
         """
-        if (not phone_number or len(phone_number.strip()) == 0 or
-            not is_number(phone_number)):
-            raise ValueError("phone_number [{0}] needs to be a number."
-                             .format(phone_number))
 
-        if len(phone_number.strip()) > self.MAX_PHONE_LENGTH:
-            raise ValueError ("phone_number [{0}] cannot be greater than [{1}]."
-                              .format(phone_number, self.MAX_PHONE_LENGTH))
+        if is_blank( phone_number ):
+            raise IllegalArgumentException( "phone_number is required" )
 
-        if not message or len(message.strip()) == 0 :
-            raise ValueError ("message cannot blank")
+        if not is_number( phone_number ):
+            raise IllegalArgumentException( 
+                "phone_number [{0}] needs to be a number.".format( phone_number ) )
+
+        if len( phone_number.strip() ) > self.MAX_PHONE_LENGTH:
+            raise IllegalArgumentException( 
+                 "phone_number [{0}] cannot be greater than [{1}]."
+                .format( phone_number, self.MAX_PHONE_LENGTH ) )
+
+        if is_blank( message ) :
+            raise IllegalArgumentException ( "message cannot blank" )
 
 
-        if len(message.strip()) > self.MAX_MSG_LENGTH:
-            raise ValueError ("message [{0}] cannot be greater than [{1}]."
-                                .format(message, self.MAX_MSG_LENGTH))
+        if len( message.strip() ) > self.MAX_MSG_LENGTH:
+            raise IllegalArgumentException( 
+                "message [{0}] cannot be greater than [{1}]."
+                .format( message, self.MAX_MSG_LENGTH ) )
 
         url = 'http://textbelt.com/text'
         payload = {'number': phone_number,
                    'message': "iotgw.rubens.home: " + message.strip()}
 
-        logging.debug("Sending SMS to [{0}] using url [{1}]"
-                      .format(phone_number, url))
+        logging.debug( "Sending SMS to [{0}] using url [{1}]"
+                      .format( phone_number, url ) )
 
         import requests
-        r = requests.post(url, data=payload)
+        r = requests.post( url, data=payload )
 
-        if (r.status_code != 200):
-            logging.debug("Failed SMS to [{0}] using url [{1}]: error coe [{2}]"
-                          .format(phone_number, url, r.status_code))
+        if ( r.status_code != 200 ):
+            logging.debug( "Failed SMS to [{0}] using url [{1}]: error coe [{2}]"
+                          .format( phone_number, url, r.status_code ) )
             r.raise_for_status()
 
         return

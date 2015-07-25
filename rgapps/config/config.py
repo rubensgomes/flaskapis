@@ -76,7 +76,8 @@ def initialize_environment( log_file_path=None ):
         )
     log_file_handler.setLevel( level )
 
-    log_format = "%(asctime)s - %(name)s - %(func):%(lineno) - %(levelname)s - %(message)s"
+    log_format = ( "%(asctime)s - %(name)s - %(funcName)s:%(lineno)d "
+                  "- %(levelname)s - %(message)s" )
     date_fmt = "%m/%d/%Y %I:%M:%S %p"
 
     # create logging formatter handler and add it to log handler

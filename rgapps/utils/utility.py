@@ -2,6 +2,10 @@
 
 This module contains common utility functions.
 """
+from decimal import Decimal
+
+from rgapps.utils.exception import IllegalArgumentException
+
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
 __copyright__ = "Copyright (c) 2015 Rubens S. Gomes"
@@ -11,13 +15,20 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 __all__ = ["get_log_file_handles", "is_number", "dict_factory",
-           "decimal_places", "write_to_file"]
+           "decimal_places", "write_to_file", "isNotBlank"]
 
 
-from decimal import Decimal
+def is_blank ( someString ):
+    """ A simple method to check if a string is null or blank.
+    """
+    if someString and someString.strip():
+        return False
+
+    return True
 
 
-def dict_factory(cursor, row):
+
+def dict_factory( cursor, row ):
     """ a factory method used to construct the rows returned from SQLite
 
     Parameters
@@ -32,13 +43,15 @@ def dict_factory(cursor, row):
     """
 
     d = {}
-    for idx, col in enumerate(cursor.description):
+
+    for idx, col in enumerate( cursor.description ):
         d[col[0]] = row[idx]
+
     return d
 
 
 
-def is_number(arg):
+def is_number( arg ):
     """
     Checks if arg is a number.
 
@@ -57,20 +70,21 @@ def is_number(arg):
         return False
 
     try:
-        float(arg)  # for int, long and float
+        float( arg )  # for int, long and float
 
     except ValueError:
         try:
-            complex(arg)  # for complex
+            complex( arg )  # for complex
         except ValueError:
             return False
 
     return True
 
 
-def decimal_places(arg):
+def decimal_places( arg ):
     """
     Returns the number of decimal places in the given number
+
     Parameters
     ----------
     arg: Numeric or string
@@ -82,19 +96,20 @@ def decimal_places(arg):
 
     Raises
     ------
-    TypeError if argument is not numeric.
+    IllegalArgumentException if argument is not numeric.
     """
-    if not is_number(str(arg)):
-        raise TypeError(("[{0}] is not a number").format(arg))
 
-    dec = Decimal(str(arg))
+    if not is_number( str( arg ) ):
+        raise IllegalArgumentException( ( "[{0}] is not a number" ).format( arg ) )
+
+    dec = Decimal( str( arg ) )
     exp = dec.as_tuple().exponent
     result = -exp
 
     return result
 
 
-def write_to_file(msg, fileToWrite):
+def write_to_file( msg, fileToWrite ):
     """ Simple utility to write to file.
 
     It is to replace the following that has been deprecated in Python 3.4:
@@ -113,12 +128,12 @@ def write_to_file(msg, fileToWrite):
     """
 
     if fileToWrite and not fileToWrite.closed:
-        fileToWrite.write(msg)
+        fileToWrite.write( msg )
 
     return
 
 
-def get_log_file_handles(logger):
+def get_log_file_handles( logger ):
     """ Returns a list of the file descriptors used by the given
     logging.logger.  This method may be used by the DaemonContext
     files_preserve when creating daemon on Linux environment.
@@ -136,10 +151,10 @@ def get_log_file_handles(logger):
     if logger:
 
         for handler in logger.handlers:
-            handles.append(handler.stream.fileno())
+            handles.append( handler.stream.fileno() )
 
         if logger.parent:
-            handles += get_log_file_handles(logger.parent)
+            handles += get_log_file_handles( logger.parent )
 
     return handles
 

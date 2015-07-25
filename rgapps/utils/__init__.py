@@ -5,6 +5,7 @@ Package containing utility code
 Modules:
 -------
 utility : a module containing common utility code.
+exception: a module containing various exception types.
 
 Sub-Packages:
 ------------

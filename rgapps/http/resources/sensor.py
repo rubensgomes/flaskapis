@@ -22,11 +22,11 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["SensorInformation", "SensorTemperature",
-           "SensorTemperatureAnalytics"]
+__all__ = ["RESTSensorInfoResource", "RESTSensorTemperatureResource",
+           "RESTSensorTemperatureAnalyticsResource"]
 
 
-class SensorTemperatureAnalytics( Resource ):
+class RESTSensorTemperatureAnalyticsResource( Resource ):
     """REST API Resource to retrieve historical sensor temperature readings.
     """
 
@@ -91,7 +91,7 @@ class SensorTemperatureAnalytics( Resource ):
         return json_response
 
 
-class SensorInformation( Resource ):
+class RESTSensorInfoResource( Resource ):
     """REST API Resource to retrieve general information about a specific
     sensor.
     """
@@ -135,7 +135,7 @@ class SensorInformation( Resource ):
         return json_response
 
 
-class SensorTemperature( Resource ):
+class RESTSensorTemperatureResource( Resource ):
     """REST API Resource to retrieve the IoT sensor temperature.
 
     Notice that all communication with the actual sensor device should be

@@ -22,10 +22,10 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 
-__all__ = ["URLResource"]
+__all__ = ["RESTUrlResource"]
 
 
-class URLResource( Resource ):
+class RESTUrlResource( Resource ):
     """REST API Resource to retrieve the resource from given HTTP URL
     sensor.
     """

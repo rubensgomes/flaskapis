@@ -21,12 +21,10 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["ProductInformation"]
+__all__ = ["RESTProductInfoResource"]
 
 
-
-
-class ProductInformation( Resource ):
+class RESTProductInfoResource( Resource ):
     """REST API Resource to retrieve general information about the software.
     """
 

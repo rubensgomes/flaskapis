@@ -20,10 +20,10 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["Length"]
+__all__ = ["RESTLengthResource"]
 
 
-class Length( Resource ):
+class RESTLengthResource( Resource ):
     """REST API Resource to convert lengths
     """
 

@@ -20,10 +20,10 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["Temperature"]
+__all__ = ["RESTTemperatureResource"]
 
 
-class Temperature( Resource ):
+class RESTTemperatureResource( Resource ):
     """REST API Resource to convert temperatures
     """
 

@@ -20,12 +20,10 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["Weight"]
+__all__ = ["RESTWeightResource"]
 
 
-
-
-class Weight( Resource ):
+class RESTWeightResource( Resource ):
     """REST API Resource to convert weights
     """
 

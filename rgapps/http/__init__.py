@@ -10,6 +10,7 @@ routes: a module to define the HTTP routes
 
 Sub-Packages:
 ------------
+resources: a sub-package where REST Resources are defined
 """
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"

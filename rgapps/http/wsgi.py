@@ -29,7 +29,9 @@ if "wsgi.errors" not in environ:
 
 write_to_file("mod_wsgi is now creating a Flask app...",
               environ['wsgi.errors'])
+
 initialize_environment()
+
 flask_instance_path = ini_config.get("Flask", "INSTANCE_PATH")
 write_to_file("FLASKAPIS_INSTANCE_PATH [{0}]".format(flask_instance_path),
               environ['wsgi.errors'])

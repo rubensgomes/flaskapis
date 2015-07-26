@@ -51,7 +51,7 @@ class Measurement:
 
     def __str__( self ):
         # to string method.
-        return str( "value [%0], unit [%1], utc[%2]"
+        return str( "value [{0}], unit [{1}], utc [{2}]"
                     .format( str( self.value ), self.unit, self.utc ) )
 
     def get_value( self ):

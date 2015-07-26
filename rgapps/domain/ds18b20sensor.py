@@ -12,11 +12,10 @@ from w1thermsensor import ( W1ThermSensor, NoSensorFoundError,
 
 from rgapps.config import ini_config
 from rgapps.domain.sensor import Sensor, Measurement
-from rgapps.domain.units import convert_unit
 from rgapps.enums import TEMPERATURE_ENUM, UNIT_TYPES_ENUM
 from rgapps.utils.exception import IllegalArgumentException, \
     SensorReadingException
-from rgapps.utils.utility import decimal_places, is_blank
+from rgapps.utils.utility import decimal_places, is_blank, convert_unit
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -58,7 +57,8 @@ class DS18B20Sensor ( Sensor ):
     def get_measurement( self ):
         """ concrete implementation of abstract method in Sensor
         """
-        if ini_config.get( "Flask", "TESTING" ) is True:
+        is_testing = ini_config.getboolean( "Flask", "TESTING" )
+        if is_testing is True:
             logging.debug( "Using a testing temperature from sensor [{0}]."
                           .format( self.serial ) )
             temperature = 100
@@ -146,7 +146,6 @@ class DS18B20Sensor ( Sensor ):
                    .format( serial, err ) )
             logging.warn( msg )
             raise SensorReadingException( msg )
-
 
         return temperature
 

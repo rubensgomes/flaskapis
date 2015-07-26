@@ -6,6 +6,7 @@ import logging
 import os
 import unittest
 
+from rgapps.config import ini_config
 from rgapps.config.config import initialize_environment
 from rgapps.domain.sms import SMS
 
@@ -35,6 +36,7 @@ class ConfigTestCase( unittest.TestCase ):
 
     def test_send_text( self ):
         logging.debug( "testing sms send_text" )
-        SMS.send_text( "9193080457", "TESTING message" )
+        phone = ini_config.get( "SMS", "TESTING_PHONE" )
+        SMS.send_text( phone, "TESTING message" )
         return
 

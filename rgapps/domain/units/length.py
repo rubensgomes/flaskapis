@@ -2,10 +2,10 @@
 
 This module contains the REST API source code for length conversions.
 """
-from rgapps.domain.units import convert_unit
+
 from rgapps.enums import UNIT_TYPES_ENUM
 from rgapps.utils.exception import IllegalArgumentException
-from rgapps.utils.utility import is_number, is_blank
+from rgapps.utils.utility import is_number, is_blank, convert_unit
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"

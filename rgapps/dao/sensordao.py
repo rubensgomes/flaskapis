@@ -66,9 +66,9 @@ class SensorDAO:
                       "serial [{3}]"
                       .format( unit, value, utc, serial ) )
 
-        conn = sqlite3.connect( ini_config.get( "SqlLite", "SQLITE_DB" ) )
-        logging.debug( "Connected to DB [{0}]"
-                      .format( ini_config.get( "SqlLite", "SQLITE_DB" ) ) )
+        sql_db = ini_config.get( "SqlLite", "SQLITE_DB" )
+        conn = sqlite3.connect( sql_db )
+        logging.debug( "Connected to DB [{0}]".format( sql_db ) )
 
         c = conn.cursor()
         c.execute( "INSERT INTO readings (id, unit, value, utc, serial) "
@@ -79,8 +79,7 @@ class SensorDAO:
         logging.debug( "Measurement has been committed in database" )
         conn.close()
 
-        logging.debug( "Disconnected from DB [{0}]"
-                      .format( ini_config.get( "SqlLite", "SQLITE_DB" ) ) )
+        logging.debug( "Disconnected from DB [{0}]".format( sql_db ) )
 
         return
 
@@ -105,13 +104,12 @@ class SensorDAO:
         if is_blank( serial ):
             raise IllegalArgumentException( "serial is required." )
 
-        logging.debug( "Retrieving sensor with serial [{0}] "
-                      "from database."
+        logging.debug( "Retrieving sensor with serial [{0}] from database."
                       .format( serial ) )
 
-        conn = sqlite3.connect( ini_config.get( "SqlLite", "SQLITE_DB" ) )
-        logging.debug( "Connected to DB [{0}]"
-                      .format( ini_config.get( "SqlLite", "SQLITE_DB" ) ) )
+        sql_db = ini_config.get( "SqlLite", "SQLITE_DB" )
+        conn = sqlite3.connect( sql_db )
+        logging.debug( "Connected to DB [{0}]".format( sql_db ) )
 
         c = conn.cursor()
         c.row_factory = dict_factory
@@ -122,8 +120,7 @@ class SensorDAO:
         conn.commit()
         conn.close()
 
-        logging.debug( "Disconnected from DB [{0}]"
-                      .format( ini_config.get( "SqlLite", "SQLITE_DB" ) ) )
+        logging.debug( "Disconnected from DB [{0}]".format( sql_db ) )
 
         return data
 
@@ -205,9 +202,9 @@ class SensorDAO:
                "ORDER BY utc ASC"
                .format( serial, past_datetime, current_datetime ) )
 
-        conn = sqlite3.connect( ini_config.get( "SqlLite", "SQLITE_DB" ) )
-        logging.debug( "Connected to DB [{0}]"
-                      .format( ini_config.get( "SqlLite", "SQLITE_DB" ) ) )
+        sql_db = ini_config.get( "SqlLite", "SQLITE_DB" )
+        conn = sqlite3.connect( sql_db )
+        logging.debug( "Connected to DB [{0}]".format( sql_db ) )
 
         c = conn.cursor()
         c.row_factory = dict_factory
@@ -217,8 +214,7 @@ class SensorDAO:
         conn.commit()
         conn.close()
 
-        logging.debug( "Disconnected from DB [{0}]"
-                      .format( ini_config.get( "SqlLite", "SQLITE_DB" ) ) )
+        logging.debug( "Disconnected from DB [{0}]".format( sql_db ) )
 
         return data
 

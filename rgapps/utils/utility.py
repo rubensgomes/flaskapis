@@ -114,10 +114,27 @@ def convert_unit( unit_type, from_unit, from_value, to_unit ):
 
 
 
-def is_blank ( someString ):
+def is_blank ( arg ):
     """ A simple method to check if a string is null or blank.
+
+    Parameters
+    ----------
+    arg: string
+        must be a string object.
+
+    Returns
+    -------
+    True: if it is a blank string
+    False: if it string is not blank
+
     """
-    if someString and someString.strip():
+    if not arg:
+        return True
+
+    if not isinstance( arg, basestring ):
+        raise IllegalArgumentException( "arg must be a string." )
+
+    if arg.strip():
         return False
 
     return True
@@ -129,7 +146,7 @@ def dict_factory( cursor, row ):
 
     Parameters
     ----------
-    cursor: SQLite cursor
+    cursor: SQLite cursor (required)
     row: SQLite row
 
     Returns
@@ -137,6 +154,8 @@ def dict_factory( cursor, row ):
     dict:
         A dictionary containing column names as keys, and column values.
     """
+    if not cursor:
+        raise IllegalArgumentException( "cursos is required." )
 
     d = {}
 
@@ -196,7 +215,8 @@ def decimal_places( arg ):
     """
 
     if not is_number( str( arg ) ):
-        raise IllegalArgumentException( ( "[{0}] is not a number" ).format( arg ) )
+        raise IllegalArgumentException( ( "[{0}] is not a number" )
+                                        .format( arg ) )
 
     dec = Decimal( str( arg ) )
     exp = dec.as_tuple().exponent

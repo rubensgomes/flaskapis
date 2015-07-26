@@ -2,6 +2,7 @@
 
 This module contains Email functionality.
 """
+
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import logging
@@ -28,7 +29,8 @@ class EMail:
     """A EMail class to send emails
     """
 
-    def send_email( self, recipient, subject, message ):
+    @staticmethod
+    def send_email( recipient, subject, message ):
         """Sends given message using Gmail credentials defined in the
         configuration file.
 
@@ -98,8 +100,7 @@ class EMail:
         mail_server = smtplib.SMTP_SSL( 'smtp.gmail.com', 465 )
         mail_server.login( gmail_user, gmail_password )
         failed_recipients = mail_server.sendmail( 
-            gmail_user, recipient, msg.as_string()
-        )
+            gmail_user, recipient, msg.as_string() )
 
         if failed_recipients:
             logging.warn( "Email failed to following recipients [{0}]"

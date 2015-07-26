@@ -2,9 +2,9 @@
 
 Unit test for rgapps.config.config module
 """
+import logging
 import os
 import unittest
-import logging
 
 from rgapps.config.config import initialize_environment
 

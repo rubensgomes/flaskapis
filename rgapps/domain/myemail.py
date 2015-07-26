@@ -1,4 +1,7 @@
-"""rgapps.domain.email module
+"""rgapps.domain.myemail module
+
+ATTENTION: the module name cannot be email because it would conflict
+with the Python standard email module.  Therefore, I named it myemail.
 
 This module contains Email functionality.
 """
@@ -68,12 +71,13 @@ class EMail:
             raise IllegalArgumentException( "recipient is required." )
 
         # ensure valid GMail Account
-        is_valid = validate_email( ini_config.get( "Email", "GMAIL_ACCOUNT" ) )
+        gmail_account = ini_config.get( "Email", "GMAIL_ACCOUNT" )
+        is_valid = validate_email( gmail_account )
 
         if( not is_valid ):
             raise IllegalArgumentException( 
                 "GMail Account [{0}] is not valid email address"
-                .format( ini_config.get( "Email", "GMAIL_ACCOUNT" ) ) )
+                .format( gmail_account ) )
 
         gmail_user = ini_config.get( "Email", "GMAIL_ACCOUNT" )
         gmail_password = ini_config.get( "Email", "GMAIL_PASSWORD" )
@@ -86,7 +90,8 @@ class EMail:
 
         if( not is_valid ):
             raise IllegalArgumentException( 
-                "Recipient [{0}] is not valid email address".format( recipient ) )
+                "Recipient [{0}] is not valid email address"
+                .format( recipient ) )
 
         msg = MIMEMultipart()
         msg['From'] = gmail_user

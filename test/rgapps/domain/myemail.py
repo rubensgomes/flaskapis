@@ -7,7 +7,7 @@ import os
 import unittest
 
 from rgapps.config.config import initialize_environment
-from rgapps.domain.email import EMail
+from rgapps.domain.myemail import EMail
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -36,8 +36,8 @@ class ConfigTestCase( unittest.TestCase ):
 
     def test_send_email( self ):
         logging.debug( "testing email send_email" )
-        EMail.send_email()( "rubens_gomes@hotmail.com",
-                            "TESTING subject",
-                            "TESTING message" )
+        EMail.send_email( "rubens_gomes@hotmail.com",
+                          "TESTING subject",
+                          "TESTING message" )
         return
 

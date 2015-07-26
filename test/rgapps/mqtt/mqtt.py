@@ -1,13 +1,14 @@
-"""test.rgapps.domain.units.weight module
+"""test.rgapps.mqtt.mqtt module
 
-Unit test for rgapps.domain.units.weight module
+Unit test for rgapps.mqtt.mqtt module
 """
 import logging
 import os
 import unittest
 
+from rgapps.config import ini_config
 from rgapps.config.config import initialize_environment
-from rgapps.domain.units.weight import Weight
+from rgapps.mqtt.mqtt import MQTTPublisher
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -35,8 +36,8 @@ class ConfigTestCase( unittest.TestCase ):
         return
 
     def test_length_convert( self ):
-        logging.debug( "testing weight convert" )
-        result = Weight.convert( 184, "kg", "lb" )
-        self.assertIsNotNone( result )
+        logging.debug( "testing MQQT publisher" )
+        serial = ini_config.get( "Sensor", "SENSOR_TEMPERATURE_SERIAL" )
+        MQTTPublisher.publish_temperature( serial )
         return
 

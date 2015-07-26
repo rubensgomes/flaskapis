@@ -30,7 +30,8 @@ class MQTTPublisher():
     """MQTT message publisher.
     """
 
-    def publish_temperature( self, serial ):
+    @staticmethod
+    def publish_temperature( serial ):
         """
         Publishes the given temperature sensor data to MQTT
         message broker.

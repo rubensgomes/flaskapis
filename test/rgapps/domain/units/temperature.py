@@ -35,7 +35,7 @@ class ConfigTestCase( unittest.TestCase ):
         return
 
     def test_length_convert( self ):
-        logging.debug( "testing length convert" )
+        logging.debug( "testing temperature convert" )
         result = Temperature.convert( 18, "degC", "degF" )
         self.assertIsNotNone( result )
         return

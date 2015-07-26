@@ -5,10 +5,11 @@ This module contains the REST API source code for weight conversion.
 from collections import OrderedDict
 
 from flask import request, jsonify
-from flask.ext.restful import Resource
+from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 
 from rgapps.constants import STATUS_KEY, STATUS_SUCCESS, DATA_KEY
+from rgapps.domain.units.weight import Weight
 from rgapps.enums import UNIT_TYPES_ENUM
 from rgapps.utils.utility import is_number, convert_unit
 
@@ -88,8 +89,7 @@ class RESTWeightResource( Resource ):
         from_unit = from_unit.lower().strip()
         to_unit = to_unit.lower().strip()
 
-        result = convert_unit( UNIT_TYPES_ENUM.mass,
-                              from_unit, from_value, to_unit )
+        result = Weight.convert( from_value, from_unit, to_unit )
 
         data = OrderedDict()
         data["from_unit"] = from_unit

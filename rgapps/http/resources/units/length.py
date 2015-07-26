@@ -5,12 +5,12 @@ This module contains the REST API source code for length conversions.
 from collections import OrderedDict
 
 from flask import request, jsonify
-from flask.ext.restful import Resource
+from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 
 from rgapps.constants import STATUS_KEY, STATUS_SUCCESS, DATA_KEY
-from rgapps.enums import UNIT_TYPES_ENUM
-from rgapps.utils.utility import is_number, convert_unit
+from rgapps.domain.units.length import Length
+from rgapps.utils.utility import is_number
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -88,8 +88,7 @@ class RESTLengthResource( Resource ):
         from_unit = from_unit.lower().strip()
         to_unit = to_unit.lower().strip()
 
-        result = convert_unit( UNIT_TYPES_ENUM.length,
-                              from_unit, from_value, to_unit )
+        result = Length.convert( from_value, from_unit, to_unit )
 
         data = OrderedDict()
         data["from_unit"] = from_unit

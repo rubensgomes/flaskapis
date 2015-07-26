@@ -23,7 +23,8 @@ class Temperature:
     """to convert temperatures
     """
 
-    def convert( self, from_value, from_unit, to_unit ):
+    @staticmethod
+    def convert( from_value, from_unit, to_unit ):
         """convert length units.
 
         Parameters

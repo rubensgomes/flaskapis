@@ -5,10 +5,11 @@ This module contains the REST API source code for temperature conversions.
 from collections import OrderedDict
 
 from flask import request, jsonify
-from flask.ext.restful import Resource
+from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 
 from rgapps.constants import STATUS_KEY, STATUS_SUCCESS, DATA_KEY
+from rgapps.domain.units.temperature import Temperature
 from rgapps.enums import UNIT_TYPES_ENUM
 from rgapps.utils.utility import is_number, convert_unit
 
@@ -102,8 +103,7 @@ class RESTTemperatureResource( Resource ):
         elif to_unit == "degk":
             to_unit = "degK"
 
-        result = convert_unit( UNIT_TYPES_ENUM.temperature,
-                              from_unit, from_value, to_unit )
+        result = Temperature.convert( from_value, from_unit, to_unit )
 
         data = OrderedDict()
         data["from_unit"] = from_unit

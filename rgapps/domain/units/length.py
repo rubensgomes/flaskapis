@@ -23,7 +23,8 @@ class Length:
     """to convert lengths
     """
 
-    def convert( self, from_value, from_unit, to_unit ):
+    @staticmethod
+    def convert( from_value, from_unit, to_unit ):
         """convert length units.
 
         Parameters

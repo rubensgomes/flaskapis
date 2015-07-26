@@ -19,24 +19,22 @@ __status__ = "Experimental"
 
 LOG_FILE_PATH = r"C:\personal\flaskapis\testing.log"
 
-class ConfigTestCase(unittest.TestCase):
+class ConfigTestCase( unittest.TestCase ):
 
-    def setUp(self):
-        initialize_environment(log_file_path=LOG_FILE_PATH)
-        ConfigTestCase.email = SMS()
+    def setUp( self ):
+        initialize_environment( log_file_path=LOG_FILE_PATH )
         return
 
-    def tearDown(self):
+    def tearDown( self ):
         handlers = logging.getLogger().handlers[:]
         for handler in handlers:
             handler.close()
-            logging.getLogger().removeHandler(handler)
-        if os.path.isfile(LOG_FILE_PATH):
-            os.remove(LOG_FILE_PATH)
+            logging.getLogger().removeHandler( handler )
+        if os.path.isfile( LOG_FILE_PATH ):
+            os.remove( LOG_FILE_PATH )
 
-    def test_send_text(self):
-        logging.debug("testing sms send_text")
-        ConfigTestCase.sms.send_text("919-308-0457",
-                                     "TESTING message")
+    def test_send_text( self ):
+        logging.debug( "testing sms send_text" )
+        SMS.send_text( "9193080457", "TESTING message" )
         return
 

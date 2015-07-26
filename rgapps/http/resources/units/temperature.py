@@ -10,8 +10,7 @@ from werkzeug.exceptions import BadRequest
 
 from rgapps.constants import STATUS_KEY, STATUS_SUCCESS, DATA_KEY
 from rgapps.domain.units.temperature import Temperature
-from rgapps.enums import UNIT_TYPES_ENUM
-from rgapps.utils.utility import is_number, convert_unit
+from rgapps.utils.utility import is_number
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"

@@ -8,7 +8,7 @@ import urllib2
 
 from bs4 import BeautifulSoup
 from flask import request, jsonify
-from flask.ext.restful import Resource
+from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 
 from rgapps.constants import URL_KEY, DATA_KEY

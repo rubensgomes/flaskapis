@@ -2,8 +2,18 @@
 
 This file is used to start the flaskapis server in the development
 environment.  In the development environment the application runs
-at localhost port 8080 as seen below.
+at localhost port <defined in devsettings.ini> as seen below.
 """
+import logging
+import sys
+
+from flask import Flask
+
+from rgapps.config import ini_config
+from rgapps.config.config import initialize_environment
+from rgapps.constants import INI_FILE
+from rgapps.http.routes import setup_routes
+
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
 __copyright__ = "Copyright (c) 2015 Rubens S. Gomes"
@@ -13,56 +23,50 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 
-import sys
-
-from flask import Flask
-
-from flaskapis.constants import FLASKAPIS_INSTANCE_PATH, DEFAULT_INI_FILE
-
-
-PORT = 8080
+port = ini_config.get( "Flask", "PORT" )
+flask_instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
+log_file = ini_config.get( "Logging", "LOG_FILE" )
 
 if __name__ == '__main__':
 
     try:
         # app: Flask application object
-        app = Flask(__name__,
-                    instance_path=FLASKAPIS_INSTANCE_PATH,
-                    instance_relative_config=True)
+        app = Flask( __name__,
+                    instance_path=flask_instance_path,
+                    instance_relative_config=True )
 
         # devsettings.cfg is local and only available in the DEV environment
-        app.config.from_pyfile(DEFAULT_INI_FILE, silent=True)
+        app.config.from_pyfile( INI_FILE, silent=True )
 
         with app.app_context():
-            from flaskapis.config import set_up_environment
-            set_up_environment()
+            initialize_environment( log_path=log_file )
 
-            app.logger.info("Environment has been checked okay.")
-            app.logger.info("Defining the application routing.")
+            logging.info( "Environment has been checked okay." )
+            logging.info( "Defining the application routing." )
 
-            from flaskapis.http import routes
-            app.logger.info("Starting flaskapis at localhost port [{0}]"
-                            .format(PORT))
+            setup_routes()
+            logging.info( "Starting flaskapis at localhost port [{0}]"
+                            .format( port ) )
 
-        app.run(host="localhost",
-                port=PORT,
+        app.run( host="localhost",
+                port=port,
                 debug=True,
-                use_reloader=True)
+                use_reloader=True )
 
-    except (IOError, EnvironmentError) as err:
-        sys.stderr.write(str(err))
-        if app.logger:
-            app.logger.exception(err)
-        exit(err.errno)
+    except ( IOError, EnvironmentError ) as err:
+        sys.stderr.write( str( err ) )
+        if logging:
+            logging.exception( err )
+        exit( err.errno )
 
-    except (Exception) as err:
-        sys.stderr.write(str(err))
-        if app.logger:
-            app.logger.exception(err)
-        exit(1)
+    except ( Exception ) as err:
+        sys.stderr.write( str( err ) )
+        if logging:
+            logging.exception( err )
+        exit( 1 )
 
     # TODO: how to stop server gracefully
-    if app.logger:
-        app.logger.info("Application ended with no errors.")
+    if logging:
+        logging.info( "Application ended with no errors." )
 
-    exit(0)
+    exit( 0 )

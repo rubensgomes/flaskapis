@@ -6,7 +6,7 @@ from collections import OrderedDict
 import logging
 
 from flask import jsonify
-from flask.ext.restful import Resource
+from flask_restful import Resource
 import pkg_resources
 
 from rgapps.constants import NAME_KEY, VERSION_KEY, STATUS_KEY, STATUS_SUCCESS, \

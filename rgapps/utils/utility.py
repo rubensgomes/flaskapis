@@ -7,6 +7,7 @@ import logging
 
 from pint.unit import UnitRegistry, UnitsContainer
 
+from rgapps.enums import UNIT_TYPES_ENUM
 from rgapps.utils.exception import IllegalArgumentException
 
 
@@ -32,11 +33,11 @@ def convert_unit( unit_type, from_unit, from_value, to_unit ):
 
     Parameters
     ----------
-    unit_type: str (required)
+    unit_type: UNIT_TYPES_ENUM (required)
         It  is a valid pint unit type
     from_unit: str (required)
         It is a valid pint unit to be converted from.
-    from_value: str (required)
+    from_value: float (required)
         It is a number corresponding to the from_unit to be converted from.
     to_unit : str (required)
         It is a valid pint unit to be converted to.
@@ -47,14 +48,21 @@ def convert_unit( unit_type, from_unit, from_value, to_unit ):
         the converted unit value.
     """
 
-    if is_blank( unit_type ):
+    if not unit_type:
         raise IllegalArgumentException( "unit_type is required." )
+
+    if not isinstance( unit_type, UNIT_TYPES_ENUM ):
+        raise IllegalArgumentException( "unit_type is not UNIT_TYPES_ENUM." )
 
     if is_blank( from_unit ):
         raise IllegalArgumentException( "from_unit is required." )
 
-    if is_blank( from_value ):
+    if not from_value :
         raise IllegalArgumentException( "from_value is required." )
+
+    if not is_number( from_value ):
+        raise IllegalArgumentException( "from_value [{0}] is not a number."
+                                        .format( from_value ) )
 
     if is_blank( to_unit ):
         raise IllegalArgumentException( "to_unit is required." )
@@ -100,12 +108,6 @@ def convert_unit( unit_type, from_unit, from_value, to_unit ):
     if final_result == 0:
         # do not return 0 (zero) when rounding gives 0 value.
         final_result = result
-
-    # convert the string type of from_value to a number type
-    if len( set( ['.', 'e', 'E'] ).intersection( from_value ) ) > 0:
-        from_value = float( from_value )
-    else:
-        from_value = int( from_value )
 
     logging.debug( "input [{0} {1}] result [{2} {3}]"
                   .format( from_value, from_unit_name, result, to_unit_name ) )

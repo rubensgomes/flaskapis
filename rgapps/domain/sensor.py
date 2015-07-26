@@ -47,23 +47,24 @@ class Measurement:
         self.value = value
         self.unit = unit
         self.utc = utc
+        return
 
-        def __str__( self ):
-            # to string method.
-            return str( "value [%0], unit [%1], utc[%2]"
-                       .format( str( value ), unit, utc ) )
+    def __str__( self ):
+        # to string method.
+        return str( "value [%0], unit [%1], utc[%2]"
+                    .format( str( self.value ), self.unit, self.utc ) )
 
-        def get_value( self ):
-            # the reading numeric float value
-            return self.value
+    def get_value( self ):
+        # the reading numeric float value
+        return self.value
 
-        def get_unit( self ):
-            # the reading string text unit
-            return self.unit
+    def get_unit( self ):
+        # the reading string text unit
+        return self.unit
 
-        def get_utc( self ):
-            # the reading string text UTC timestamp
-            return self.utc
+    def get_utc( self ):
+        # the reading string text UTC timestamp
+        return self.utc
 
 
 class Sensor:

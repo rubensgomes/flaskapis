@@ -26,7 +26,8 @@ class SensorDAO:
     """ Class API to provide sensor database API code
     """
 
-    def add_measurement( self, unit, value, utc, serial ):
+    @staticmethod
+    def add_measurement( unit, value, utc, serial ):
         """
         Adds given measurement data to sensor database
 
@@ -84,7 +85,8 @@ class SensorDAO:
         return
 
 
-    def get_sensor_information( self, serial ):
+    @staticmethod
+    def get_sensor_information( serial ):
         """
         Returns a tuble corresponding to the sensor table in the database
         for the given sensor serial.
@@ -125,7 +127,8 @@ class SensorDAO:
         return data
 
 
-    def get_sensor_readings( self, serial, duration ):
+    @staticmethod
+    def get_sensor_readings( serial, duration ):
         """
         Returns .....
 

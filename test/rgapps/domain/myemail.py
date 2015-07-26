@@ -1,6 +1,6 @@
-"""test.rgapps.domain.email module
+"""test.rgapps.domain.myemail module
 
-Unit test for rgapps.domain.email module
+Unit test for rgapps.domain.myemail module
 """
 import logging
 import os

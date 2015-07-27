@@ -1,4 +1,4 @@
-"""rgapps.http.wsgi module
+"""Flask Apache WSGI start-up file
 
 Apache WSGI Flask application
 

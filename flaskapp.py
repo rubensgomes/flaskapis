@@ -59,7 +59,7 @@ def main():
             logging.info( "Starting flaskapis at localhost port [{0}]"
                           .format( port ) )
 
-            host = ini_config.getint( "Flask", "HOST" )
+            host = ini_config.get( "Flask", "HOST" )
 
             app.run( host=host,
                      port=port,
@@ -69,7 +69,7 @@ def main():
     except ( Exception ) as err:
         sys.stderr.write( str( err ) )
         logging.exception( err )
-        if ( err.errno ):
+        if not err.errno:
             exit( err.errno )
         else:
             exit( 1 )

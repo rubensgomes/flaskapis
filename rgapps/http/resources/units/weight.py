@@ -92,15 +92,15 @@ class RESTWeightResource( Resource ):
 
         data = OrderedDict()
         data["from_unit"] = from_unit
-        data["from_value"] = from_value
+        data["from_value"] = str( from_value )
         data["to_unit"] = to_unit
-        data["to_value"] = result
+        data["to_value"] = str( result )
 
         response = OrderedDict()
         response[STATUS_KEY] = STATUS_SUCCESS
         response[DATA_KEY] = data
 
-        json_result = jsonify( result )
+        json_result = jsonify( response )
         return json_result
 
 

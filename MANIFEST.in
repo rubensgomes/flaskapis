@@ -1,4 +1,4 @@
-include ez_setup.py sensorserver.py runserver.py setup.py flaskapis.wsgi \
-  application.cfg requirements.txt AUTHORS.md README.md
+include ez_setup.py sensorserver.py flaskapp.py setup.py flaskapis.wsgi \
+  application.ini requirements.txt AUTHORS.md README.md
 recursive-include db *.sql
-recursive-include flaskapis *.py
+recursive-include rgapps *.py

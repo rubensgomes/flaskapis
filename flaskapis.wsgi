@@ -10,4 +10,4 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-from wsgiapp import app as application
+from rgapps.http.wsgiapp import app as application

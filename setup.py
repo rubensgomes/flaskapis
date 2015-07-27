@@ -16,9 +16,9 @@ ez_setup.use_setuptools()
 
 from setuptools import setup
 
-setup(
+setup( 
     name="FlaskAPIs",
-    version="2015.7.dev1",
+    version="2015.7.dev2",
     author="Rubens S. Gomes",
     author_email="rubens.s.gomes@gmail.com",
     contact_email="rubens.s.gomes@gmail.com",
@@ -28,7 +28,7 @@ setup(
     description="The flaskapis REST APIs",
     long_description=__doc__,
     platforms=["Linux", "Windows"],
-    packages=["flaskapis"],
+    packages=["rgapps"],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
@@ -48,4 +48,4 @@ setup(
       "RPi.GPIO>=0.5.11"
     ],
     keywords="flask flask-restful REST RESTful APIs"
-)
+ )

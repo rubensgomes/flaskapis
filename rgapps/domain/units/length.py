@@ -29,7 +29,7 @@ class Length:
 
         Parameters
         ----------
-        from_value:  str (required)
+        from_value:  float (required)
             numeric value
         from_unit:  str (required)
             length unit

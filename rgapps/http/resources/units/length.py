@@ -80,6 +80,8 @@ class RESTLengthResource( Resource ):
                               "A numeric value must be provided." )
                              .format( from_value ) )
 
+        from_value = float( from_value )
+
         if from_unit == to_unit:
             raise BadRequest( "from_unit=[{0}] and to_unit=[{1}] units "
                              "cannot be equal".format( from_unit, to_unit ) )
@@ -92,9 +94,9 @@ class RESTLengthResource( Resource ):
 
         data = OrderedDict()
         data["from_unit"] = from_unit
-        data["from_value"] = str( from_value )
+        data["from_value"] = from_value
         data["to_unit"] = to_unit
-        data["to_value"] = str( result )
+        data["to_value"] = result
 
         response = OrderedDict()
         response[STATUS_KEY] = STATUS_SUCCESS

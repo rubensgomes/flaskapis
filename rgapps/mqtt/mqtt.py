@@ -54,7 +54,7 @@ class MQTTPublisher():
         user = ini_config.get( "MQTT", "MQTT_USERNAME" )
         pw = ini_config.get( "MQTT", "MQTT_PASSWORD" )
         host = ini_config.get( "MQTT", "MQTT_HOST" )
-        port = ini_config.get( "MQTT", "MQTT_PORT" )
+        port = ini_config.getint( "MQTT", "MQTT_PORT" )
         topic = ini_config.get( "MQTT", "MQTT_TOPIC" )
 
 

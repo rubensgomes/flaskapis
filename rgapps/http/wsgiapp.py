@@ -1,5 +1,7 @@
 """rgapps.http.wsgi module
 
+Apache WSGI Flask application
+
 This is a placeholder to have code to kick-off the Apache2 mod_wsgi server.
 """
 import logging

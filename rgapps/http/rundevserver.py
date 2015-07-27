@@ -1,4 +1,4 @@
-"""Local runserver start-up file
+"""Flask HTTP local app start-up file
 
 This file is used to start the flaskapis server in the development
 environment.  In the development environment the application runs
@@ -11,7 +11,6 @@ from flask import Flask
 
 from rgapps.config import ini_config
 from rgapps.config.config import initialize_environment
-from rgapps.constants import INI_FILE
 from rgapps.http.routes import setup_routes
 
 
@@ -23,50 +22,58 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 
-port = ini_config.get( "Flask", "PORT" )
-flask_instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
-log_file = ini_config.get( "Logging", "LOG_FILE" )
-
-if __name__ == '__main__':
+def main():
+    # the main funcion
+    print( "initializing the environment..." )
+    initialize_environment()
 
     try:
+
+        instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
+
         # app: Flask application object
         app = Flask( __name__,
-                    instance_path=flask_instance_path,
+                    instance_path=instance_path,
                     instance_relative_config=True )
 
-        # devsettings.cfg is local and only available in the DEV environment
-        app.config.from_pyfile( INI_FILE, silent=True )
+        is_debug = ini_config.getboolean( "Flask", "DEBUG" )
+        is_testing = ini_config.getboolean( "Flask", "TESTING" )
+        is_json_sort_keys = ini_config.getboolean( "Flask", "JSON_SORT_KEYS" )
+        max_content_length = ini_config.getint( "Flask", "MAX_CONTENT_LENGTH" )
+
+        app.config.update( DEBUG=is_debug,
+                           TESTING=is_testing,
+                           JSON_SORT_KEYS=is_json_sort_keys,
+                           MAX_CONTENT_LENGTH=max_content_length )
 
         with app.app_context():
-            initialize_environment( log_path=log_file )
+            logging.info( "Code is now running with Flask app context." )
 
-            logging.info( "Environment has been checked okay." )
             logging.info( "Defining the application routing." )
-
             setup_routes()
+
+            logging.info( "Setting up the Flask functions." )
+            import rgapps.http.flaskfunctions
+
+            port = ini_config.getint( "Flask", "PORT" )
+
             logging.info( "Starting flaskapis at localhost port [{0}]"
-                            .format( port ) )
+                          .format( port ) )
 
-        app.run( host="localhost",
-                port=port,
-                debug=True,
-                use_reloader=True )
-
-    except ( IOError, EnvironmentError ) as err:
-        sys.stderr.write( str( err ) )
-        if logging:
-            logging.exception( err )
-        exit( err.errno )
+            app.run( host="localhost",
+                     port=port,
+                     debug=is_debug,
+                     use_reloader=True )
 
     except ( Exception ) as err:
         sys.stderr.write( str( err ) )
-        if logging:
-            logging.exception( err )
-        exit( 1 )
+        logging.exception( err )
+        if ( err.errno ):
+            exit( err.errno )
+        else:
+            exit( 1 )
 
-    # TODO: how to stop server gracefully
-    if logging:
-        logging.info( "Application ended with no errors." )
+    return
 
-    exit( 0 )
+# run main function
+main()

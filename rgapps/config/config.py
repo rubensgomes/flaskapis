@@ -47,8 +47,8 @@ def initialize_environment( log_file_path=None ):
     log_file = open( log_file_path.encode( "unicode-escape" ), "w" )
     log_file.close()
 
-    max_bytes = ini_config.get( "Logging", "LOG_FILE_MAX_BYTES" )
-    backup_count = ini_config.get( "Logging", "LOG_BACKUP_COUNT" )
+    max_bytes = ini_config.getint( "Logging", "LOG_FILE_MAX_BYTES" )
+    backup_count = ini_config.getint( "Logging", "LOG_BACKUP_COUNT" )
     log_level = ini_config.get( "Logging", "LOG_LEVEL" )
 
     # define the log level
@@ -87,7 +87,7 @@ def initialize_environment( log_file_path=None ):
     logging.getLogger().addHandler( log_file_handler )
     logging.getLogger().setLevel( level )
 
-    print( "Logs are being set to [{0}]".format( log_file_path ) )
+    print( "Logs are being sent to [{0}]".format( log_file_path ) )
 
     return
 

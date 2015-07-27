@@ -217,8 +217,7 @@ def decimal_places( arg ):
     """
 
     if not is_number( str( arg ) ):
-        raise IllegalArgumentException( ( "[{0}] is not a number" )
-                                        .format( arg ) )
+        raise IllegalArgumentException( "[{0}] is not a number".format( arg ) )
 
     dec = Decimal( str( arg ) )
     exp = dec.as_tuple().exponent
@@ -245,8 +244,20 @@ def write_to_file( msg, fileToWrite ):
     Nothing
     """
 
-    if fileToWrite and not fileToWrite.closed:
+    if not fileToWrite:
+        raise IllegalArgumentException( "fileToWrite is required." )
+
+    if not isinstance( fileToWrite, file ):
+        raise IllegalArgumentException( "fileToWrite is not a file." )
+
+    if not fileToWrite.closed:
+        logging.debug( "writing [{0}] to file [{1}]"
+                      .format( msg, fileToWrite.name ) )
         fileToWrite.write( msg )
+        logging.debug( "writing was successful." )
+    else:
+        logging.warning( "msg [{0}] NOT written to [{1}]: file closed."
+                        .format( msg, fileToWrite.name ) )
 
     return
 

@@ -22,59 +22,40 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 
-sys.stdout = sys.stderr
-environ = dict( os.environ.items() )
+def main():
+    sys.stdout = sys.stderr
+    environ = dict( os.environ.items() )
+    if "wsgi.errors" not in environ:
+        logging.info( "wsgi.errors was not found in the environ." )
+        environ["wsgi.errors"] = sys.stderr
 
-if "wsgi.errors" not in environ:
-    environ["wsgi.errors"] = sys.stderr
+    write_to_file( "Flask WSGI app: initializing environment.",
+                   environ['wsgi.errors'] )
 
-write_to_file( "mod_wsgi is now creating a Flask app...",
-               environ['wsgi.errors'] )
+    initialize_environment()
 
-initialize_environment()
-flask_instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
-write_to_file( "FLASKAPIS_INSTANCE_PATH [{0}]".format( flask_instance_path ),
-              environ['wsgi.errors'] )
+    # the Apache WSGI main function.
+    logging.info( "starting wsgi main." )
 
-# app: Flask application object
-app = Flask( __name__,
-            instance_path=flask_instance_path,
-            instance_relative_config=True )
-app.config.from_pyfile( INI_FILE, silent=False )
+    instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
+    logging.info( "FLASKAPIS_INSTANCE_PATH [{0}]".format( instance_path ) )
 
-with app.app_context():
+    # app: Flask application object
+    logging.info( "creating Flask app ..." )
+    app = Flask( __name__,
+                instance_path=instance_path,
+                instance_relative_config=True )
+    app.config.from_pyfile( INI_FILE, silent=False )
 
-    msg = "mod_wsgi is now importing flaskapis.config set_up_environment ..."
+    with app.app_context():
+        logging.debug( "Flask WSGI app code is now runing within app_context" )
 
-    is_debug = ini_config.getboolean( "Flask", "DEBUG" )
-    if is_debug:
-        write_to_file( msg, environ['wsgi.errors'] )
+        logging.debug( "Flask WSGI app is now importing HTTP routes ..." )
+        from rgapps.http import routes
+        logging.debug( "Flask WSGI app completed importing HTTP routes" )
 
-    logging.debug( msg )
+        logging.info( "Flask WSGI app is now running ..." )
 
-    msg = "mod_wsgi is now running flaskapis.config set_up_environment ..."
-    write_to_file( msg, environ['wsgi.errors'] )
-    logging.info( msg )
 
-    msg = "mod_wsgi is now importing flaskapis.http routes ..."
-
-    if is_debug:
-        write_to_file( msg, environ['wsgi.errors'] )
-
-    logging.debug( msg )
-
-    from rgapps.http import routes
-
-    msg = "mod_wsgi completed importing flaskapis.http routes ..."
-
-    if is_debug:
-        write_to_file( msg, environ['wsgi.errors'] )
-
-    logging.debug( msg )
-
-    msg = "flaskapis mod_wsgi is now running ..."
-    write_to_file( msg, environ['wsgi.errors'] )
-    logging.info( msg )
-
-if __name__ == '__main__':
-    pass
+# call main function
+main()

@@ -1,8 +1,7 @@
-"""Flask HTTP local app start-up file
+"""Flask HTTP app start-up file
 
-This file is used to start the flaskapis server in the development
-environment.  In the development environment the application runs
-at localhost port <defined in devsettings.ini> as seen below.
+This file is used to start a FLASK server app. The application runs
+from settings defined in the application configuration INI file.
 """
 import logging
 import sys
@@ -60,7 +59,9 @@ def main():
             logging.info( "Starting flaskapis at localhost port [{0}]"
                           .format( port ) )
 
-            app.run( host="localhost",
+            host = ini_config.getint( "Flask", "HOST" )
+
+            app.run( host=host,
                      port=port,
                      debug=is_debug,
                      use_reloader=True )

@@ -1,4 +1,4 @@
-"""sensorserver background daemon job
+"""sensorapp background daemon job
 
 This program collects data from sensors periodically and store the
 readings in the database.
@@ -30,7 +30,7 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 
-# global variable
+# global variable: to be defined in run()
 globalFlaskApp = None
 
 
@@ -108,9 +108,8 @@ def read_store_readings ():
                                .format( rest_url, err ) )
                     try:
                         EMail.send_email( recipient, subject, message )
-                        logging.info( 
-                            "email to [{0}] with subject [{1}] was sent."
-                            .format( recipient, subject ) )
+                        logging.info( "email to [{0}] with subject [{1}] sent."
+                                      .format( recipient, subject ) )
                     except Exception as mail_err:
                         logging.error( "Error [{0}] sending email."
                                        .format( mail_err ) )
@@ -246,9 +245,7 @@ def run():
                 pidfile=daemon.pidfile.PIDLockFile( pid_file ) )
 
             logging.debug( "Setting up daemon signal map" )
-            daemon_context.signal_map = {
-                                         signal.SIGTERM: program_cleanup
-                                         }
+            daemon_context.signal_map = { signal.SIGTERM: program_cleanup }
             logging.debug( "daemon signal map has been setup" )
 
             if ( logger_fds ):
@@ -269,7 +266,6 @@ def run():
         else:
             logging.info( "Server running on Windows system ..." )
             read_store_readings()
-
 
     return
 

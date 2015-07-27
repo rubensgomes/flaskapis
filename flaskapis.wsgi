@@ -1,6 +1,6 @@
 """ flaskapis mod-wsgi file
 
-This files should be placed at /home/wsgi/flaskapis on the remote web server
+This file should be placed at /home/wsgi/flaskapis on the remote web server
 """
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -10,4 +10,4 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-from flaskapis.wsgi import app as application
+from rgapps.http.wsgiapp import app as application

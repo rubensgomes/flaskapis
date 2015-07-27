@@ -13,6 +13,7 @@ from flask import Flask
 from rgapps.config import ini_config
 from rgapps.config.config import initialize_environment
 from rgapps.constants import INI_FILE
+from rgapps.http.routes import setup_routes
 from rgapps.utils.utility import write_to_file
 
 
@@ -24,40 +25,46 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 
-def main():
-    sys.stdout = sys.stderr
-    environ = dict( os.environ.items() )
-    if "wsgi.errors" not in environ:
-        logging.info( "wsgi.errors was not found in the environ." )
-        environ["wsgi.errors"] = sys.stderr
+sys.stdout = sys.stderr
+environ = dict( os.environ.items() )
+if "wsgi.errors" not in environ:
+    logging.info( "wsgi.errors was not found in the environ." )
+    environ["wsgi.errors"] = sys.stderr
 
-    write_to_file( "Flask WSGI app: initializing environment.",
-                   environ['wsgi.errors'] )
-
-    initialize_environment()
-
-    # the Apache WSGI main function.
-    logging.info( "starting wsgi main." )
-
-    instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
-    logging.info( "FLASKAPIS_INSTANCE_PATH [{0}]".format( instance_path ) )
-
-    # app: Flask application object
-    logging.info( "creating Flask app ..." )
-    app = Flask( __name__,
-                instance_path=instance_path,
-                instance_relative_config=True )
-    app.config.from_pyfile( INI_FILE, silent=False )
-
-    with app.app_context():
-        logging.debug( "Flask WSGI app code is now runing within app_context" )
-
-        logging.debug( "Flask WSGI app is now importing HTTP routes ..." )
-        from rgapps.http import routes
-        logging.debug( "Flask WSGI app completed importing HTTP routes" )
-
-        logging.info( "Flask WSGI app is now running ..." )
+write_to_file( "Flask WSGI app: initializing environment.",
+               environ['wsgi.errors'] )
+initialize_environment()
 
 
-# call main function
-main()
+# app: Flask application object
+logging.info( "creating Flask app ..." )
+
+instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
+app = Flask( __name__,
+            instance_path=instance_path,
+            instance_relative_config=True )
+
+is_debug = ini_config.getboolean( "Flask", "DEBUG" )
+is_testing = ini_config.getboolean( "Flask", "TESTING" )
+is_json_sort_keys = ini_config.getboolean( "Flask", "JSON_SORT_KEYS" )
+max_content_length = ini_config.getint( "Flask", "MAX_CONTENT_LENGTH" )
+
+app.config.update( DEBUG=is_debug,
+                   TESTING=is_testing,
+                   JSON_SORT_KEYS=is_json_sort_keys,
+                   MAX_CONTENT_LENGTH=max_content_length )
+
+with app.app_context():
+    logging.info( "Code is now running with Flask app context." )
+
+    logging.info( "Configuring the application routing." )
+    setup_routes()
+
+    logging.info( "Setting up the Flask functions." )
+    import rgapps.http.flaskfunctions
+
+    logging.info( "Flask WSGI app is now running ..." )
+
+
+if __name__ == '__main__':
+    pass

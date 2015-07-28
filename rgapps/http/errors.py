@@ -2,16 +2,6 @@
 
 This is where all the HTTP error handlers are defined.
 """
-
-__author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
-__copyright__ = "Copyright (c) 2015 Rubens S. Gomes"
-__license__ = "All Rights Reserved"
-__maintainer__ = "Rubens Gomes"
-__email__ = "rubens.s.gomes@gmail.com"
-__status__ = "Experimental"
-
-__all__ = ["ErrorResponse", "FlaskRESTfulAPI"]
-
 import cgi
 from collections import OrderedDict
 import csv
@@ -22,8 +12,21 @@ from xml.sax import saxutils
 
 from flask import request, jsonify, Response
 from flask.ext.restful import Api
-from rgapps.constants import ( STATUS_KEY, STATUS_ERROR )
 from pint import DimensionalityError, UndefinedUnitError
+
+from rgapps.utils.constants import STATUS_KEY, STATUS_ERROR
+
+
+__author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
+__copyright__ = "Copyright (c) 2015 Rubens S. Gomes"
+__license__ = "All Rights Reserved"
+__maintainer__ = "Rubens Gomes"
+__email__ = "rubens.s.gomes@gmail.com"
+__status__ = "Experimental"
+
+__all__ = ["ErrorResponse", "FlaskRESTfulAPI"]
+
+
 
 
 class FlaskRESTfulAPI( Api ):

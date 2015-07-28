@@ -11,7 +11,7 @@ from flask import request, jsonify
 from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 
-from rgapps.constants import URL_KEY, DATA_KEY
+from rgapps.utils.constants import URL_KEY, DATA_KEY
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"

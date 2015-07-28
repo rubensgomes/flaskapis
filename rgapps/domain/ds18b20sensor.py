@@ -12,7 +12,7 @@ from w1thermsensor import ( W1ThermSensor, NoSensorFoundError,
 
 from rgapps.config import ini_config
 from rgapps.domain.sensor import Sensor, Measurement
-from rgapps.enums import TEMPERATURE_ENUM, UNIT_TYPES_ENUM
+from rgapps.utils.enums import TEMPERATURE_ENUM, UNIT_TYPES_ENUM
 from rgapps.utils.exception import IllegalArgumentException, \
     SensorReadingException
 from rgapps.utils.utility import decimal_places, is_blank, convert_unit

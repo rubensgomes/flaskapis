@@ -8,8 +8,8 @@ from flask import request, jsonify
 from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 
-from rgapps.constants import STATUS_KEY, STATUS_SUCCESS, DATA_KEY
 from rgapps.domain.units.weight import Weight
+from rgapps.utils.constants import STATUS_KEY, STATUS_SUCCESS, DATA_KEY
 from rgapps.utils.utility import is_number
 
 

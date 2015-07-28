@@ -9,8 +9,9 @@ from flask import jsonify
 from flask_restful import Resource
 import pkg_resources
 
-from rgapps.constants import NAME_KEY, VERSION_KEY, STATUS_KEY, STATUS_SUCCESS, \
-    PRODUCT_KEY
+from rgapps.config import ini_config
+from rgapps.utils.constants import NAME_KEY, VERSION_KEY, STATUS_KEY, \
+    STATUS_SUCCESS, PRODUCT_KEY
 
 
 __project__ = 'flaskapis'
@@ -39,11 +40,21 @@ class RESTProductInfoResource( Resource ):
         Raises:
         ------
         """
-        dist = pkg_resources.get_distribution( __project__ )
+        is_testing = ini_config.getboolean( "Flask", "TESTING" )
+        project_name = None
+        version = None
+
+        if is_testing:
+            project_name = "RGapps"
+            version = "TESTING Version"
+        else:
+            dist = pkg_resources.get_distribution( __project__ )
+            project_name = dist.project_name
+            version = dist.version
 
         product = OrderedDict()
-        product[NAME_KEY] = dist.project_name
-        product[VERSION_KEY] = dist.version
+        product[NAME_KEY] = project_name
+        product[VERSION_KEY] = version
         product["author"] = __author__
 
         response = OrderedDict()

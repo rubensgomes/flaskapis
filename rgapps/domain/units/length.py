@@ -3,7 +3,7 @@
 This module contains the REST API source code for length conversions.
 """
 
-from rgapps.enums import UNIT_TYPES_ENUM
+from rgapps.utils.enums import UNIT_TYPES_ENUM
 from rgapps.utils.exception import IllegalArgumentException
 from rgapps.utils.utility import is_number, is_blank, convert_unit
 

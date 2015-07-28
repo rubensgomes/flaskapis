@@ -4,7 +4,7 @@ This is the top root package for all the domain code.
 
 Modules:
 -------
-email.py: Email related code.
+myemail.py: Email related code.
 sms.py: SMS related code
 sensor.py: sensor related code
 ds18b20sensor.py: Dallas Semiconductor specific sensor implementation

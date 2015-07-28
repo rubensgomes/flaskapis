@@ -4,7 +4,9 @@ This package contains all the REST resource implementations.
 
 Modules:
 -------
-sensor: RESTFul Resource sensor implementation
+product: RESTFful product Resource implementation
+sensor: RESTFul sensor Resource implementation
+url: RESTFul URL Resource implementation
 """
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"

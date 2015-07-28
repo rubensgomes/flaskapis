@@ -4,13 +4,10 @@ This is the top root package for all the Rubens Gomes application code.
 
 Modules:
 -------
-constants:  a placeholder to store constants
-enums: a placeholder for all the global enums
 
 
 Sub-Packages:
 ------------
-
 config: a subpackage containing initialization code
 dao: a subpackage containing database code related modules
 domain: domain classes

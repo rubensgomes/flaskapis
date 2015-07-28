@@ -12,7 +12,6 @@ from flask import Flask
 
 from rgapps.config import ini_config
 from rgapps.config.config import initialize_environment
-from rgapps.constants import INI_FILE
 from rgapps.http.routes import setup_routes
 from rgapps.utils.utility import write_to_file
 

@@ -7,8 +7,8 @@ written in the Python_ programming language.  The project was created by
 `Rubens Gomes`_ to implement a few utility RESTful APIs, and to experiment
 with IoT (Internet of Thing) and the `Raspberry Pi`_.
 
-RESTFul API
------------
+RESTFul APIs
+------------
 
 The REST API documentation for the *rgapps* REST APIs are found at
 http://restportal.com/.

@@ -8,7 +8,7 @@ import sqlite3
 import arrow
 
 from rgapps.config import ini_config
-from rgapps.enums import DURATION_ENUM
+from rgapps.utils.enums import DURATION_ENUM
 from rgapps.utils.exception import IllegalArgumentException
 from rgapps.utils.utility import dict_factory, is_blank, is_number
 

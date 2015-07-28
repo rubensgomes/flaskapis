@@ -4,6 +4,8 @@ Package containing utility code
 
 Modules:
 -------
+constants:  a placeholder to store constants
+enums: a placeholder for all the global enums
 utility : a module containing common utility code.
 exception: a module containing various exception types.
 

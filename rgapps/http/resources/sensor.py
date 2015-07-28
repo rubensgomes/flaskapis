@@ -8,11 +8,12 @@ from flask import request, jsonify
 from flask.ext.restful import Resource
 from werkzeug.exceptions import BadRequest, NotFound
 
-from rgapps.constants import STATUS_KEY, STATUS_SUCCESS, SENSOR_KEY, DATA_KEY
 from rgapps.dao.sensordao import SensorDAO
 from rgapps.domain.ds18b20sensor import DS18B20Sensor
-from rgapps.enums import DURATION_ENUM
 from rgapps.http import http_basic_authenticate
+from rgapps.utils.constants import STATUS_KEY, STATUS_SUCCESS, SENSOR_KEY, \
+    DATA_KEY
+from rgapps.utils.enums import DURATION_ENUM
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"

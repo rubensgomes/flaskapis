@@ -9,7 +9,7 @@ from logging.handlers import RotatingFileHandler
 import os
 
 from rgapps.config import ini_config
-from rgapps.constants import  INI_FILE
+from rgapps.utils.constants import INI_FILE
 from rgapps.utils.exception import ConfigurationException
 
 

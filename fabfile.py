@@ -47,9 +47,8 @@ def pack():
 
 
 @task
-def copy_app():
-    """Used to copy python installation installation package file to
-    remote server.
+def copy_expand_dist():
+    """Used to copy/expand python dist package file to remote server.
     """
     pack()
     print( "---copying application files to remote server" )
@@ -66,11 +65,11 @@ def copy_app():
 
 
 @task
-def deploy_flaskapis():
-    """Used to deploy the FLASKAPIS RESTFul APIs to remote server.
+def deploy_rest_apis():
+    """Used to deploy the RESTFul APIs to remote server.
     """
-    copy_app()
-    print( "---installing application in the flaskapis remote server" )
+    copy_expand_dist()
+    print( "---installing application in the remote server" )
     # figure out the release name and version
     fullname = local( "python setup.py --fullname", capture=True )
     with cd( "{0}".format( REMOTE_HOME ) ):
@@ -109,11 +108,11 @@ def deploy_flaskapis():
 
 
 @task
-def deploy_sensorserver():
-    """Used to deploy the sensorserver daemon to remote server.
+def deploy_sensorapp():
+    """Used to deploy the sensorapp daemon to remote server.
     """
-    copy_app()
-    print( "------installing sensorserver in the sensorserver remote server" )
+    copy_expand_dist()
+    print( "------installing sensorapp in the remote server" )
     # figure out the release name and version
     fullname = local( "python setup.py --fullname", capture=True )
     with cd( "/tmp/flaskapis/dist/{0}".format( fullname ) ):
@@ -140,8 +139,8 @@ def deploy_sensorserver():
 
 
 @task
-def deploy_site():
-    """Used to the FLASKAPIs swagger REST API documentation to remote server.
+def deploy_rest_doc():
+    """Used to deploy swagger REST API documentation to remote server.
     """
     print( "---deploying the swagger-doc site files to remote server" )
     run( "if [ ! -d /var/www/restportal ]; then mkdir -p /var/www/restportal; fi" )

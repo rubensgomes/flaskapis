@@ -1,4 +1,4 @@
-"""Flask HTTP app start-up file
+"""rgapps.flaskapp Flask HTTP app start-up file
 
 This file is used to start a FLASK server app. The application runs
 from settings defined in the application configuration INI file.

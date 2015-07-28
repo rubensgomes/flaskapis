@@ -1,4 +1,4 @@
-"""sensorapp background daemon job
+"""rgapps.sensorapp background daemon job
 
 This program collects data from sensors periodically and store the
 readings in the database.
@@ -16,9 +16,9 @@ from requests.exceptions import ( ConnectionError, Timeout,
 
 from rgapps.config import ini_config
 from rgapps.config.config import initialize_environment
-from rgapps.constants import SENSOR_KEY, DATA_KEY
 from rgapps.dao.sensordao import SensorDAO
 from rgapps.domain.myemail import EMail
+from rgapps.utils.constants import SENSOR_KEY, DATA_KEY
 from rgapps.utils.utility import write_to_file
 
 

@@ -14,7 +14,7 @@ The REST API documentation for the *rgapps* REST APIs are found at
 http://restportal.com/.
 
 Also, a mobile web application that is consuming some of the *rgapps* REST
-APIs can be found at `appsgo.mobi <http://appsgo.mobi/>`_.
+APIs can be found at http://appsgo.mobi/.
 
 IoT - Internet of Things
 ------------------------
@@ -29,7 +29,7 @@ Library Source Code
 -------------------
 
 All the library (classes, functions) that support the applications are found
-in the `folder <rgapps/>`_.
+in the rgapps `folder <rgapps/>`_.
 
 :Author:
     `Rubens Gomes`_

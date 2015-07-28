@@ -8,8 +8,7 @@ Client Development Machine Configuration
 The following steps were done on the local development machine:
 
 - install latest Python 2.7 in C:\python\Python27
-- install Microsoft Visual C++ Compiler for Python 2.7 from
-http://aka.ms/vcpython27
+- install Microsoft Visual C++ Compiler for Python 2.7 from http://aka.ms/vcpython27
 - install SQLite from http://www.sqlite.org/
 - install Fabric is needed on the local machine to do remote deployment::
 

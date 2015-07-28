@@ -1,6 +1,6 @@
-==============================================
-Build and Deployment Installation Instructions
-==============================================
+=================================
+Build and Deployment Instructions
+=================================
 
 To Clean a Previous Build
 -------------------------
@@ -10,11 +10,11 @@ of the *rgapps* project folder in a Windows DOS shell prompt::
 
     fab clean
 
-To Build a Python Dist Package File Locally
--------------------------------------------
+To Build a Python Dist Package
+------------------------------
 
-To create a python dist, run the following command from the root
-of the *rgapps* project folder in a Windows DOS shell prompt::
+To create a python dist package locally, run the following command from the
+root of the *rgapps* project folder in a Windows DOS shell prompt::
 
     fab pack
 
@@ -27,8 +27,8 @@ Windows DOS shell prompt::
 
     fab copy_expand_dist
 
-To Deploy the REST APIs to a Remote Server Host
------------------------------------------------
+To Deploy the REST APIs
+-----------------------
 
 To deploy a python dist to a remote server, run the following command from
 the root of the *rgapps* project folder in a Windows DOS shell prompt::
@@ -38,8 +38,8 @@ the root of the *rgapps* project folder in a Windows DOS shell prompt::
 **NOTICE** The username should be the previously configured "wsgi" on that
 remote server.
 
-To Deploy the sensorapp to a Remote Server Host
------------------------------------------------
+To Deploy the sensorapp
+-----------------------
 
 To deploy the sensorapp to a remote server, run the following command from
 the root of the *rgapps* project folder in a Windows DOS shell prompt::
@@ -47,8 +47,8 @@ the root of the *rgapps* project folder in a Windows DOS shell prompt::
     fab -u <username> -p <password> -H <host:port> deploy_sensorapp
 
 
-To Deploy the REST API documentation to a Remote Server Host
-------------------------------------------------------------
+To Deploy the REST API doc
+--------------------------
 
 To deploy the *rgapps* REST swagger-doc site files to a remote server,
 run the following command from the root of the *rgapps* project folder in

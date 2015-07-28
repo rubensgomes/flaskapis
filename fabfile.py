@@ -1,9 +1,12 @@
 """Fabric file
 
-This file is used to do remote deployment of the flaskapis application
-and the flaskapis swagger-doc files to a remote Linux server.  It was
+This file is used to do builds and remote deployment of the application
+and the the swagger-doc files to a remote Linux server.  It was
 written to run from a Windows DOS prompt, and it should run from the
-ROOT folder of the flaskapis application.
+ROOT folder of the application.
+
+
+ATTENTION: This code should be run from a DOS prompt.
 
 """
 
@@ -17,9 +20,9 @@ __status__ = "Experimental"
 from fabric.api import cd, local, run, put, task
 
 REMOTE_HOME = r"/home/wsgi"
-REMOTE_FLASKAPIS_INSTALLDIR = r"%s/flaskapis" % REMOTE_HOME
-# REMOTE_FLASKAPIS_INSTALLDIR = r"%s/dev" % REMOTE_HOME
-REMOTE_VIRTUALENV = r"%s/venv/" % REMOTE_FLASKAPIS_INSTALLDIR
+REMOTE_INSTALLDIR = r"%s/flaskapis" % REMOTE_HOME
+# REMOTE_INSTALLDIR = r"%s/dev" % REMOTE_HOME
+REMOTE_VIRTUALENV = r"%s/venv/" % REMOTE_INSTALLDIR
 
 @task
 def clean():
@@ -27,15 +30,12 @@ def clean():
     """
     print( "---cleaning local build" )
     local( "python setup.py clean" )
-    local( "IF EXIST python3.2m.exe.stackdump DEL /Q python3.2m.exe.stackdump" )
-    local( "IF EXIST ez_setup.pyc DEL /Q ez_setup.pyc" )
-    local( "IF EXIST fabfile.pyc DEL /Q fabfile.pyc" )
     local( "IF EXIST dist RMDIR /S /Q dist" )
     local( "IF EXIST build RMDIR /S /Q build" )
-    local( "IF EXIST __pycache__ RMDIR /S /Q __pycache__" )
-    local( "IF EXIST flaskapis\__pycache__ RMDIR /S /Q flaskapis\__pycache__" )
     local( "IF EXIST flaskapis.egg-info RMDIR /S /Q flaskapis.egg-info" )
-
+    local( "FOR /R %f IN (*.pyc) DO (DEL /S /Q %f)" )
+    local( "FOR /R %f IN (*.stackdump) DO (DEL /S /Q %f)" )
+    local( "FOR /D /R %d IN (__pycache__*) DO (RMDIR /S /Q %d)" )
 
 @task
 def pack():
@@ -84,12 +84,12 @@ def deploy_flaskapis():
         run( "{0}/bin/pip install -v --upgrade .".format( REMOTE_VIRTUALENV ) )
         run( "if [ ! -f {0}/application.ini ]; then "
             "cp -v application.ini {0};"
-            "fi".format( REMOTE_FLASKAPIS_INSTALLDIR ) )
-        run( "cp -v flaskapis.wsgi {0}".format( REMOTE_FLASKAPIS_INSTALLDIR ) )
+            "fi".format( REMOTE_INSTALLDIR ) )
+        run( "cp -v flaskapis.wsgi {0}".format( REMOTE_INSTALLDIR ) )
         run( "if [ ! -f {0}/flaskapis.db ]; then "
             "sqlite3 {0}/flaskapis.db < db/db_schema.sql;"
             "sqlite3 {0}/flaskapis.db < db/db_data.sql;"
-            "fi".format( REMOTE_FLASKAPIS_INSTALLDIR ) )
+            "fi".format( REMOTE_INSTALLDIR ) )
     # now that all is set up, delete the folder again
     run( "rm -fr /tmp/flaskapis/dist; rm -f /tmp/flaskapis.tar.gz" )
     run( "rm -fr /tmp/flaskapis" )
@@ -105,7 +105,7 @@ def deploy_flaskapis():
             "deactivate" )
     # and finally touch the .wsgi file so that mod_wsgi triggers
     # a reload of the application
-    run( "touch {0}/flaskapis.wsgi".format( REMOTE_FLASKAPIS_INSTALLDIR ) )
+    run( "touch {0}/flaskapis.wsgi".format( REMOTE_INSTALLDIR ) )
 
 
 @task

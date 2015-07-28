@@ -29,7 +29,10 @@ Library Source Code
 -------------------
 
 All the library (classes, functions) that support the applications are found
-in the rgapps `folder <rgapps/>`_.
+in the rgapps `source folder <rgapps/>`_.
+
+Miscellaneous
+-------------
 
 :Author:
     `Rubens Gomes`_

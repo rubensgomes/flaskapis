@@ -193,7 +193,6 @@ def run():
     This function should be called to start the system.
     """
 
-    # the main funcion
     print( "initializing the environment..." )
     initialize_environment()
 

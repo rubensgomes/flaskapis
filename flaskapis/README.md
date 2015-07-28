@@ -1,1 +1,0 @@
-This folder contains the Python source code implementation for this project.

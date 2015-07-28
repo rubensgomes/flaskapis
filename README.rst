@@ -34,6 +34,8 @@ in the rgapps `folder <rgapps/>`_.
 :Author:
     `Rubens Gomes`_
 
+:Version: 2015.7.dev2
+
 :Dedication: To my parents.
 
 .. _Dallas Semiconductor: http://www.maximintegrated.com/

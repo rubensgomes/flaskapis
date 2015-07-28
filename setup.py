@@ -18,6 +18,7 @@ from setuptools import setup
 
 setup( 
     name="FlaskAPIs",
+    ### ADD VERSION BELOW TO README.rst FILE !!!
     version="2015.7.dev2",
     author="Rubens S. Gomes",
     author_email="rubens.s.gomes@gmail.com",

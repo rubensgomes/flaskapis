@@ -46,9 +46,7 @@ class RESTUrlResource( Resource ):
         """
         params = request.args
         if not params:
-            raise BadRequest( "Parameters "
-                             "httpurl=<httpurl> "
-                             "is missing" )
+            raise BadRequest( "Parameters httpurl=<httpurl> is missing" )
 
         if "httpurl" not in params:
             raise BadRequest( "Missing required httpurl parameter" )

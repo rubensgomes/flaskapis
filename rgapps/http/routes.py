@@ -69,6 +69,7 @@ def setup_routes():
     # IoT - Sensor Information API
     if "SENSOR_INFO" in rest_apis:
         api.add_resource( RESTSensorInfoResource,
+                         '/information/sensors',
                          '/information/sensors/<string:serial>' )
         logging.info( "Sensor Information REST API is enabled" )
 

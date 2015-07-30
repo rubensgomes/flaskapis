@@ -7,7 +7,7 @@ import logging
 
 from pint.unit import UnitRegistry, UnitsContainer
 
-from rgapps.enums import UNIT_TYPES_ENUM
+from rgapps.utils.enums import UNIT_TYPES_ENUM
 from rgapps.utils.exception import IllegalArgumentException
 
 

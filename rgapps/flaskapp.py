@@ -21,8 +21,11 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 
-def main():
-    # the main funcion
+# global variable: to be defined in run()
+globalFlaskApp = None
+
+def run():
+    # the main run funcion
     print( "initializing the environment..." )
     initialize_environment()
 
@@ -31,22 +34,23 @@ def main():
         instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
 
         # app: Flask application object
-        app = Flask( __name__,
-                    instance_path=instance_path,
-                    instance_relative_config=True )
+        global globalFlaskApp
+        globalFlaskApp = Flask( __name__,
+                                instance_path=instance_path,
+                                instance_relative_config=True )
 
         is_debug = ini_config.getboolean( "Flask", "DEBUG" )
         is_testing = ini_config.getboolean( "Flask", "TESTING" )
         is_json_sort_keys = ini_config.getboolean( "Flask", "JSON_SORT_KEYS" )
         max_content_length = ini_config.getint( "Flask", "MAX_CONTENT_LENGTH" )
 
-        app.config.update( DEBUG=is_debug,
-                           TESTING=is_testing,
-                           JSON_SORT_KEYS=is_json_sort_keys,
-                           MAX_CONTENT_LENGTH=max_content_length )
+        globalFlaskApp.config.update( DEBUG=is_debug,
+                                      TESTING=is_testing,
+                                      JSON_SORT_KEYS=is_json_sort_keys,
+                                      MAX_CONTENT_LENGTH=max_content_length )
 
-        with app.app_context():
-            logging.info( "Code is now running with Flask app context." )
+        with globalFlaskApp.app_context():
+            logging.info( "Code is now running within a Flask app context." )
 
             logging.info( "Defining the application routing." )
             setup_routes()
@@ -61,10 +65,12 @@ def main():
 
             host = ini_config.get( "Flask", "HOST" )
 
-            app.run( host=host,
-                     port=port,
-                     debug=is_debug,
-                     use_reloader=True )
+            logging.info( "Start running Flask app." )
+
+            globalFlaskApp.run( host=host,
+                                port=port,
+                                debug=is_debug,
+                                use_reloader=True )
 
     except ( Exception ) as err:
         sys.stderr.write( str( err ) )
@@ -77,4 +83,6 @@ def main():
     return
 
 # run main function
-main()
+if __name__ == '__main__':
+    run()
+

@@ -134,7 +134,7 @@ def is_blank ( arg ):
     if not arg:
         return True
 
-    if not isinstance( arg, basestring ):
+    if not isinstance( arg, str ):
         raise IllegalArgumentException( "arg must be a string." )
 
     if arg.strip():

@@ -3,8 +3,8 @@
 This is where all the URL flask-rest Resource code is placed.
 """
 from collections import OrderedDict
+from six.moves import urllib
 import sys
-import urllib2
 
 from bs4 import BeautifulSoup
 from flask import request, jsonify
@@ -53,10 +53,10 @@ class RESTUrlResource( Resource ):
 
         url = params.get( "httpurl" )
 
-        req = urllib2.Request( url )
+        req = urllib.request( url )
         try:
-            resp = urllib2.urlopen( req, timeout=5 )
-        except urllib2.URLError as err:
+            resp = urllib.request.urlopen( req, timeout=5 )
+        except urllib.error.URLError as err:
             sys.stderr.write( str( err ) )
             raise BadRequest( ( "URL request to httpurl=[{0}] failed: [{1}] " )
                              .format( url, err ) )

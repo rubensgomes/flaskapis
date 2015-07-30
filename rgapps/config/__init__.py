@@ -9,7 +9,7 @@ config: a module to place all file configuration code
 Sub-Packages:
 ------------
 """
-import ConfigParser
+from six.moves import configparser
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -23,7 +23,7 @@ __all__ = ["config", "ini_config"]
 
 
 # the application INI configuration
-ini_config = ConfigParser.SafeConfigParser()
+ini_config = configparser.SafeConfigParser()
 
 if __name__ == '__main__':
     pass

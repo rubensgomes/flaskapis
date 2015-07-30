@@ -46,7 +46,8 @@ setup(
       "w1thermsensor>=0.2.1",
       "paho-mqtt>=1.1",
       "beautifulsoup4>=4.4.0",
-      "RPi.GPIO>=0.5.11"
+      "RPi.GPIO>=0.5.11",
+      "six>=1.9.0"
     ],
     keywords="flask flask-restful REST RESTful APIs"
  )

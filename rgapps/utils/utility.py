@@ -248,7 +248,7 @@ def write_to_file( msg, fileToWrite ):
         raise IllegalArgumentException( "fileToWrite is required." )
 
     if hasattr( fileToWrite, "read" ):
-        raise IllegalArgumentException( "fileToWrite is not a file." )
+        raise IllegalArgumentException( "fileToWrite is not a file object." )
 
     if not fileToWrite.closed:
         logging.debug( "writing [{0}] to file [{1}]"

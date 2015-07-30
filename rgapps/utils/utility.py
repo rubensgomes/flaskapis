@@ -254,8 +254,16 @@ def write_to_file( msg, fileToWrite ):
     is_debug = ini_config.getboolean( "Flask", "DEBUG" )
     if is_debug:
         for attr in dir( fileToWrite ):
-            print( "fileToWrite.{0} = {1}"
-                  .format( attr, getattr( fileToWrite, attr ) ) )
+            try:
+                thing = getattr( fileToWrite, attr )
+                print( "fileToWrite.{0} = {1}"
+                       .format( attr, thing ) )
+            except AttributeError:
+                logging.debug( "attr [{0}] not found in fileToWrite"
+                              .format( attr ) )
+            else:
+                logging.error( "error getting attr [{0}] from fileToWrite"
+                               .format( attr ) )
 
     if not fileToWrite.closed:
         logging.debug( "writing [{0}] to file"

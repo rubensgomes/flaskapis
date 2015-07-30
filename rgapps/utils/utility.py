@@ -7,6 +7,7 @@ import logging
 
 from pint.unit import UnitRegistry, UnitsContainer
 
+from rgapps.config import ini_config
 from rgapps.utils.enums import UNIT_TYPES_ENUM
 from rgapps.utils.exception import IllegalArgumentException
 
@@ -247,17 +248,23 @@ def write_to_file( msg, fileToWrite ):
     if not fileToWrite:
         raise IllegalArgumentException( "fileToWrite is required." )
 
-    if hasattr( fileToWrite, "read" ):
+    if not hasattr( fileToWrite, "read" ):
         raise IllegalArgumentException( "fileToWrite is not a file object." )
 
+    is_debug = ini_config.getboolean( "Flask", "DEBUG" )
+    if is_debug:
+        for attr in dir( fileToWrite ):
+            print( "fileToWrite.{0} = {1}"
+                  .format( attr, getattr( fileToWrite, attr ) ) )
+
     if not fileToWrite.closed:
-        logging.debug( "writing [{0}] to file [{1}]"
-                      .format( msg, fileToWrite.name ) )
+        logging.debug( "writing [{0}] to file"
+                      .format( msg ) )
         fileToWrite.write( msg )
         logging.debug( "writing was successful." )
     else:
-        logging.warning( "msg [{0}] NOT written to [{1}]: file closed."
-                        .format( msg, fileToWrite.name ) )
+        logging.warning( "msg [{0}] NOT written: file closed."
+                        .format( msg ) )
 
     return
 

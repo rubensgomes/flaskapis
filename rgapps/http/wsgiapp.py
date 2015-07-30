@@ -25,6 +25,10 @@ __status__ = "Experimental"
 
 
 sys.stdout = sys.stderr
+
+# initialize_environment MUST be called first !!!
+initialize_environment()
+
 environ = dict( os.environ.items() )
 if "wsgi.errors" not in environ:
     logging.info( "wsgi.errors was not found in the environ." )
@@ -32,7 +36,7 @@ if "wsgi.errors" not in environ:
 
 write_to_file( "Flask WSGI app: initializing environment.",
                environ['wsgi.errors'] )
-initialize_environment()
+
 
 
 # app: Flask application object

@@ -7,14 +7,12 @@ import logging
 
 import arrow
 from pint.unit import UnitRegistry
-from w1thermsensor import ( W1ThermSensor, NoSensorFoundError,
-                           SensorNotReadyError, UnsupportedUnitError )
+from w1thermsensor import ( W1ThermSensor )
 
 from rgapps.config import ini_config
 from rgapps.domain.sensor import Sensor, Measurement
 from rgapps.utils.enums import TEMPERATURE_ENUM, UNIT_TYPES_ENUM
-from rgapps.utils.exception import IllegalArgumentException, \
-    SensorReadingException
+from rgapps.utils.exception import IllegalArgumentException
 from rgapps.utils.utility import decimal_places, is_blank, convert_unit
 
 
@@ -97,55 +95,35 @@ class DS18B20Sensor ( Sensor ):
         logging.debug( "Reading temperature from DS18B20 sensor "
                       "with Serial [{0}]".format( serial ) )
 
-        try:
-            ds18b20Sensor = W1ThermSensor( W1ThermSensor.THERM_SENSOR_DS18B20,
-                                          serial )
-            logging.debug( "Instantiated DS18B20 temperature sensor "
-                          "with Serial [{0}]"
-                          .format( serial ) )
+        ds18b20Sensor = W1ThermSensor( W1ThermSensor.THERM_SENSOR_DS18B20,
+                                      serial )
+        logging.debug( "Instantiated DS18B20 temperature sensor "
+                      "with Serial [{0}]"
+                      .format( serial ) )
 
-            if ( DEFAULT_TEMPERATURE_UNIT == TEMPERATURE_ENUM.degC ):
-                temperature = ds18b20Sensor.get_temperature( 
-                                                    W1ThermSensor.DEGREES_C )
-            elif ( DEFAULT_TEMPERATURE_UNIT == TEMPERATURE_ENUM.degK ):
-                degF_temperature = ds18b20Sensor.get_temperature( 
-                                                    W1ThermSensor.DEGREES_F )
-                # sensor only supports Celsius and Fahrenheit.
-                # We should therefore use pint to convert to Kelvin
-                logging.debug( "Kevin unit is not supporte by sensor "
-                              "with serial [{0}]. Using pint to "
-                              "convert [{1}] to degK"
-                              .format( serial, degF_temperature ) )
-                temperature = convert_unit( UNIT_TYPES_ENUM.temperature,
-                                           TEMPERATURE_ENUM.degF,
-                                           temperature,
-                                           TEMPERATURE_ENUM.degK )
-            elif ( DEFAULT_TEMPERATURE_UNIT == TEMPERATURE_ENUM.degF ):
-                temperature = ds18b20Sensor.get_temperature( 
-                    W1ThermSensor.DEGREES_F )
-            else:
-                # should never get here (sanity only).
-                raise Exception( "Invalid [{0}]"
-                                .format( DEFAULT_TEMPERATURE_UNIT ) )
-
-        except NoSensorFoundError as err:
-            msg = ( "Sensor with serial [{0}] not found. Error [{1}]."
-                    .format( serial, err ) )
-            logging.warn( msg )
-            raise SensorReadingException( msg )
-
-        except SensorNotReadyError as err:
-            msg = ( "Sensor with serial [{0}] not ready yet. Error [{1}]."
-                   .format( serial, err ) )
-            logging.warn( msg )
-            raise SensorReadingException( msg )
-
-        except UnsupportedUnitError as err:
-            msg = ( "Sensor with serial [{0}] does not support requested unit."
-                   " Error [{1}]"
-                   .format( serial, err ) )
-            logging.warn( msg )
-            raise SensorReadingException( msg )
+        if ( DEFAULT_TEMPERATURE_UNIT == TEMPERATURE_ENUM.degC ):
+            temperature = ds18b20Sensor.get_temperature( 
+                                                W1ThermSensor.DEGREES_C )
+        elif ( DEFAULT_TEMPERATURE_UNIT == TEMPERATURE_ENUM.degK ):
+            degF_temperature = ds18b20Sensor.get_temperature( 
+                                                W1ThermSensor.DEGREES_F )
+            # sensor only supports Celsius and Fahrenheit.
+            # We should therefore use pint to convert to Kelvin
+            logging.debug( "Kevin unit is not supporte by sensor "
+                           "with serial [{0}]. Using pint to "
+                           "convert [{1}] to degK"
+                          .format( serial, degF_temperature ) )
+            temperature = convert_unit( UNIT_TYPES_ENUM.temperature,
+                                       TEMPERATURE_ENUM.degF,
+                                       temperature,
+                                       TEMPERATURE_ENUM.degK )
+        elif ( DEFAULT_TEMPERATURE_UNIT == TEMPERATURE_ENUM.degF ):
+            temperature = ds18b20Sensor.get_temperature( 
+                W1ThermSensor.DEGREES_F )
+        else:
+            # should never get here (sanity only).
+            raise Exception( "Invalid [{0}]"
+                             .format( DEFAULT_TEMPERATURE_UNIT ) )
 
         return temperature
 

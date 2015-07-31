@@ -16,6 +16,7 @@ from pint import DimensionalityError
 
 from rgapps.utils.constants import STATUS_KEY, STATUS_ERROR
 from rgapps.utils.utility import is_blank, get_error_description
+from w1thermsensor import NoSensorFoundError
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -54,6 +55,10 @@ class FlaskRESTfulAPI( Api ):
         if isinstance( error, ( DimensionalityError, DimensionalityError ) ):
             logging.debug( "handling DimensionalityError or DimensionalityError" )
             return self.pint_bad_request( error )
+
+        elif isinstance( error, ( NoSensorFoundError ) ):
+            logging.debug( "handling NoSensorFoundError" )
+            return self.handle_not_found( error )
 
         elif isinstance( error, ( TypeError, ValueError ) ):
             logging.debug( "handling TypeError or ValueError" )

@@ -5,15 +5,12 @@ Apache WSGI Flask application
 This is a placeholder to have code to kick-off the Apache2 mod_wsgi server.
 """
 import logging
-import os
-import sys
 
 from flask import Flask
 
 from rgapps.config import ini_config
 from rgapps.config.config import initialize_environment
 from rgapps.http.routes import setup_routes
-from rgapps.utils.utility import write_to_file
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -23,26 +20,12 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-
-sys.stdout = sys.stderr
-
 # initialize_environment MUST be called first !!!
 initialize_environment()
 
-environ = dict( os.environ.items() )
-if "wsgi.errors" not in environ:
-    logging.info( "wsgi.errors was not found in the environ." )
-    environ["wsgi.errors"] = sys.stderr
-
-write_to_file( "Flask WSGI app: initializing environment.",
-               environ['wsgi.errors'] )
-
-
-
-# app: Flask application object
-logging.info( "creating Flask app ..." )
-
 instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
+
+logging.info( "creating Flask app ..." )
 app = Flask( __name__,
             instance_path=instance_path,
             instance_relative_config=True )
@@ -58,9 +41,7 @@ app.config.update( DEBUG=is_debug,
                    MAX_CONTENT_LENGTH=max_content_length )
 
 with app.app_context():
-    logging.info( "Code is now running with Flask app context." )
-
-    logging.info( "Configuring the application routing." )
+    logging.info( "Configuring the Flask HTTP routing." )
     setup_routes()
 
     logging.info( "Setting up the Flask functions." )

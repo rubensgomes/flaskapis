@@ -24,6 +24,32 @@ __all__ = ["get_log_file_handles", "is_number", "dict_factory",
            "convert_unit"]
 
 
+def get_error_description( error ):
+    """ Attempts to retrieve some messaging from the given
+    error object.
+
+    Parameters
+    ----------
+    error: exception instance (optional)
+        It  is an error or exception object.
+    """
+    if not error:
+        return ""
+
+    if hasattr( error, 'description' ):
+        description = error.description
+    elif hasattr( error, 'message' ):
+        description = error.message
+    elif hasattr( error, 'msg' ):
+        description = error.msg
+    else:
+        description = str( error )
+
+    return description
+
+
+
+
 def convert_unit( unit_type, from_unit, from_value, to_unit ):
     """Converts value/unit found in params to the given to_unit.
 
@@ -133,9 +159,6 @@ def is_blank ( arg ):
     """
     if not arg:
         return True
-
-    if not isinstance( arg, str ):
-        raise IllegalArgumentException( "arg must be a string." )
 
     if arg.strip():
         return False
@@ -256,11 +279,11 @@ def write_to_file( msg, fileToWrite ):
         for attr in dir( fileToWrite ):
             try:
                 thing = getattr( fileToWrite, attr )
-                print( "fileToWrite.{0} = {1}"
-                       .format( attr, thing ) )
+                logging.debug( "fileToWrite.{0} = {1}"
+                               .format( attr, thing ) )
             except AttributeError:
-                logging.debug( "attr [{0}] not found in fileToWrite"
-                              .format( attr ) )
+                logging.warning( "attr [{0}] not found in fileToWrite"
+                                 .format( attr ) )
             else:
                 logging.error( "error getting attr [{0}] from fileToWrite"
                                .format( attr ) )

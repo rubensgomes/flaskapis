@@ -12,9 +12,10 @@ from xml.sax import saxutils
 
 from flask import request, jsonify, Response
 from flask.ext.restful import Api
-from pint import DimensionalityError, UndefinedUnitError
+from pint import DimensionalityError
 
 from rgapps.utils.constants import STATUS_KEY, STATUS_ERROR
+from rgapps.utils.utility import is_blank, get_error_description
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -48,10 +49,14 @@ class FlaskRESTfulAPI( Api ):
         -------
             this method which overrides handle_error in flask-restful API.
         """
-        if isinstance( error, ( DimensionalityError, UndefinedUnitError ) ):
+        logging.debug( "inside handle_error" )
+
+        if isinstance( error, ( DimensionalityError, DimensionalityError ) ):
+            logging.debug( "handling DimensionalityError or DimensionalityError" )
             return self.pint_bad_request( error )
 
         elif isinstance( error, ( TypeError, ValueError ) ):
+            logging.debug( "handling TypeError or ValueError" )
             return self.handle_internal_server_error( error )
 
         else:
@@ -97,6 +102,8 @@ class FlaskRESTfulAPI( Api ):
         -------
             an HTTP response object with appropriate error message.
         """
+        logging.debug( "inside pint_bad_request" )
+
         code = ""
 
         if hasattr( error, 'code' ):
@@ -127,6 +134,8 @@ class FlaskRESTfulAPI( Api ):
             an HTTP response object with appropriate error message.
 
         """
+        logging.debug( "inside bad_request" )
+
         code = ""
 
         if hasattr( error, 'code' ):
@@ -135,12 +144,10 @@ class FlaskRESTfulAPI( Api ):
         logging.debug( "Handling a status_code [{0}] error [{1}]"
                       .format( code, error ) )
 
-        description = "Bad URL [{0}] request".format( request.url )
-
         # if a description was found on the error, use that one instead
-        if ( hasattr( error, 'description' ) and
-            len( error.description.strip() ) > 0 ):
-            description = error.description
+        description = get_error_description( error )
+        if is_blank( description ):
+            description = "Bad URL [{0}] request".format( request.url )
 
         response = ErrorResponse.get_response( 400,
                                               description,
@@ -162,6 +169,8 @@ class FlaskRESTfulAPI( Api ):
         -------
             an HTTP response object with appropriate error message.
         """
+        logging.debug( "inside handle_not_authorized" )
+
         code = ""
 
         if hasattr( error, 'code' ):
@@ -170,12 +179,10 @@ class FlaskRESTfulAPI( Api ):
         logging.debug( "Handling a status_code [{0}] error [{1}]"
                       .format( code, error ) )
 
-        description = "URL [{0}] request not authorized".format( request.url )
-
         # if a description was found on the error, use that one instead
-        if ( hasattr( error, 'description' ) and
-            len( error.description.strip() ) > 0 ):
-            description = error.description
+        description = get_error_description( error )
+        if is_blank( description ):
+            description = "URL [{0}] request not authorized".format( request.url )
 
         response = ErrorResponse.get_response( 401,
                                               description,
@@ -197,6 +204,8 @@ class FlaskRESTfulAPI( Api ):
         -------
             an HTTP response object with appropriate error message.
         """
+        logging.debug( "inside handle_request_timeout" )
+
         code = ""
 
         if hasattr( error, 'code' ):
@@ -205,12 +214,10 @@ class FlaskRESTfulAPI( Api ):
         logging.debug( "Handling a status_code [{0}] error [{1}]"
                       .format( code, error ) )
 
-        description = "URL [{0}] request timed out".format( request.url )
-
         # if a description was found on the error, use that one instead
-        if ( hasattr( error, 'description' ) and
-            len( error.description.strip() ) > 0 ):
-            description = error.description
+        description = get_error_description( error )
+        if is_blank( description ):
+            description = "URL [{0}] request timed out".format( request.url )
 
         response = ErrorResponse.get_response( 408,
                                               description,
@@ -233,6 +240,8 @@ class FlaskRESTfulAPI( Api ):
         -------
             an HTTP response object with appropriate error message.
         """
+        logging.debug( "inside handle_not_expected" )
+
         code = ""
 
         if hasattr( error, 'code' ):
@@ -241,13 +250,11 @@ class FlaskRESTfulAPI( Api ):
         logging.debug( "Handling a status_code [{0}] error [{1}]"
                       .format( code, error ) )
 
-        description = ( "URL [{0}] request generate a not expected status"
-                       .format( request.url ) )
-
         # if a description was found on the error, use that one instead
-        if ( hasattr( error, 'description' ) and
-            len( error.description.strip() ) > 0 ):
-            description = error.description
+        description = get_error_description( error )
+        if is_blank( description ):
+            description = ( "URL [{0}] request generate a not expected status"
+                            .format( request.url ) )
 
         response = ErrorResponse.get_response( 401,
                                               description,
@@ -271,6 +278,8 @@ class FlaskRESTfulAPI( Api ):
             an HTTP response object with appropriate error message.
 
         """
+        logging.debug( "inside handle_not_found" )
+
         code = ""
 
         if hasattr( error, 'code' ):
@@ -282,13 +291,12 @@ class FlaskRESTfulAPI( Api ):
         url_not_found = request.url
         logging.debug( "Handling a URL [{0}] not found error [{1}]"
                                  .format( url_not_found, error ) )
-        description = ( "Requested resource identified by [{0}] not found."
-                       .format( url_not_found ) )
 
         # if a description was found on the error, use that one instead
-        if ( hasattr( error, 'description' ) and
-            len( error.description.strip() ) > 0 ):
-            description = error.description
+        description = get_error_description( error )
+        if is_blank( description ):
+            description = ( "Requested resource identified by [{0}] not found."
+                            .format( url_not_found ) )
 
         response = ErrorResponse.get_response( 404,
                                               description,
@@ -310,6 +318,8 @@ class FlaskRESTfulAPI( Api ):
         -------
             an HTTP response object with appropriate error message.
         """
+        logging.debug( "inside method_not_allowed" )
+
         code = ""
 
         if hasattr( error, 'code' ):
@@ -319,12 +329,11 @@ class FlaskRESTfulAPI( Api ):
                                  .format( code, error ) )
 
         method = request.method
-        description = "The HTTP method [{0}] is not supported.".format( method )
 
         # if a description was found on the error, use that one instead
-        if ( hasattr( error, 'description' ) and
-            len( error.description.strip() ) > 0 ):
-            description = error.description
+        description = get_error_description( error )
+        if is_blank( description ):
+            description = "The HTTP method [{0}] is not supported.".format( method )
 
         response = ErrorResponse.get_response( 405,
                                               description,
@@ -347,13 +356,15 @@ class FlaskRESTfulAPI( Api ):
         -------
             an HTTP response object with appropriate error message.
         """
+        logging.debug( "inside handle_not_acceptable" )
+
         code = ""
 
         if hasattr( error, 'code' ):
             code = getattr( error, 'code' )
 
         logging.debug( "Handling a status_code [{0}] error [{1}]"
-                                 .format( code, error ) )
+                       .format( code, error ) )
 
         mimeType = request.accept_mimetypes.best
         logging.debug( "Handling a 406 error [{0}].  "
@@ -361,13 +372,11 @@ class FlaskRESTfulAPI( Api ):
                                  .format( error, mimeType ) )
         accept = request.headers['Accept']
 
-        description = ( "Requested MIME types [{0}] not supported."
-                       .format( accept ) )
-
         # if a description was found on the error, use that one instead
-        if ( hasattr( error, 'description' ) and
-            len( error.description.strip() ) > 0 ):
-            description = error.description
+        description = get_error_description( error )
+        if is_blank( description ):
+            description = ( "Requested MIME types [{0}] not supported."
+                            .format( accept ) )
 
         response = ErrorResponse.get_response( 406,
                                               description,
@@ -388,30 +397,26 @@ class FlaskRESTfulAPI( Api ):
         -------
             an HTTP response object with appropriate error message.
         """
+        logging.debug( "inside handle_internal_server_error" )
+
         code = 500
 
         if hasattr( error, 'code' ):
             code = getattr( error, 'code' )
 
         logging.debug( "Handling a status_code [{0}] error [{1}]"
-                                 .format( code, error ) )
+                       .format( code, error ) )
 
-        if not error:
-            logging.error( "error object empty or null found." )
+        # if a description was found on the error, use that one instead
+        description = get_error_description( error )
+        if is_blank( description ):
             description = "An internal server error occurred"
-        else:
 
-            if isinstance( error, Exception ):
-                logging.exception( error )
+        if isinstance( error, Exception ):
+            logging.exception( error )
 
-            if hasattr( error, 'description' ):
-                description = error.description
-            else:
-                description = str( error )
-
-        response = ErrorResponse.get_response( code,
-                                              description,
-                                              "application/json" )
+        response = ErrorResponse.get_response( code, description,
+                                               "application/json" )
         return response
 
 
@@ -451,7 +456,7 @@ class ErrorResponse:
             raise ValueError( "code [{0}] is not valid. "
                              "It must be between 400 and 500"
                              .format( code ) )
-        elif not description or not description.strip():
+        elif is_blank( description ):
             logging.warn( "error description is blank" )
             description = "no error description found"
 
@@ -459,8 +464,7 @@ class ErrorResponse:
             body = ErrorResponse.get_html_response_body( 
                 code,
                 description,
-                "HTTP Status Code:{0}".format( code )
-                )
+                "HTTP Status Code:{0}".format( code ) )
             response = Response( body, status=code, mimetype="text/html" )
         elif re.search( "xml", mime_type, flags=re.IGNORECASE ):
             body = ErrorResponse.get_xml_response_body( code, description )

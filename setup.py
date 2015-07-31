@@ -26,7 +26,7 @@ setup(
     maintainer="Rubens S. Gomes",
     maintainer_email="rubens.s.gomes@gmail.com",
     url="http://restportal.com/",
-    description="The flaskapis REST APIs",
+    description="The RGApps Python project",
     long_description=__doc__,
     platforms=["Linux", "Windows"],
     packages=["rgapps"],

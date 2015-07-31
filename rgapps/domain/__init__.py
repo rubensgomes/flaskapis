@@ -22,7 +22,8 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["myemail", "sms", "units", "sensor", "ds18b20sensor"]
+__all__ = ["myemail", "sms", "units", "sensor", "product",
+           "ds18b20sensor"]
 
 if __name__ == '__main__':
     pass

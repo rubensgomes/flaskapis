@@ -7,14 +7,12 @@ import logging
 
 from flask import jsonify
 from flask_restful import Resource
-import pkg_resources
 
-from rgapps.config import ini_config
+from rgapps.domain.product import Product
 from rgapps.utils.constants import NAME_KEY, VERSION_KEY, STATUS_KEY, \
-    STATUS_SUCCESS, PRODUCT_KEY
+    STATUS_SUCCESS, PRODUCT_KEY, AUTHOR_KEY, DATE_KEY
 
 
-__project__ = 'flaskapis'
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
 __copyright__ = "Copyright (c) 2015 Rubens S. Gomes"
 __license__ = "All Rights Reserved"
@@ -40,22 +38,14 @@ class RESTProductInfoResource( Resource ):
         Raises:
         ------
         """
-        is_testing = ini_config.getboolean( "Flask", "TESTING" )
-        project_name = None
-        version = None
 
-        if is_testing:
-            project_name = "RGapps"
-            version = "TESTING Version"
-        else:
-            dist = pkg_resources.get_distribution( __project__ )
-            project_name = dist.project_name
-            version = dist.version
+        product_instance = Product()
 
         product = OrderedDict()
-        product[NAME_KEY] = project_name
-        product[VERSION_KEY] = version
-        product["author"] = __author__
+        product[NAME_KEY] = product_instance.get_project_name()
+        product[VERSION_KEY] = product_instance.get_version()
+        product[AUTHOR_KEY] = product_instance.get_author()
+        product[DATE_KEY] = product_instance.get_project_date()
 
         response = OrderedDict()
         response[STATUS_KEY] = STATUS_SUCCESS

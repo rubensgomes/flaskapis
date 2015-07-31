@@ -22,7 +22,9 @@ if platform.system() == "Linux":  # Raspberry Pi or Linux VM
 else:  # Rubens development PC
     INI_FILE = r"C:\projects\flaskapis\devsettings.ini"
 
+AUTHOR_KEY = "author"
 DATA_KEY = "data"
+DATE_KEY = "date"
 NAME_KEY = "name"
 PRODUCT_KEY = "product"
 SENSOR_KEY = "sensor"
@@ -33,6 +35,8 @@ VERSION_KEY = "version"
 STATUS_ERROR = "error"
 STATUS_SUCCESS = "success"
 
+# the following must come from setup.py file
+PROJECT_NAME = "FlaskAPIs"
 
 if __name__ == '__main__':
     pass

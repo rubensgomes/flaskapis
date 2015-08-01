@@ -39,8 +39,10 @@ globalFlaskApp = None
 def read_store_readings ():
     """ Function used to read and store sensor readings
     """
+    logging.debug( "inside read_store_readings..." )
 
-    if not globalFlaskApp:
+    if globalFlaskApp is None:
+        logging.error( "Flask has not been initialized!" )
         raise EnvironmentError( "Flask has not been initialized" )
 
     # error flag used to send email only once if error occurs.
@@ -48,10 +50,14 @@ def read_store_readings ():
 
     headers = {'content-type': 'application/json'}
 
+    logging.debug( "reading INI settings from {0} file".format( INI_FILE ) )
+
     sensor_url = ini_config.get( "Sensor", "SENSOR_TEMPERATURE_URL" )
     sensor_serial = ini_config.get( "Sensor", "SENSOR_TEMPERATURE_SERIAL" )
 
     rest_url = ( sensor_url + "/" + sensor_serial )
+    logging.debug( "sensor REST URL is [{0}]".format( rest_url ) )
+
     rest_user = ini_config.get( "Sensor", "SENSOR_REST_API_USERNAME" )
     rest_pw = ini_config.get( "Sensor", "SENSOR_REST_API_PASSWORD" )
     req_timeout = ini_config.getint( "Sensor", "SENSOR_REQUEST_TIMEOUT" )
@@ -59,6 +65,8 @@ def read_store_readings ():
     recipient = ini_config.get( "Email", "RECIPIENT_EMAIL" )
 
     with globalFlaskApp.app_context():
+
+        logging.debug( "starting forever loop within Flask app context" )
 
         # start daemon forever loop
         while True:
@@ -188,7 +196,8 @@ def program_cleanup( signum, frame ):
     """ daemon cleanup code run on Linux when handling SIGTERM (15) signal
     """
 
-    if not globalFlaskApp:
+    if globalFlaskApp is None:
+        logging.error( "Flask has not been initialized!" )
         raise EnvironmentError( "Flask has not been initialized" )
 
     with globalFlaskApp.app_context():
@@ -209,6 +218,7 @@ def run():
     instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
 
     # app: Flask application object
+    logging.debug( "initializing the Flask app" )
     global globalFlaskApp
     globalFlaskApp = Flask( __name__,
                             instance_path=instance_path,

@@ -9,8 +9,9 @@ from logging.handlers import RotatingFileHandler
 import os
 
 from rgapps.config import ini_config
-from rgapps.utils.constants import INI_FILE
-from rgapps.utils.exception import ConfigurationException
+from rgapps.utils.exception import ConfigurationException, \
+    IllegalArgumentException
+from rgapps.utils.utility import is_blank
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -23,15 +24,26 @@ __status__ = "Experimental"
 __all__ = ["initialize_environment"]
 
 
-def initialize_environment( log_file_path=None ):
+def initialize_environment( ini_file_path, log_file_path=None ):
     """ Loads the configuration file and initializes logging.
 
     This method should only be called once at the start up of the
     application to read in the configuration file, and set up logging.
+
+    Parameters:
+    ----------
+    ini_file_path: str (required)
+        the full path to the application INI configuration file
+    log_file_path: str (optional)
+        aternate path to the application logging file.  The default log file
+        path is defined in the INI configuration file
     """
 
-    print( "Loading config file [{0}]".format( INI_FILE ) )
-    ini_config.read( INI_FILE )
+    if is_blank( ini_file_path ):
+        raise IllegalArgumentException( "ini_file_path is required." )
+
+    print( "Loading config file [{0}]".format( ini_file_path ) )
+    ini_config.read( ini_file_path )
 
     # ensure working dir folder is available
     working_dir = ini_config.get( "Logging", "WORKING_DIR" )

@@ -107,7 +107,7 @@ def after_request( response ):
 @current_app.teardown_request
 def teardown_request( exception ):
 
-    sql_enabled = ini_config.get( "SqlLite", "SQLITE_DB_ENABLE" )
+    sql_enabled = ini_config.getboolean( "SqlLite", "SQLITE_DB_ENABLE" )
     sql_db = ini_config.get( "SqlLite", "SQLITE_DB" )
 
     # disconnect DB connection only if DB is enabled

@@ -37,7 +37,7 @@ def read_publish_sensor_data():
     mqtt_publisher = MQTTPublisher()
 
     sensor_serial = ini_config.get( "Sensor", "SENSOR_TEMPERATURE_SERIAL" )
-    sleep_timeout = ini_config.get( "Sensor", "SENSOR_SLEEP_TIME" )
+    sleep_timeout = ini_config.getint( "Sensor", "SENSOR_SLEEP_TIME" )
 
     with globalFlaskApp.app_context():
 

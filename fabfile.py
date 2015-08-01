@@ -8,6 +8,14 @@ ROOT folder of the application.
 
 ATTENTION: This code should be run from a DOS prompt.
 
+To clean:
+fab clean
+
+To create package:
+fab pack
+
+To deploy:
+fab -u <user> -p <pwd> -H <server>:<port> deploy_<..>
 """
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -20,9 +28,9 @@ __status__ = "Experimental"
 from fabric.api import cd, local, run, put, task
 
 REMOTE_HOME = r"/home/wsgi"
-REMOTE_INSTALLDIR = r"%s/flaskapis" % REMOTE_HOME
-# REMOTE_INSTALLDIR = r"%s/dev" % REMOTE_HOME
-REMOTE_VIRTUALENV = r"%s/venv/" % REMOTE_INSTALLDIR
+RESTAPIS_INSTALLDIR = r"%s/flaskapis" % REMOTE_HOME
+SENSORAPP_INSTALLDIR = r"%s/sensorserver" % REMOTE_HOME
+REMOTE_VIRTUALENV = r"%s/venv/" % RESTAPIS_INSTALLDIR
 
 @task
 def clean():
@@ -51,7 +59,7 @@ def copy_expand_dist():
     """Used to copy/expand python dist package file to remote server.
     """
     pack()
-    print( "---copying application files to remote server" )
+    print( "---copying package file to remote server" )
     # figure out the release name and version
     dist = local( "python setup.py --fullname", capture=True ).strip()
     # upload the source tarball to the temporary folder on the server
@@ -79,21 +87,21 @@ def deploy_rest_apis():
         run( ( "cd w1thermsensor; {0}/bin/python -v setup.py install" )
             .format( REMOTE_VIRTUALENV ) )
     with cd( "/tmp/flaskapis/dist/{0}".format( fullname ) ):
-        print( "---setup package with virtual environment's python interpreter" )
+        print( "---use pip to install package in virtual environment" )
         run( "{0}/bin/pip install -v --upgrade .".format( REMOTE_VIRTUALENV ) )
         run( "if [ ! -f {0}/application.ini ]; then "
             "cp -v application.ini {0};"
-            "fi".format( REMOTE_INSTALLDIR ) )
-        run( "cp -v flaskapis.wsgi {0}".format( REMOTE_INSTALLDIR ) )
+            "fi".format( RESTAPIS_INSTALLDIR ) )
+        run( "cp -v flaskapis.wsgi {0}".format( RESTAPIS_INSTALLDIR ) )
         run( "if [ ! -f {0}/flaskapis.db ]; then "
             "sqlite3 {0}/flaskapis.db < db/db_schema.sql;"
             "sqlite3 {0}/flaskapis.db < db/db_data.sql;"
-            "fi".format( REMOTE_INSTALLDIR ) )
+            "fi".format( RESTAPIS_INSTALLDIR ) )
     # now that all is set up, delete the folder again
     run( "rm -fr /tmp/flaskapis/dist; rm -f /tmp/flaskapis.tar.gz" )
     run( "rm -fr /tmp/flaskapis" )
     # run 2to3 if needed
-    with cd( "{0}/flaskapis".format( REMOTE_HOME ) ):
+    with cd( RESTAPIS_INSTALLDIR ):
         print( "---running python 2to3 if needed." )
         run( "source venv/bin/activate; "
             "python --version | grep -n -i \"python 3\"; "
@@ -104,7 +112,7 @@ def deploy_rest_apis():
             "deactivate" )
     # and finally touch the .wsgi file so that mod_wsgi triggers
     # a reload of the application
-    run( "touch {0}/flaskapis.wsgi".format( REMOTE_INSTALLDIR ) )
+    run( "touch {0}/flaskapis.wsgi".format( RESTAPIS_INSTALLDIR ) )
 
 
 @task
@@ -116,18 +124,18 @@ def deploy_sensorapp():
     # figure out the release name and version
     fullname = local( "python setup.py --fullname", capture=True )
     with cd( "/tmp/flaskapis/dist/{0}".format( fullname ) ):
-        print( "------installing sensorserver in the sensorserver remote server" )
-        run( "if [ ! -f /home/wsgi/sensorserver/application.ini ]; then "
-            "cp -v application.ini /home/wsgi/sensorserver;"
-            "fi" )
+        run( "if [ ! -f {0}/application.ini ]; then "
+            "cp -v application.ini {0};"
+            "fi".format( SENSORAPP_INSTALLDIR ) )
         # setup the package with our virtual environment's python interpreter
-        run( "/home/wsgi/sensorserver/venv/bin/pip install -v --upgrade ." )
-        run( "cp sensorapp.py /home/wsgi/sensorserver" )
+        run( "{0}/venv/bin/pip install -v --upgrade ."
+             .format( SENSORAPP_INSTALLDIR ) )
+        run( "cp -v rgapps/sensorapp.py {0}".format( SENSORAPP_INSTALLDIR ) )
     # now that all is set up, delete the folder again
     run( "rm -fr /tmp/flaskapis/dist; rm -f /tmp/flaskapis.tar.gz" )
     run( "rm -fr /tmp/flaskapis" )
     # run 2to3 if needed
-    with cd( "{0}/sensorserver".format( REMOTE_HOME ) ):
+    with cd( SENSORAPP_INSTALLDIR ):
         print( "---running python 2to3 if needed." )
         run( "source venv/bin/activate; "
             "python --version | grep -n -i \"python 3\"; "

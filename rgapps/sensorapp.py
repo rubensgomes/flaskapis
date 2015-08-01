@@ -30,6 +30,8 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 
+INI_FILE = r"/home/wsgi/sensorserver/application.ini"
+
 # global variable: to be defined in run()
 globalFlaskApp = None
 
@@ -37,6 +39,10 @@ globalFlaskApp = None
 def read_store_readings ():
     """ Function used to read and store sensor readings
     """
+
+    if not globalFlaskApp:
+        raise EnvironmentError( "Flask has not been initialized" )
+
     # error flag used to send email only once if error occurs.
     error_flag = False
 
@@ -48,8 +54,8 @@ def read_store_readings ():
     rest_url = ( sensor_url + "/" + sensor_serial )
     rest_user = ini_config.get( "Sensor", "SENSOR_REST_API_USERNAME" )
     rest_pw = ini_config.get( "Sensor", "SENSOR_REST_API_PASSWORD" )
-    req_timeout = ini_config.get( "Sensor", "SENSOR_REQUEST_TIMEOUT" )
-    sleep_timeout = ini_config.get( "Sensor", "SENSOR_SLEEP_TIME" )
+    req_timeout = ini_config.getint( "Sensor", "SENSOR_REQUEST_TIMEOUT" )
+    sleep_timeout = ini_config.getint( "Sensor", "SENSOR_SLEEP_TIME" )
     recipient = ini_config.get( "Email", "RECIPIENT_EMAIL" )
 
     with globalFlaskApp.app_context():
@@ -181,6 +187,10 @@ def read_store_readings ():
 def program_cleanup( signum, frame ):
     """ daemon cleanup code run on Linux when handling SIGTERM (15) signal
     """
+
+    if not globalFlaskApp:
+        raise EnvironmentError( "Flask has not been initialized" )
+
     with globalFlaskApp.app_context():
         logging.info( "Program terminating with signum [{0}] under Linux."
                       .format( signum ) )
@@ -194,7 +204,7 @@ def run():
     """
 
     print( "initializing the environment..." )
-    initialize_environment()
+    initialize_environment( INI_FILE )
 
     instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
 

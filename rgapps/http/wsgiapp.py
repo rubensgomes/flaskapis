@@ -20,8 +20,10 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
+INI_FILE = r"/home/wsgi/flaskapis/application.ini"
+
 # initialize_environment MUST be called first !!!
-initialize_environment()
+initialize_environment( INI_FILE )
 
 instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
 

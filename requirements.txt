@@ -1,4 +1,4 @@
-# requirements.txt python package requirements for the flaskapis
+# requirements.txt python package requirements for the apps
 
 # Copyright (c) 2015 Rubens S. Gomes
 # All Rights Reserved.

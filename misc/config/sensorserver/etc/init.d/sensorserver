@@ -15,7 +15,7 @@
 ### END INIT INFO
 #
 
-prog="sensorserver.py"
+prog="sensorapp.py"
 
 # Source function library.
 . /etc/init.d/functions

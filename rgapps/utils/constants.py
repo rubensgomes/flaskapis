@@ -11,16 +11,10 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 __all__ = ["DATA_KEY", "NAME_KEY", "PRODUCT_KEY", "SENSOR_KEY", "VERSION_KEY",
-           "STATUS_KEY", "URL_KEY", "INI_FILE", "STATUS_ERROR", "AUTHOR_KEY",
+           "STATUS_KEY", "URL_KEY", "STATUS_ERROR", "AUTHOR_KEY",
            "STATUS_SUCCESS", "CONTACT_KEY", "DATE_KEY", "COPYRIGHT_KEY"]
 
-import platform
 
-
-if platform.system() == "Linux":  # Raspberry Pi or Linux VM
-    INI_FILE = r"/home/wsgi/flaskapis/application.ini"
-else:  # Rubens development PC
-    INI_FILE = r"C:\projects\flaskapis\devsettings.ini"
 
 AUTHOR_KEY = "author"
 CONTACT_KEY = "contact"

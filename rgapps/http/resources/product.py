@@ -10,7 +10,8 @@ from flask_restful import Resource
 
 from rgapps.domain.product import Product
 from rgapps.utils.constants import NAME_KEY, VERSION_KEY, STATUS_KEY, \
-    STATUS_SUCCESS, PRODUCT_KEY, AUTHOR_KEY, DATE_KEY
+    STATUS_SUCCESS, PRODUCT_KEY, AUTHOR_KEY, DATE_KEY, COPYRIGHT_KEY, \
+    CONTACT_KEY
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -39,13 +40,13 @@ class RESTProductInfoResource( Resource ):
         ------
         """
 
-        product_instance = Product()
-
         product = OrderedDict()
-        product[NAME_KEY] = product_instance.get_project_name()
-        product[VERSION_KEY] = product_instance.get_version()
-        product[AUTHOR_KEY] = product_instance.get_author()
-        product[DATE_KEY] = product_instance.get_project_date()
+        product[CONTACT_KEY] = Product.get_contact()
+        product[COPYRIGHT_KEY] = Product.get_copyright()
+        product[NAME_KEY] = Product.get_project_name()
+        product[VERSION_KEY] = Product.get_version()
+        product[AUTHOR_KEY] = Product.get_author()
+        product[DATE_KEY] = Product.get_date()
 
         response = OrderedDict()
         response[STATUS_KEY] = STATUS_SUCCESS

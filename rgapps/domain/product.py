@@ -2,10 +2,13 @@
 
 This module defines Product related functionality.
 """
-import arrow
+import os
+import re
+import time
+
+import pip
 import pkg_resources
 
-from rgapps.config import ini_config
 from rgapps.utils.constants import PROJECT_NAME
 
 
@@ -19,37 +22,50 @@ __status__ = "Experimental"
 __all__ = ["Product"]
 
 
-
 class Product:
     """ A class placeholder for product related information
     """
+    author = __author__
+    copyright = __copyright__
+    contact = __email__
+    dist = pkg_resources.get_distribution( PROJECT_NAME )
+    project_name = dist.project_name
+    version = dist.version
 
-    Product.is_testing = ini_config.getboolean( "Flask", "TESTING" )
+    date = None
+    pattern = re.compile( project_name + "*", re.IGNORECASE )
+    for package in pip.get_installed_distributions():
+        if pattern.match( package.key ):
+            date = time.ctime( os.path.getctime( package.location ) )
+            break
 
-    def __init__( self ):
-        Product.author = __author__
-        if ( Product.is_testing ):
-            Product.project_name = PROJECT_NAME
-            Product.version = "TESTING Version"
-            Product.date = str( arrow.utcnow() )
-        else:
-            dist = pkg_resources.get_distribution( PROJECT_NAME )
-            Product.project_name = dist.project_name
-            Product.version = dist.version
-            Product.date = "TODO"
-
-    def get_project_name( self ):
+    @staticmethod
+    def get_project_name():
         # return the project name
         return Product.project_name
 
-    def get_version( self ):
+    @staticmethod
+    def get_version():
         # return the project current version
         return Product.version
 
-    def get_date( self ):
+    @staticmethod
+    def get_date():
         # return the project current version
         return Product.date
 
-    def get_author( self ):
+    @staticmethod
+    def get_author():
         # return the project author
         return Product.author
+
+    @staticmethod
+    def get_copyright():
+        # return the copyright
+        return Product.copyright
+
+    @staticmethod
+    def get_contact():
+        # return the contact information
+        return Product.contact
+

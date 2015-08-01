@@ -11,8 +11,8 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 __all__ = ["DATA_KEY", "NAME_KEY", "PRODUCT_KEY", "SENSOR_KEY", "VERSION_KEY",
-           "STATUS_KEY", "URL_KEY", "INI_FILE", "STATUS_ERROR",
-           "STATUS_SUCCESS"]
+           "STATUS_KEY", "URL_KEY", "INI_FILE", "STATUS_ERROR", "AUTHOR_KEY",
+           "STATUS_SUCCESS", "CONTACT_KEY", "DATE_KEY", "COPYRIGHT_KEY"]
 
 import platform
 
@@ -23,6 +23,8 @@ else:  # Rubens development PC
     INI_FILE = r"C:\projects\flaskapis\devsettings.ini"
 
 AUTHOR_KEY = "author"
+CONTACT_KEY = "contact"
+COPYRIGHT_KEY = "copyright"
 DATA_KEY = "data"
 DATE_KEY = "date"
 NAME_KEY = "name"

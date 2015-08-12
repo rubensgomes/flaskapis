@@ -1,7 +1,7 @@
-"""rgapps.mqttdaemon MQTT background daemon job
+"""rgapps.mqttsubscriber MQTT background daemon subscriber
 
-This program collects data from sensors periodically and publishes a message
-with the data collected to topic in a MQTT server.
+This program is an MQTT subscriber that subscribes to the sensor TOPIC
+destination defined in the configuration file.
 """
 import logging
 import platform
@@ -11,7 +11,7 @@ import time
 
 from rgapps.config import ini_config
 from rgapps.config.config import initialize_environment
-from rgapps.mqtt.mqtt import MQTTPublisher
+from rgapps.mqtt.mqtt import MQTTSubscriber
 from rgapps.utils.utility import write_to_file
 
 
@@ -25,15 +25,14 @@ __status__ = "Experimental"
 # INI_FILE = r"/home/wsgi/mqttdaemon/application.ini"
 INI_FILE = r"C:\projects\flaskapis\devsettings.ini"
 
-def read_publish_sensor_data():
-    """ Function used to read sensor data and publish the readings to a topic
-    served by an MQTT server.
+def subscribe_sensor_data():
+    """ Function used to subscribe to topic destination where sensor readings
+    are being published.
     """
 
     # MQTT client publisher
-    mqtt_publisher = MQTTPublisher()
+    mqtt_subscriber = MQTTSubscriber()
 
-    sensor_serial = ini_config.get( "Sensor", "SENSOR_TEMPERATURE_SERIAL" )
     sleep_timeout = ini_config.getint( "Sensor", "SENSOR_SLEEP_TIME" )
 
     # start daemon forever loop
@@ -41,14 +40,13 @@ def read_publish_sensor_data():
 
         try:
             # read and publish sensor reading to topic in MQTT server
-            logging.debug( "publishing sensor serial [{0}] data"
-                           .format( sensor_serial ) )
+            logging.debug( "subscribing to sensor TOPIC destination..." )
 
-            mqtt_publisher.publish_temperature( sensor_serial )
+            mqtt_subscriber.subscribe_temperature()
 
         except ( Exception ) as err:
             sys.stderr.write( str( err ) )
-            logging.exception( "Error reading/publishing sensor data. [{0}]"
+            logging.exception( "Error subscribing to sensor data. [{0}]"
                                .format( err ) )
 
         except:  # catch *all* other exceptions
@@ -56,7 +54,7 @@ def read_publish_sensor_data():
             logging.exception( "Error occurred in mqtt daemon: [{0}]"
                                .format( err ) )
 
-            write_to_file( "<p>Error in runsensor daemon: [{0}]</p>"
+            write_to_file( "<p>Error in mqttsubscriber daemon: [{0}]</p>"
                           .format( err ), sys.stderr )
 
         time.sleep( sleep_timeout )
@@ -115,15 +113,15 @@ def run():
         logging.debug( "Starting daemon by opening its context." )
         daemon_context.open()
 
-        logging.info( "Calling read_store_readings...." )
-        read_publish_sensor_data()
+        logging.info( "Calling subscribe_sensor_data...." )
+        subscribe_sensor_data()
 
         logging.debug( "Closing the daemon context." )
         daemon_context.close()
 
     else:
         logging.info( "Server running on Windows system ..." )
-        read_publish_sensor_data()
+        subscribe_sensor_data()
 
 
 if __name__ == "__main__":

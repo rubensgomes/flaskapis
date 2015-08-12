@@ -60,10 +60,13 @@ class DS18B20Sensor ( Sensor ):
             logging.debug( "Using a testing temperature from sensor [{0}]."
                           .format( self.serial ) )
             temperature = 100
+            utc_time = "2001-07-09T00:00:01.105000+00:00"
         else:
             logging.debug( "Reading temperature from sensor [{0}]."
                           .format( self.serial ) )
             temperature = self.__get_sensor_temperature( self.serial )
+            utc = arrow.utcnow()
+            utc_time = str( utc )
 
         logging.debug( "Sensor temperature in [{0}] is [{1}]"
                        .format( DEFAULT_TEMPERATURE_UNIT.name, temperature ) )
@@ -80,18 +83,17 @@ class DS18B20Sensor ( Sensor ):
         else:
             temperature_result = temperature_qty.magnitude
 
-        utc = arrow.utcnow()
+
 
         reading = Measurement( temperature_result,
                               DEFAULT_TEMPERATURE_UNIT.name,
-                              str( utc ) )
+                              utc_time )
         return reading
 
 
     def __get_sensor_temperature( self, serial ):
         """ Private method used to retrieve temperature from real sensor
         """
-        ds18b20Sensor = None
         logging.debug( "Reading temperature from DS18B20 sensor "
                       "with Serial [{0}]".format( serial ) )
 

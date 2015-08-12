@@ -9,9 +9,6 @@ import signal
 import sys
 import time
 
-from flask import Flask, app
-from werkzeug.exceptions import BadRequest
-
 from rgapps.config import ini_config
 from rgapps.config.config import initialize_environment
 from rgapps.mqtt.mqtt import MQTTPublisher
@@ -25,8 +22,8 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-# global variable: to be defined in run()
-globalFlaskApp = None
+# INI_FILE = r"/home/wsgi/mqttdaemon/application.ini"
+INI_FILE = r"C:\projects\flaskapis\devsettings.ini"
 
 def read_publish_sensor_data():
     """ Function used to read sensor data and publish the readings to a topic
@@ -39,47 +36,38 @@ def read_publish_sensor_data():
     sensor_serial = ini_config.get( "Sensor", "SENSOR_TEMPERATURE_SERIAL" )
     sleep_timeout = ini_config.getint( "Sensor", "SENSOR_SLEEP_TIME" )
 
-    with globalFlaskApp.app_context():
+    # start daemon forever loop
+    while True:
 
-        # start daemon forever loop
-        while True:
+        try:
+            # read and publish sensor reading to topic in MQTT server
+            logging.debug( "publishing sensor serial [{0}] data"
+                           .format( sensor_serial ) )
 
-            try:
-                # read and publish sensor reading to topic in MQTT server
-                logging.debug( "publishing sensor serial [{0}] data"
-                               .format( sensor_serial ) )
+            mqtt_publisher.publish_temperature( sensor_serial )
 
-                mqtt_publisher.publish_temperature( sensor_serial )
+        except ( Exception ) as err:
+            sys.stderr.write( str( err ) )
+            logging.exception( "Error reading/publishing sensor data. [{0}]"
+                               .format( err ) )
 
-            except ( BadRequest ) as err:  # e.g., sensor serial not provided
-                sys.stderr.write( str( err ) )
-                logging.exception( "Sensor serial not provided. [{0}]"
-                                   .format( err ) )
+        except:  # catch *all* other exceptions
+            err = sys.exc_info()[0]
+            logging.exception( "Error occurred in mqtt daemon: [{0}]"
+                               .format( err ) )
 
-            except ( Exception ) as err:
-                sys.stderr.write( str( err ) )
-                logging.exception( "Error reading/publishing sensor data. [{0}]"
-                                   .format( err ) )
+            write_to_file( "<p>Error in runsensor daemon: [{0}]</p>"
+                          .format( err ), sys.stderr )
 
-            except:  # catch *all* other exceptions
-                err = sys.exc_info()[0]
-                logging.exception( "Error occurred in mqtt daemon: [{0}]"
-                                   .format( err ) )
-
-                write_to_file( "<p>Error in runsensor daemon: [{0}]</p>"
-                              .format( err ), sys.stderr )
-
-
-            time.sleep( sleep_timeout )
+        time.sleep( sleep_timeout )
 
     return
 
 def program_cleanup( signum, frame ):
     """ daemon cleanup code run on Linux when handling SIGTERM (15) signal
     """
-    with globalFlaskApp.app_context():
-        logging.info( "Program terminating with signum [{0}] under Linux."
-                      .format( signum ) )
+    logging.info( "Program terminating with signum [{0}] under Linux."
+                  .format( signum ) )
     exit( 0 )
 
 
@@ -90,74 +78,52 @@ def run():
     """
 
     print( "initializing the environment..." )
-    initialize_environment()
+    initialize_environment( INI_FILE )
 
+    from rgapps.utils.utility import get_log_file_handles
+    logger_fds = get_log_file_handles( logging.getLogger() )
+    logging.debug( "Logger file handles fileno [{0}]".format( logger_fds ) )
 
-    instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
+    system = platform.system()
 
-    # app: Flask application object
-    global globalFlaskApp
-    globalFlaskApp = Flask( __name__,
-                            instance_path=instance_path,
-                            instance_relative_config=True )
+    if system == "Linux":
+        logging.info( "Server running on Linux." )
 
-    is_debug = ini_config.getboolean( "Flask", "DEBUG" )
-    is_testing = ini_config.getboolean( "Flask", "TESTING" )
-    is_json_sort_keys = ini_config.getboolean( "Flask", "JSON_SORT_KEYS" )
-    max_content_length = ini_config.getint( "Flask", "MAX_CONTENT_LENGTH" )
+        pid_file = ini_config.getboolean( "Sensor", "SENSOR_PID_FILE" )
+        working_dir = ini_config.getboolean( "Logging", "WORKING_DIR" )
 
-    globalFlaskApp.config.update( DEBUG=is_debug,
-                                  TESTING=is_testing,
-                                  JSON_SORT_KEYS=is_json_sort_keys,
-                                  MAX_CONTENT_LENGTH=max_content_length )
+        logging.debug( "Instantiating daemon with pid_file [{0}] "
+                       "and working_dir [{1}]"
+                       .format( pid_file, working_dir ) )
 
+        import daemon.pidfile
 
-    with globalFlaskApp.app_context():
+        daemon_context = daemon.DaemonContext( 
+            working_directory=working_dir,
+            umask=0o002,
+            pidfile=daemon.pidfile.PIDLockFile( pid_file ) )
 
-        from flaskapis.utils.utility import get_log_file_handles
-        logger_fds = get_log_file_handles( logging.getLogger() )
-        logging.debug( "Logger file handles fileno [{0}]".format( logger_fds ) )
+        logging.debug( "Setting up daemon signal map" )
+        daemon_context.signal_map = { signal.SIGTERM: program_cleanup }
+        logging.debug( "daemon signal map has been setup" )
 
-        system = platform.system()
+        if ( logger_fds ):
+            logging.debug( "setting files_preserve for the log file "
+                           "descriptor [{0}]".format( logger_fds ) )
+            daemon_context.files_preserve = logger_fds
 
-        if system == "Linux":
-            logging.info( "Server running on Linux." )
+        logging.debug( "Starting daemon by opening its context." )
+        daemon_context.open()
 
-            pid_file = ini_config.getboolean( "Sensor", "SENSOR_PID_FILE" )
-            working_dir = ini_config.getboolean( "Logging", "WORKING_DIR" )
+        logging.info( "Calling read_store_readings...." )
+        read_publish_sensor_data()
 
-            logging.debug( "Instantiating daemon with pid_file [{0}] "
-                           "and working_dir [{1}]"
-                           .format( pid_file, working_dir ) )
+        logging.debug( "Closing the daemon context." )
+        daemon_context.close()
 
-            import daemon.pidfile
-
-            daemon_context = daemon.DaemonContext( 
-                working_directory=working_dir,
-                umask=0o002,
-                pidfile=daemon.pidfile.PIDLockFile( pid_file ) )
-
-            logging.debug( "Setting up daemon signal map" )
-            daemon_context.signal_map = { signal.SIGTERM: program_cleanup }
-            logging.debug( "daemon signal map has been setup" )
-
-            if ( logger_fds ):
-                logging.debug( "setting files_preserve for the log file "
-                               "descriptor [{0}]".format( logger_fds ) )
-                daemon_context.files_preserve = logger_fds
-
-            logging.debug( "Starting daemon by opening its context." )
-            daemon_context.open()
-
-            logging.info( "Calling read_store_readings...." )
-            read_publish_sensor_data()
-
-            logging.debug( "Closing the daemon context." )
-            daemon_context.close()
-
-        else:
-            logging.info( "Server running on Windows system ..." )
-            read_publish_sensor_data()
+    else:
+        logging.info( "Server running on Windows system ..." )
+        read_publish_sensor_data()
 
 
 if __name__ == "__main__":

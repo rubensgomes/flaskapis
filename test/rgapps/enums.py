@@ -4,7 +4,7 @@ Unit test for rgapps.enums module
 """
 import unittest
 
-from rgapps.enums import TEMPERATURE_ENUM, DURATION_ENUM
+from rgapps.utils.enums import TEMPERATURE_ENUM, DURATION_ENUM
 from rgapps.utils.exception import IllegalArgumentException
 
 

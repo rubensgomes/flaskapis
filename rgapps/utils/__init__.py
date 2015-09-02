@@ -21,7 +21,7 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-__all__ = ["utility"]
+__all__ = ["constants", "enums", "exception", "utility"]
 
 if __name__ == '__main__':
     pass

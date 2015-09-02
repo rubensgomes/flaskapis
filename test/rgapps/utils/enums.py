@@ -1,6 +1,6 @@
-"""test.rgapps.enums module
+"""test.rgapps.utils.enums module
 
-Unit test for rgapps.enums module
+Unit test for rgapps.utils.enums module
 """
 import unittest
 

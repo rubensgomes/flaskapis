@@ -18,11 +18,13 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 LOG_FILE_PATH = r"C:\personal\flaskapis\testing.log"
+INI_FILE = r"C:\projects_GIT\flaskapis\devsettings.ini"
 
 class ConfigTestCase( unittest.TestCase ):
 
     def setUp( self ):
-        initialize_environment( log_file_path=LOG_FILE_PATH )
+        initialize_environment( INI_FILE,
+                                log_file_path=LOG_FILE_PATH )
         return
 
     def tearDown( self ):

@@ -71,13 +71,13 @@ class RESTSensorTemperatureAnalyticsResource( Resource ):
             raise BadRequest( "duration=[{0}] is not valid".format( duration ) )
 
         # retrieve sensor info from DB
-        sensor = SensorDAO.get_sensor_information( serial )
+        sensor = SensorDAO.get_sensor( serial )
 
         if sensor is None:
             raise NotFound( "No sensor registered for serial [{0}]"
                            .format( serial ) )
 
-        readings = SensorDAO.get_sensor_readings( serial, duration )
+        readings = SensorDAO.get_measurements( serial, duration )
 
         sensor_data = dict()
         sensor_data["serial"] = sensor["serial"]
@@ -111,7 +111,7 @@ class RESTSensorInfoResource( Resource ):
         NotFound if sensor with serial is not found.
         """
         # retrieve sensor info from DB
-        sensor = SensorDAO.get_sensor_information( serial )
+        sensor = SensorDAO.get_sensor( serial )
 
         if sensor is None:
             raise NotFound( "No sensor registered for serial [{0}]"

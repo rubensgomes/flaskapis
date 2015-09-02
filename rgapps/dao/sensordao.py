@@ -62,6 +62,12 @@ class SensorDAO:
         if is_blank( serial ):
             raise IllegalArgumentException( "serial is required." )
 
+        test_sensor = SensorDAO.get_sensor(serial)
+        if test_sensor is None:
+            raise IllegalArgumentException( "sensor with serial [{0}] " 
+                                            "is not registered in the system."
+                                            .format(serial) )
+        
         logging.debug( "Inserting measurement in database: "
                       "unit [{0}], value [{1}], utc [{2}], "
                       "serial [{3}]"
@@ -73,7 +79,7 @@ class SensorDAO:
 
         c = conn.cursor()
         c.execute( "INSERT INTO readings (id, unit, value, utc, serial) "
-                  "VALUES (?,?,?,?, ?)",
+                  "VALUES (?,?,?,?,?)",
                   ( None, unit, value, utc, serial ) )
 
         conn.commit()
@@ -84,12 +90,10 @@ class SensorDAO:
 
         return
 
-
     @staticmethod
-    def get_sensor_information( serial ):
+    def del_measurements( serial ):
         """
-        Returns a tuble corresponding to the sensor table in the database
-        for the given sensor serial.
+        Deletes all measurement data for the given serial
 
         Parameters
         ----------
@@ -98,37 +102,34 @@ class SensorDAO:
 
         Returns
         -------
-        dict:
-            A sensor dictionary containing column names as keys, and
-            corresponding values.
+            nothing.
         """
 
         if is_blank( serial ):
             raise IllegalArgumentException( "serial is required." )
 
-        logging.debug( "Retrieving sensor with serial [{0}] from database."
-                      .format( serial ) )
+        logging.debug( "Deleting all measurements in database for "
+                      "serial [{0}]".format( serial ) )
 
         sql_db = ini_config.get( "SqlLite", "SQLITE_DB" )
         conn = sqlite3.connect( sql_db )
         logging.debug( "Connected to DB [{0}]".format( sql_db ) )
 
         c = conn.cursor()
-        c.row_factory = dict_factory
-        cursor = c.execute( "SELECT * FROM sensor WHERE serial = '{0}'"
-                           .format( serial ) )
-        data = cursor.fetchone()
+        c.execute( "DELETE FROM readings WHERE serial = '{0}' "
+                   .format(serial ) )
 
         conn.commit()
+        logging.debug( "Measurements have been deleted from database" )
         conn.close()
 
         logging.debug( "Disconnected from DB [{0}]".format( sql_db ) )
 
-        return data
+        return
 
 
     @staticmethod
-    def get_sensor_readings( serial, duration ):
+    def get_measurements( serial, duration ):
         """
         Returns .....
 
@@ -220,4 +221,157 @@ class SensorDAO:
         logging.debug( "Disconnected from DB [{0}]".format( sql_db ) )
 
         return data
+
+    @staticmethod
+    def add_sensor( serial, geolocation, location, address, state, name, 
+                    sensor_type, description):
+        """
+        Adds given sensor data to sensor database
+
+        Parameters
+        ----------
+        serial:  str (required)
+            sensor unique serial number.
+        geolocation:  str (optional)
+            GEO Location: LATITUDE, LONGITUDE 
+        location: str (optional)
+            ENGINE, HOME, PATIO, ...
+        address: str (optional)
+            Address where sensor is located
+        state: str (required)
+            UP, DOWN, ...
+        name: str (required)
+            name to help identify this sensor
+        sensor_type: str (required)
+            HUMIDITY, PRESSURE, TEMPERATURE, VELOCITY,  ...
+        description: str(optional)
+            helps describe this sensor
+
+        Returns
+        -------
+            nothing.
+        """
+
+        if is_blank( serial ):
+            raise IllegalArgumentException( "serial is required." )
+
+        if is_blank( state ):
+            raise IllegalArgumentException( "state is required." )
+
+        if is_blank( name ):
+            raise IllegalArgumentException( "name is required." )
+
+        if is_blank( sensor_type ):
+            raise IllegalArgumentException( "sensor_type is required." )
+
+        test_sensor = SensorDAO.get_sensor(serial)
+        if test_sensor is not None:
+            raise IllegalArgumentException( "sensor with serial [{0}] " 
+                                            "is already registered."
+                                            .format(serial) )
+
+        logging.debug( "Inserting sensor in database: "
+                      "serial [{0}], state [{1}], name [{2}], type [{3}]"
+                      .format( serial, state, name, sensor_type) )
+
+        sql_db = ini_config.get( "SqlLite", "SQLITE_DB" )
+        conn = sqlite3.connect( sql_db )
+        logging.debug( "Connected to DB [{0}]".format( sql_db ) )
+
+        c = conn.cursor()
+
+        c.execute("INSERT INTO sensor ( serial, geolocation, location, "
+                    " address, state, name, type, description ) "
+                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                  ( serial, geolocation, location, address, state, name, 
+                    sensor_type, description) )
+
+        conn.commit()
+        logging.debug( "sensor has been committed in database" )
+        conn.close()
+
+        logging.debug( "Disconnected from DB [{0}]".format( sql_db ) )
+
+        return
+
+    @staticmethod
+    def del_sensor( serial ):
+        """
+        Deletes sensor data for the given serial
+
+        Parameters
+        ----------
+        serial: str (required)
+            sensor unique serial number
+
+        Returns
+        -------
+            nothing.
+        """
+
+        if is_blank( serial ):
+            raise IllegalArgumentException( "serial is required." )
+
+        logging.debug( "Deleting sensor in database for "
+                      "serial [{0}]".format( serial ) )
+
+        sql_db = ini_config.get( "SqlLite", "SQLITE_DB" )
+        conn = sqlite3.connect( sql_db )
+        logging.debug( "Connected to DB [{0}]".format( sql_db ) )
+
+        c = conn.cursor()
+        c.execute( "DELETE FROM sensor WHERE serial = '{0}' "
+                   .format(serial ) )
+
+        conn.commit()
+        logging.debug( "Sensor has been deleted from database" )
+        conn.close()
+
+        logging.debug( "Disconnected from DB [{0}]".format( sql_db ) )
+
+        return
+    
+    
+    @staticmethod
+    def get_sensor( serial ):
+        """
+        Returns a tuble corresponding to the sensor table in the database
+        for the given sensor serial.
+
+        Parameters
+        ----------
+        serial: str (required)
+            sensor unique serial number
+
+        Returns
+        -------
+        dict:
+            A sensor dictionary containing column names as keys, and
+            corresponding values.
+        """
+
+        if is_blank( serial ):
+            raise IllegalArgumentException( "serial is required." )
+
+        logging.debug( "Retrieving sensor with serial [{0}] from database."
+                      .format( serial ) )
+
+        sql_db = ini_config.get( "SqlLite", "SQLITE_DB" )
+        conn = sqlite3.connect( sql_db )
+        logging.debug( "Connected to DB [{0}]".format( sql_db ) )
+
+        c = conn.cursor()
+        c.row_factory = dict_factory
+        cursor = c.execute( ("SELECT * FROM sensor WHERE serial = '{0}'"
+                             .format( serial )) )
+        data = cursor.fetchone()
+
+        conn.commit()
+        conn.close()
+
+        logging.debug( "Disconnected from DB [{0}]".format( sql_db ) )
+
+        return data
+
+
 

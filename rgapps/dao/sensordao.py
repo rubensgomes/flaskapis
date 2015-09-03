@@ -163,33 +163,50 @@ class SensorDAO:
         arrow_utcpast = None
 
 
-        if duration.lower().strip() == DURATION_ENUM.last5Years.name.lower():
+        # I had to define the following variables to fix PyDev Error:
+        # Undefined variable from import: name.  PyDev 
+        last5Years = DURATION_ENUM.last5Years
+        last1Year = DURATION_ENUM.last1Year
+        last6Months = DURATION_ENUM.last6Months
+        last90Days = DURATION_ENUM.last90Days
+        last60Days = DURATION_ENUM.last60Days
+        last30Days = DURATION_ENUM.last30Days
+        last21Days = DURATION_ENUM.last21Days
+        last7Days = DURATION_ENUM.last7Days
+        last3Days = DURATION_ENUM.last3Days
+        lastDay = DURATION_ENUM.lastDay
+        last24Hours = DURATION_ENUM.last24Hours
+        last12Hours = DURATION_ENUM.last12Hours
+        last6Hours = DURATION_ENUM.last6Hours
+        lastHour = DURATION_ENUM.lastHour
+
+        if duration.lower().strip() == last5Years.name.lower():
             arrow_utcpast = arrow_utcnow.replace( years=-5 )
-        elif duration.lower().strip() == DURATION_ENUM.last1Year.name.lower():
+        elif duration.lower().strip() == last1Year.name.lower():
             arrow_utcpast = arrow_utcnow.replace( years=-1 )
-        elif duration.lower().strip() == DURATION_ENUM.last6Months.name.lower():
+        elif duration.lower().strip() == last6Months.name.lower():
             arrow_utcpast = arrow_utcnow.replace( months=-6 )
-        elif duration.lower().strip() == DURATION_ENUM.last90Days.name.lower():
+        elif duration.lower().strip() == last90Days.name.lower():
             arrow_utcpast = arrow_utcnow.replace( days=-90 )
-        elif duration.lower().strip() == DURATION_ENUM.last60Days.name.lower():
+        elif duration.lower().strip() == last60Days.name.lower():
             arrow_utcpast = arrow_utcnow.replace( days=-60 )
-        elif duration.lower().strip() == DURATION_ENUM.last30Days.name.lower():
+        elif duration.lower().strip() == last30Days.name.lower():
             arrow_utcpast = arrow_utcnow.replace( days=-30 )
-        elif duration.lower().strip() == DURATION_ENUM.last21Days.name.lower():
+        elif duration.lower().strip() == last21Days.name.lower():
             arrow_utcpast = arrow_utcnow.replace( days=-21 )
-        elif duration.lower().strip() == DURATION_ENUM.last7Days.name.lower():
+        elif duration.lower().strip() == last7Days.name.lower():
             arrow_utcpast = arrow_utcnow.replace( days=-7 )
-        elif duration.lower().strip() == DURATION_ENUM.last3Days.name.lower():
+        elif duration.lower().strip() == last3Days.name.lower():
             arrow_utcpast = arrow_utcnow.replace( days=-3 )
-        elif duration.lower().strip() == DURATION_ENUM.lastDay.name.lower():
+        elif duration.lower().strip() == lastDay.name.lower():
             arrow_utcpast = arrow_utcnow.replace( days=-1 )
-        elif duration.lower().strip() == DURATION_ENUM.last24Hours.name.lower():
+        elif duration.lower().strip() == last24Hours.name.lower():
             arrow_utcpast = arrow_utcnow.replace( hours=-24 )
-        elif duration.lower().strip() == DURATION_ENUM.last12Hours.name.lower():
+        elif duration.lower().strip() == last12Hours.name.lower():
             arrow_utcpast = arrow_utcnow.replace( hours=-12 )
-        elif duration.lower().strip() == DURATION_ENUM.last6Hours.name.lower():
+        elif duration.lower().strip() == last6Hours.name.lower():
             arrow_utcpast = arrow_utcnow.replace( hours=-6 )
-        elif duration.lower().strip() == DURATION_ENUM.lastHour.name.lower():
+        elif duration.lower().strip() == lastHour.name.lower():
             arrow_utcpast = arrow_utcnow.replace( hours=-1 )
         else:
             raise IllegalArgumentException( "duration [{0}] is not valid"

@@ -42,7 +42,6 @@ def initialize_environment( ini_file_path, log_file_path=None ):
     if is_blank( ini_file_path ):
         raise IllegalArgumentException( "ini_file_path is required." )
 
-    print( "Loading config file [{0}]".format( ini_file_path ) )
     ini_config.read( ini_file_path )
 
     # ensure working dir folder is available
@@ -98,8 +97,6 @@ def initialize_environment( ini_file_path, log_file_path=None ):
 
     logging.getLogger().addHandler( log_file_handler )
     logging.getLogger().setLevel( level )
-
-    print( "Logs are being sent to [{0}]".format( log_file_path ) )
 
     return
 

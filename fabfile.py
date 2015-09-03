@@ -37,13 +37,14 @@ def clean():
     """Used to clean previous build.
     """
     print( "---cleaning local build" )
-    local( "python setup.py clean" )
-    local( "IF EXIST dist RMDIR /S /Q dist" )
-    local( "IF EXIST build RMDIR /S /Q build" )
-    local( "IF EXIST flaskapis.egg-info RMDIR /S /Q flaskapis.egg-info" )
-    local( "FOR /R %f IN (*.pyc) DO (DEL /S /Q %f)" )
-    local( "FOR /R %f IN (*.stackdump) DO (DEL /S /Q %f)" )
-    local( "FOR /D /R %d IN (__pycache__*) DO (RMDIR /S /Q %d)" )
+    local( "python setup.py clean", capture=False )
+    local( "IF EXIST dist RMDIR /S /Q dist", capture=False )
+    local( "IF EXIST build RMDIR /S /Q build", capture=False )
+    local( "IF EXIST flaskapis.egg-info RMDIR /S /Q flaskapis.egg-info", 
+           capture=False )
+#    local( "FOR /R %f IN (*.pyc) DO (DEL /S /Q %f)", capture=False )
+#    local( "FOR /R %f IN (*.stackdump) DO (DEL /S /Q %f)", capture=False )
+#    local( "FOR /D /R %d IN (__pycache__*) DO (RMDIR /S /Q %d)", capture=False )
 
 @task
 def pack():

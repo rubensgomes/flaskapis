@@ -25,4 +25,4 @@ six>=1.9.0
 
 
 # Fabric is needed on the remote client machine where builds are deployed from.
-#Fabric>=1.10.1
+Fabric>=1.10.1

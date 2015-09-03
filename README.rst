@@ -38,7 +38,7 @@ Miscellaneous
 :Author:
     `Rubens Gomes`_
 
-:Version: 2015.8.dev1
+:Version: 2015.9.dev1
 
 :Dedication: To my parents.
 

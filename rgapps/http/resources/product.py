@@ -24,11 +24,11 @@ __status__ = "Experimental"
 __all__ = ["RESTProductInfoResource"]
 
 
-class RESTProductInfoResource( Resource ):
+class RESTProductInfoResource(Resource):
     """REST API Resource to retrieve general information about the software.
     """
 
-    def get( self ):
+    def get(self):
         """REST GET implementation for the URI:
 
         http://<server>:<port>/information/product
@@ -52,9 +52,9 @@ class RESTProductInfoResource( Resource ):
         response[STATUS_KEY] = STATUS_SUCCESS
         response[PRODUCT_KEY] = product
 
-        logging.debug( "Generating information about the software product [{0}]"
-                      .format( product ) )
+        logging.debug("Generating information about the software product [{0}]"
+                      .format(product))
 
-        ordered_response = jsonify( response )
+        ordered_response = jsonify(response)
 
         return ordered_response

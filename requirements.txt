@@ -20,6 +20,7 @@ w1thermsensor>=0.2.1
 paho-mqtt>=1.1
 beautifulsoup4>=4.4.0
 six>=1.9.0
+pymongo>=3.0.3
 #Following is only needed on the raspberry pi
 #RPi.GPIO>=0.5.11
 

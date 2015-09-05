@@ -18,27 +18,27 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 LOG_FILE_PATH = r"C:\personal\flaskapis\testing.log"
-INI_FILE = r"C:\projects_GIT\flaskapis\devsettings.ini"
+INI_FILE = r"C:\personal\flaskapis\devsettings.ini"
 
-class WeightUnitTestCase( unittest.TestCase ):
+class WeightUnitTestCase(unittest.TestCase):
 
-    def setUp( self ):
-        initialize_environment( INI_FILE,
-                                log_file_path=LOG_FILE_PATH )
+    def setUp(self):
+        initialize_environment(INI_FILE,
+                                log_file_path=LOG_FILE_PATH)
         return
 
-    def tearDown( self ):
+    def tearDown(self):
         handlers = logging.getLogger().handlers[:]
         for handler in handlers:
             handler.close()
-            logging.getLogger().removeHandler( handler )
-        if os.path.isfile( LOG_FILE_PATH ):
-            os.remove( LOG_FILE_PATH )
+            logging.getLogger().removeHandler(handler)
+        if os.path.isfile(LOG_FILE_PATH):
+            os.remove(LOG_FILE_PATH)
         return
 
-    def test_length_convert( self ):
-        logging.debug( "testing weight convert" )
-        result = Weight.convert( 184, "kg", "lb" )
-        self.assertIsNotNone( result )
+    def test_length_convert(self):
+        logging.debug("testing weight convert")
+        result = Weight.convert(184, "kg", "lb")
+        self.assertIsNotNone(result)
         return
 

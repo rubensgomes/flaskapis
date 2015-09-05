@@ -25,12 +25,12 @@ __status__ = "Experimental"
 __all__ = ["RESTUrlResource"]
 
 
-class RESTUrlResource( Resource ):
+class RESTUrlResource(Resource):
     """REST API Resource to retrieve the resource from given HTTP URL
     sensor.
     """
 
-    def get( self ):
+    def get(self):
         """REST GET implementation for the URI:
 
         http://<server>:<port>/resource?httpurl=<string:httpurl>
@@ -46,31 +46,31 @@ class RESTUrlResource( Resource ):
         """
         params = request.args
         if not params:
-            raise BadRequest( "Parameters httpurl=<httpurl> is missing" )
+            raise BadRequest("Parameters httpurl=<httpurl> is missing")
 
         if "httpurl" not in params:
-            raise BadRequest( "Missing required httpurl parameter" )
+            raise BadRequest("Missing required httpurl parameter")
 
-        url = params.get( "httpurl" )
+        url = params.get("httpurl")
 
-        req = urllib.request( url )
+        req = urllib.request(url)
         try:
-            resp = urllib.request.urlopen( req, timeout=5 )
+            resp = urllib.request.urlopen(req, timeout=5)
         except urllib.error.URLError as err:
-            sys.stderr.write( str( err ) )
-            raise BadRequest( ( "URL request to httpurl=[{0}] failed: [{1}] " )
-                             .format( url, err ) )
+            sys.stderr.write(str(err))
+            raise BadRequest(("URL request to httpurl=[{0}] failed: [{1}] ")
+                             .format(url, err))
 
         page = resp.read().strip()
 
-        soup = BeautifulSoup( page, 'html.parser' )
+        soup = BeautifulSoup(page, 'html.parser')
         html = soup.prettify()
 
         data = OrderedDict()
         data[URL_KEY] = url
         data[DATA_KEY] = html
 
-        json_response = jsonify( data )
+        json_response = jsonify(data)
         return json_response
 
 

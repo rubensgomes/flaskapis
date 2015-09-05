@@ -35,32 +35,32 @@ def __basicAuthentication():
     """This is a private helper method used by the http_basic_authenticate.
     """
     auth = request.authorization
-    logging.debug( "Authenticating HTTP Basic Authentication "
+    logging.debug("Authenticating HTTP Basic Authentication "
                   "using Authorization [{0}]"
-                  .format( auth ) )
+                  .format(auth))
 
-    valid_username = ini_config.get( "Sensor", "SENSOR_REST_API_USERNAME" )
-    valid_password = ini_config.get( "Sensor", "SENSOR_REST_API_PASSWORD" )
+    valid_username = ini_config.get("Sensor", "SENSOR_REST_API_USERNAME")
+    valid_password = ini_config.get("Sensor", "SENSOR_REST_API_PASSWORD")
 
     if not auth:
-        logging.debug( "HTTP Basic Authentication header not found." )
+        logging.debug("HTTP Basic Authentication header not found.")
         return False
-    elif ( auth.username != valid_username ):
-        logging.debug( "user [{0}] is not valid. Authentication failed"
-                       .format( auth.username ) )
+    elif (auth.username != valid_username):
+        logging.debug("user [{0}] is not valid. Authentication failed"
+                       .format(auth.username))
         return False
-    elif ( auth.password != valid_password ):
-        logging.debug( "Password not valid. user [{0}] failed authentication."
-                       .format( auth.username ) )
+    elif (auth.password != valid_password):
+        logging.debug("Password not valid. user [{0}] failed authentication."
+                       .format(auth.username))
         return False
 
 
-    logging.debug( "user [{0}] has been authenticated."
-                   .format( auth.username ) )
+    logging.debug("user [{0}] has been authenticated."
+                   .format(auth.username))
     return True
 
 
-def http_basic_authenticate( func ):
+def http_basic_authenticate(func):
     """ This is a decorator function used to replace the flask-restful
     method-decorator property inside flask-restful Resource classes.
     It authenticates the user using the HTTP Basic Authentication protocol.
@@ -75,21 +75,21 @@ def http_basic_authenticate( func ):
     The decorator function used in the method_decorators declared inside
     the flask-restful Resources classes.
     """
-    @wraps( func )
-    def wrapper( *args, **kwargs ):
-        if not getattr( func, 'authenticated', True ):
-            return func( *args, **kwargs )
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not getattr(func, 'authenticated', True):
+            return func(*args, **kwargs)
 
         authenticated = __basicAuthentication()
 
         if authenticated:
-            return func( *args, **kwargs )
+            return func(*args, **kwargs)
 
-        logging.info( "Aborting request with 401 status code." )
+        logging.info("Aborting request with 401 status code.")
         resource_url = request.base_url
-        raise Unauthorized( 
+        raise Unauthorized(
             "The REST resource [{0}] requires a valid username/passsord."
-            .format( resource_url ) )
+            .format(resource_url))
 
     return wrapper
 

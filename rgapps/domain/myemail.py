@@ -33,7 +33,7 @@ class EMail:
     """
 
     @staticmethod
-    def send_email( recipient, subject, message ):
+    def send_email(recipient, subject, message):
         """Sends given message using Gmail credentials defined in the
         configuration file.
 
@@ -67,49 +67,49 @@ class EMail:
             refusal of a recipient).
         """
 
-        if is_blank ( recipient ):
-            raise IllegalArgumentException( "recipient is required." )
+        if is_blank (recipient):
+            raise IllegalArgumentException("recipient is required.")
 
         # ensure valid GMail Account
-        gmail_account = ini_config.get( "Email", "GMAIL_ACCOUNT" )
-        is_valid = validate_email( gmail_account )
+        gmail_account = ini_config.get("Email", "GMAIL_ACCOUNT")
+        is_valid = validate_email(gmail_account)
 
-        if( not is_valid ):
-            raise IllegalArgumentException( 
+        if(not is_valid):
+            raise IllegalArgumentException(
                 "GMail Account [{0}] is not valid email address"
-                .format( gmail_account ) )
+                .format(gmail_account))
 
-        gmail_user = ini_config.get( "Email", "GMAIL_ACCOUNT" )
-        gmail_password = ini_config.get( "Email", "GMAIL_PASSWORD" )
+        gmail_user = ini_config.get("Email", "GMAIL_ACCOUNT")
+        gmail_password = ini_config.get("Email", "GMAIL_PASSWORD")
 
-        logging.debug( "Sending email using Gmail account [{0}]  "
+        logging.debug("Sending email using Gmail account [{0}]  "
                       "to recipient [{1}]"
-                      .format( gmail_user, recipient ) )
+                      .format(gmail_user, recipient))
 
-        is_valid = validate_email( recipient )
+        is_valid = validate_email(recipient)
 
-        if( not is_valid ):
-            raise IllegalArgumentException( 
+        if(not is_valid):
+            raise IllegalArgumentException(
                 "Recipient [{0}] is not valid email address"
-                .format( recipient ) )
+                .format(recipient))
 
         msg = MIMEMultipart()
         msg['From'] = gmail_user
         msg['To'] = recipient
         msg['Subject'] = subject
-        msg.attach( MIMEText( message ) )
+        msg.attach(MIMEText(message))
 
-        logging.debug( "Sending email to [{0}] usgin Gmail account [{1}]"
-                      .format( recipient, gmail_user ) )
+        logging.debug("Sending email to [{0}] usgin Gmail account [{1}]"
+                      .format(recipient, gmail_user))
 
-        mail_server = smtplib.SMTP_SSL( 'smtp.gmail.com', 465 )
-        mail_server.login( gmail_user, gmail_password )
-        failed_recipients = mail_server.sendmail( 
-            gmail_user, recipient, msg.as_string() )
+        mail_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        mail_server.login(gmail_user, gmail_password)
+        failed_recipients = mail_server.sendmail(
+            gmail_user, recipient, msg.as_string())
 
         if failed_recipients:
-            logging.warn( "Email failed to following recipients [{0}]"
-                         .format( failed_recipients ) )
+            logging.warn("Email failed to following recipients [{0}]"
+                         .format(failed_recipients))
 
         mail_server.close()
 

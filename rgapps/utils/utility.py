@@ -24,7 +24,7 @@ __all__ = ["get_log_file_handles", "is_number", "dict_factory",
            "convert_unit"]
 
 
-def get_error_description( error ):
+def get_error_description(error):
     """ Attempts to retrieve some messaging from the given
     error object.
 
@@ -36,21 +36,21 @@ def get_error_description( error ):
     if not error:
         return ""
 
-    if hasattr( error, 'description' ):
+    if hasattr(error, 'description'):
         description = error.description
-    elif hasattr( error, 'message' ):
+    elif hasattr(error, 'message'):
         description = error.message
-    elif hasattr( error, 'msg' ):
+    elif hasattr(error, 'msg'):
         description = error.msg
     else:
-        description = str( error )
+        description = str(error)
 
     return description
 
 
 
 
-def convert_unit( unit_type, from_unit, from_value, to_unit ):
+def convert_unit(unit_type, from_unit, from_value, to_unit):
     """Converts value/unit found in params to the given to_unit.
 
     It validates the input parameters to ensure that they
@@ -76,74 +76,74 @@ def convert_unit( unit_type, from_unit, from_value, to_unit ):
     """
 
     if not unit_type:
-        raise IllegalArgumentException( "unit_type is required." )
+        raise IllegalArgumentException("unit_type is required.")
 
-    if not isinstance( unit_type, UNIT_TYPES_ENUM ):
-        raise IllegalArgumentException( "unit_type is not UNIT_TYPES_ENUM." )
+    if not isinstance(unit_type, UNIT_TYPES_ENUM):
+        raise IllegalArgumentException("unit_type is not UNIT_TYPES_ENUM.")
 
-    if is_blank( from_unit ):
-        raise IllegalArgumentException( "from_unit is required." )
+    if is_blank(from_unit):
+        raise IllegalArgumentException("from_unit is required.")
 
     if not from_value :
-        raise IllegalArgumentException( "from_value is required." )
+        raise IllegalArgumentException("from_value is required.")
 
-    if not is_number( from_value ):
-        raise IllegalArgumentException( "from_value [{0}] is not a number."
-                                        .format( from_value ) )
+    if not is_number(from_value):
+        raise IllegalArgumentException("from_value [{0}] is not a number."
+                                        .format(from_value))
 
-    if is_blank( to_unit ):
-        raise IllegalArgumentException( "to_unit is required." )
+    if is_blank(to_unit):
+        raise IllegalArgumentException("to_unit is required.")
 
 
     # pint unit_reg unit converter object
-    unit_reg = UnitRegistry( autoconvert_offset_to_baseunit=True )
+    unit_reg = UnitRegistry(autoconvert_offset_to_baseunit=True)
 
     # an exception is raised if the to_unit is not valid
-    to_unit_name = unit_reg.get_name( to_unit )
-    to_unit_dimension = unit_reg.get_dimensionality( to_unit_name )
+    to_unit_name = unit_reg.get_name(to_unit)
+    to_unit_dimension = unit_reg.get_dimensionality(to_unit_name)
 
-    if to_unit_dimension != UnitsContainer( {"[" + unit_type.name + "]": 1} ):
-        raise IllegalArgumentException( 
-            ( "Parameter to_unit=[{0}] not valid. [{1}] unit required." )
-            .format( to_unit, unit_type.name ) )
+    if to_unit_dimension != UnitsContainer({"[" + unit_type.name + "]": 1}):
+        raise IllegalArgumentException(
+            ("Parameter to_unit=[{0}] not valid. [{1}] unit required.")
+            .format(to_unit, unit_type.name))
 
     # an exception is raised if the from_unit is not valid
-    from_unit_name = unit_reg.get_name( from_unit )
-    from_unit_dimension = unit_reg.get_dimensionality( from_unit_name )
+    from_unit_name = unit_reg.get_name(from_unit)
+    from_unit_dimension = unit_reg.get_dimensionality(from_unit_name)
 
-    if from_unit_dimension != UnitsContainer( {"[" + unit_type.name + "]": 1} ):
-        raise IllegalArgumentException( 
-            ( "Parameter from_unit=[{0}] not valid. [{1}] unit required." )
-            .format( from_unit, unit_type.name ) )
+    if from_unit_dimension != UnitsContainer({"[" + unit_type.name + "]": 1}):
+        raise IllegalArgumentException(
+            ("Parameter from_unit=[{0}] not valid. [{1}] unit required.")
+            .format(from_unit, unit_type.name))
 
-    logging.debug( "converting [{0} {1}] to [{2}]"
-                  .format( from_value, from_unit_name, to_unit_name ) )
+    logging.debug("converting [{0} {1}] to [{2}]"
+                  .format(from_value, from_unit_name, to_unit_name))
 
-    from_value_float = float( from_value )
-    from_value_quantity = from_value_float * unit_reg( from_unit_name )
+    from_value_float = float(from_value)
+    from_value_quantity = from_value_float * unit_reg(from_unit_name)
 
-    to_value_quantity = from_value_quantity.to( unit_reg( to_unit_name ) )
+    to_value_quantity = from_value_quantity.to(unit_reg(to_unit_name))
 
     result = to_value_quantity.magnitude
-    decimals = decimal_places( to_value_quantity.magnitude )
+    decimals = decimal_places(to_value_quantity.magnitude)
 
     final_result = result
     # restrict results to 2 decimal places.
-    if( decimals > 2 ):
-        final_result = round( result, 2 )
+    if(decimals > 2):
+        final_result = round(result, 2)
 
     if final_result == 0:
         # do not return 0 (zero) when rounding gives 0 value.
         final_result = result
 
-    logging.debug( "input [{0} {1}] result [{2} {3}]"
-                  .format( from_value, from_unit_name, result, to_unit_name ) )
+    logging.debug("input [{0} {1}] result [{2} {3}]"
+                  .format(from_value, from_unit_name, result, to_unit_name))
 
     return final_result
 
 
 
-def is_blank ( arg ):
+def is_blank (arg):
     """ A simple method to check if a string is null or blank.
 
     Parameters
@@ -167,7 +167,7 @@ def is_blank ( arg ):
 
 
 
-def dict_factory( cursor, row ):
+def dict_factory(cursor, row):
     """ a factory method used to construct the rows returned from SQLite
 
     Parameters
@@ -181,18 +181,18 @@ def dict_factory( cursor, row ):
         A dictionary containing column names as keys, and column values.
     """
     if not cursor:
-        raise IllegalArgumentException( "cursos is required." )
+        raise IllegalArgumentException("cursos is required.")
 
     d = {}
 
-    for idx, col in enumerate( cursor.description ):
+    for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
 
     return d
 
 
 
-def is_number( arg ):
+def is_number(arg):
     """
     Checks if arg is a number.
 
@@ -211,18 +211,18 @@ def is_number( arg ):
         return False
 
     try:
-        float( arg )  # for int, long and float
+        float(arg)  # for int, long and float
 
     except ValueError:
         try:
-            complex( arg )  # for complex
+            complex(arg)  # for complex
         except ValueError:
             return False
 
     return True
 
 
-def decimal_places( arg ):
+def decimal_places(arg):
     """
     Returns the number of decimal places in the given number
 
@@ -240,17 +240,17 @@ def decimal_places( arg ):
     IllegalArgumentException if argument is not numeric.
     """
 
-    if not is_number( str( arg ) ):
-        raise IllegalArgumentException( "[{0}] is not a number".format( arg ) )
+    if not is_number(str(arg)):
+        raise IllegalArgumentException("[{0}] is not a number".format(arg))
 
-    dec = Decimal( str( arg ) )
+    dec = Decimal(str(arg))
     exp = dec.as_tuple().exponent
     result = -exp
 
     return result
 
 
-def write_to_file( msg, fileToWrite ):
+def write_to_file(msg, fileToWrite):
     """ Simple utility to write to file.
 
     It is to replace the following that has been deprecated in Python 3.4:
@@ -269,38 +269,38 @@ def write_to_file( msg, fileToWrite ):
     """
 
     if not fileToWrite:
-        raise IllegalArgumentException( "fileToWrite is required." )
+        raise IllegalArgumentException("fileToWrite is required.")
 
-    if not hasattr( fileToWrite, "read" ):
-        raise IllegalArgumentException( "fileToWrite is not a file object." )
+    if not hasattr(fileToWrite, "read"):
+        raise IllegalArgumentException("fileToWrite is not a file object.")
 
-    is_debug = ini_config.getboolean( "Flask", "DEBUG" )
+    is_debug = ini_config.getboolean("Flask", "DEBUG")
     if is_debug:
-        for attr in dir( fileToWrite ):
+        for attr in dir(fileToWrite):
             try:
-                thing = getattr( fileToWrite, attr )
-                logging.debug( "fileToWrite.{0} = {1}"
-                               .format( attr, thing ) )
+                thing = getattr(fileToWrite, attr)
+                logging.debug("fileToWrite.{0} = {1}"
+                               .format(attr, thing))
             except AttributeError:
-                logging.warning( "attr [{0}] not found in fileToWrite"
-                                 .format( attr ) )
+                logging.warning("attr [{0}] not found in fileToWrite"
+                                 .format(attr))
             else:
-                logging.error( "error getting attr [{0}] from fileToWrite"
-                               .format( attr ) )
+                logging.error("error getting attr [{0}] from fileToWrite"
+                               .format(attr))
 
     if not fileToWrite.closed:
-        logging.debug( "writing [{0}] to file"
-                      .format( msg ) )
-        fileToWrite.write( msg )
-        logging.debug( "writing was successful." )
+        logging.debug("writing [{0}] to file"
+                      .format(msg))
+        fileToWrite.write(msg)
+        logging.debug("writing was successful.")
     else:
-        logging.warning( "msg [{0}] NOT written: file closed."
-                        .format( msg ) )
+        logging.warning("msg [{0}] NOT written: file closed."
+                        .format(msg))
 
     return
 
 
-def get_log_file_handles( logger ):
+def get_log_file_handles(logger):
     """ Returns a list of the file descriptors used by the given
     logging.logger.  This method may be used by the DaemonContext
     files_preserve when creating daemon on Linux environment.
@@ -318,10 +318,10 @@ def get_log_file_handles( logger ):
     if logger:
 
         for handler in logger.handlers:
-            handles.append( handler.stream.fileno() )
+            handles.append(handler.stream.fileno())
 
         if logger.parent:
-            handles += get_log_file_handles( logger.parent )
+            handles += get_log_file_handles(logger.parent)
 
     return handles
 

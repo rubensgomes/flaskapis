@@ -20,7 +20,7 @@ __all__ = ["DURATION_ENUM", "MIME_TYPE_ENUM", "SENSOR_TYPE_ENUM",
 
 
 
-class MIME_TYPE_ENUM( Enum ):
+class MIME_TYPE_ENUM(Enum):
     """An enumeration of MIME_TYPE_ENUM
 
     This class implements an enumeration of possible MimeTypes.
@@ -31,7 +31,7 @@ class MIME_TYPE_ENUM( Enum ):
     JSON = 4
 
 
-class TEMPERATURE_ENUM( Enum ):
+class TEMPERATURE_ENUM(Enum):
     """ An enumeration of temperature units
 
     This class implements an enumeartiof of possible sensor temperature units.
@@ -43,7 +43,7 @@ class TEMPERATURE_ENUM( Enum ):
     degK = 3
 
     @staticmethod
-    def unit_name( temperature ):
+    def unit_name(temperature):
         """ Returns the official unit name.
 
         Parameters:
@@ -55,7 +55,7 @@ class TEMPERATURE_ENUM( Enum ):
         -------
         Official temperature name.
         """
-        if temperature and isinstance( temperature, TEMPERATURE_ENUM ):
+        if temperature and isinstance(temperature, TEMPERATURE_ENUM):
 
             if temperature == TEMPERATURE_ENUM.degC:
                 return "celsius"
@@ -64,24 +64,24 @@ class TEMPERATURE_ENUM( Enum ):
             elif temperature == TEMPERATURE_ENUM.degK:
                 return "kevin"
             else:
-                raise IllegalArgumentException( "temperature [{0}] is not valid"
-                                               .format( temperature ) )
+                raise IllegalArgumentException("temperature [{0}] is not valid"
+                                               .format(temperature))
 
         elif temperature:
 
             for t in TEMPERATURE_ENUM:
                 if t.name.lower() == temperature.lower().strip():
-                    return TEMPERATURE_ENUM.unit_name( t )
+                    return TEMPERATURE_ENUM.unit_name(t)
 
-            raise IllegalArgumentException( "temperature [{0}] is not valid"
-                                           .format( temperature ) )
+            raise IllegalArgumentException("temperature [{0}] is not valid"
+                                           .format(temperature))
         else:
-            raise IllegalArgumentException( "temperature [{0}] is not valid"
-                                           .format( temperature ) )
+            raise IllegalArgumentException("temperature [{0}] is not valid"
+                                           .format(temperature))
 
 
 
-class UNIT_TYPES_ENUM( Enum ):
+class UNIT_TYPES_ENUM(Enum):
     """A enumeration of valid pint unit types.
 
     This class represents a list of pint unit types.  Do not change this,
@@ -92,7 +92,7 @@ class UNIT_TYPES_ENUM( Enum ):
     temperature = 3
 
 
-class DURATION_ENUM( Enum ):
+class DURATION_ENUM(Enum):
     """ Duration of intervals to query historical information.
     """
     last5Years = 1
@@ -111,7 +111,7 @@ class DURATION_ENUM( Enum ):
     lastHour = 14
 
     @staticmethod
-    def is_valid( duration ):
+    def is_valid(duration):
         """ Checks if the given duration is valid.
 
         Parameters:
@@ -130,7 +130,7 @@ class DURATION_ENUM( Enum ):
         return False
 
 
-class SENSOR_TYPE_ENUM( Enum ):
+class SENSOR_TYPE_ENUM(Enum):
     """An enumeration of Sensor types
 
     This class implements an enumeration of possible sensor types.
@@ -139,7 +139,7 @@ class SENSOR_TYPE_ENUM( Enum ):
     HUMIDITY = 2
 
 
-class SENSOR_STATE_ENUM( Enum ):
+class SENSOR_STATE_ENUM(Enum):
     """An enumeration of Sensor Status
 
     This class implements an enumeration of possible sensor status.

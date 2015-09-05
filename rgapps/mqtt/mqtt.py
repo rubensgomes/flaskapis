@@ -48,38 +48,38 @@ class MQTTSubscriber():
 
         # The callback for when the client receives a CONNACK response from
         # the server.
-        def on_connect( client, userdata, flags, rc ):
-            print( "Connected with result code " + str( rc ) )
+        def on_connect(client, userdata, flags, rc):
+            print("Connected with result code " + str(rc))
 
-            topic = ini_config.get( "MQTT", "MQTT_TOPIC" )
+            topic = ini_config.get("MQTT", "MQTT_TOPIC")
 
             # Subscribing in on_connect() means that if we lose the connection
             # and reconnect then subscriptions will be renewed.
-            mqttc.subscribe( topic, qos=0 )
+            mqttc.subscribe(topic, qos=0)
 
         # The callback for when a PUBLISH message is received from the server.
-        def on_message( client, userdata, msg ):
-            print( msg.topic + " " + str( msg.payload ) )
+        def on_message(client, userdata, msg):
+            print(msg.topic + " " + str(msg.payload))
 
-        mqtt_id = ini_config.get( "MQTT", "MQTT_CLIENT_ID" )
-        user = ini_config.get( "MQTT", "MQTT_USERNAME" )
-        pw = ini_config.get( "MQTT", "MQTT_PASSWORD" )
-        host = ini_config.get( "MQTT", "MQTT_HOST" )
-        port = ini_config.getint( "MQTT", "MQTT_PORT" )
+        mqtt_id = ini_config.get("MQTT", "MQTT_CLIENT_ID")
+        user = ini_config.get("MQTT", "MQTT_USERNAME")
+        pw = ini_config.get("MQTT", "MQTT_PASSWORD")
+        host = ini_config.get("MQTT", "MQTT_HOST")
+        port = ini_config.getint("MQTT", "MQTT_PORT")
 
-        mqttc = mqtt.Client( client_id=mqtt_id,
+        mqttc = mqtt.Client(client_id=mqtt_id,
                              clean_session=True,
-                             protocol=mqtt.MQTTv31 )
+                             protocol=mqtt.MQTTv31)
 
         mqttc.on_connect = on_connect
         mqttc.on_message = on_message
-        mqttc.username_pw_set( user, password=pw )
+        mqttc.username_pw_set(user, password=pw)
 
-        logging.debug( "Connecting to MQTT Broker: "
+        logging.debug("Connecting to MQTT Broker: "
                       "host [{0}], port [{1}], user [{2}]"
-                      .format( host, port, user ) )
+                      .format(host, port, user))
 
-        mqttc.connect( host, port )
+        mqttc.connect(host, port)
 
         # Blocking call that processes network traffic, dispatches callbacks
         # and handles reconnecting.
@@ -97,7 +97,7 @@ class MQTTPublisher():
     """
 
     @staticmethod
-    def publish_temperature( serial ):
+    def publish_temperature(serial):
         """
         Publishes the given temperature sensor data to MQTT
         message broker.
@@ -113,23 +113,23 @@ class MQTTPublisher():
         """
 
         # test serial
-        if is_blank( serial ):
-            raise IllegalArgumentException( "serial is required" )
+        if is_blank(serial):
+            raise IllegalArgumentException("serial is required")
 
-        mqtt_id = ini_config.get( "MQTT", "MQTT_CLIENT_ID" )
-        user = ini_config.get( "MQTT", "MQTT_USERNAME" )
-        pw = ini_config.get( "MQTT", "MQTT_PASSWORD" )
-        host = ini_config.get( "MQTT", "MQTT_HOST" )
-        port = ini_config.getint( "MQTT", "MQTT_PORT" )
-        topic = ini_config.get( "MQTT", "MQTT_TOPIC" )
+        mqtt_id = ini_config.get("MQTT", "MQTT_CLIENT_ID")
+        user = ini_config.get("MQTT", "MQTT_USERNAME")
+        pw = ini_config.get("MQTT", "MQTT_PASSWORD")
+        host = ini_config.get("MQTT", "MQTT_HOST")
+        port = ini_config.getint("MQTT", "MQTT_PORT")
+        topic = ini_config.get("MQTT", "MQTT_TOPIC")
 
 
-        mqttc = mqtt.Client( client_id=mqtt_id,
+        mqttc = mqtt.Client(client_id=mqtt_id,
                              clean_session=True,
-                             protocol=mqtt.MQTTv31 )
-        mqttc.username_pw_set( user, password=pw )
+                             protocol=mqtt.MQTTv31)
+        mqttc.username_pw_set(user, password=pw)
 
-        sensor_temperature = DS18B20Sensor( serial )
+        sensor_temperature = DS18B20Sensor(serial)
         readings = sensor_temperature.get_measurement()
 
         message = OrderedDict()
@@ -137,30 +137,30 @@ class MQTTPublisher():
         message["unit"] = readings.get_unit()
         message["utc"] = readings.get_utc()
 
-        json_message = json.dumps( message, indent=2, sort_keys=True )
+        json_message = json.dumps(message, indent=2, sort_keys=True)
 
         auth = OrderedDict()
         auth["username"] = user
         auth["password"] = pw
 
-        logging.debug( "Publishing to MQTT Broker: "
+        logging.debug("Publishing to MQTT Broker: "
                       "host [{0}], port [{1}], client id [{2}], "
                       "user [{3}], sensor serial [{4}]"
-                      .format( host, port, mqtt_id, user, serial ) )
+                      .format(host, port, mqtt_id, user, serial))
 
-        publish.single( topic,
+        publish.single(topic,
                         payload=json_message, qos=0,
                         retain=False,
                         hostname=host,
                         port=port,
                         client_id=mqtt_id,
                         keepalive=20,
-                        auth=auth )
+                        auth=auth)
 
-        logging.debug( "Message [{0}] was published correctly: "
+        logging.debug("Message [{0}] was published correctly: "
                       "host [{1}], port [{2}], client id [{3}], "
                       "user [{4}], sensor serial [{5}]"
-                      .format( message, host, port, mqtt_id, user, serial ) )
+                      .format(message, host, port, mqtt_id, user, serial))
 
         return
 

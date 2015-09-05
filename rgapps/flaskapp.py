@@ -28,59 +28,59 @@ globalFlaskApp = None
 
 def run():
     # the main run funcion
-    print( "initializing the environment..." )
-    initialize_environment( INI_FILE )
+    print("initializing the environment...")
+    initialize_environment(INI_FILE)
 
     try:
 
-        instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
+        instance_path = ini_config.get("Flask", "INSTANCE_PATH")
 
         # app: Flask application object
         global globalFlaskApp
-        globalFlaskApp = Flask( __name__,
+        globalFlaskApp = Flask(__name__,
                                 instance_path=instance_path,
-                                instance_relative_config=True )
+                                instance_relative_config=True)
 
-        is_debug = ini_config.getboolean( "Flask", "DEBUG" )
-        is_testing = ini_config.getboolean( "Flask", "TESTING" )
-        is_json_sort_keys = ini_config.getboolean( "Flask", "JSON_SORT_KEYS" )
-        max_content_length = ini_config.getint( "Flask", "MAX_CONTENT_LENGTH" )
+        is_debug = ini_config.getboolean("Flask", "DEBUG")
+        is_testing = ini_config.getboolean("Flask", "TESTING")
+        is_json_sort_keys = ini_config.getboolean("Flask", "JSON_SORT_KEYS")
+        max_content_length = ini_config.getint("Flask", "MAX_CONTENT_LENGTH")
 
-        globalFlaskApp.config.update( DEBUG=is_debug,
+        globalFlaskApp.config.update(DEBUG=is_debug,
                                       TESTING=is_testing,
                                       JSON_SORT_KEYS=is_json_sort_keys,
-                                      MAX_CONTENT_LENGTH=max_content_length )
+                                      MAX_CONTENT_LENGTH=max_content_length)
 
         with globalFlaskApp.app_context():
-            logging.info( "Code is now running within a Flask app context." )
+            logging.info("Code is now running within a Flask app context.")
 
-            logging.info( "Defining the application routing." )
+            logging.info("Defining the application routing.")
             setup_routes()
 
-            logging.info( "Setting up the Flask functions." )
+            logging.info("Setting up the Flask functions.")
             import rgapps.http.flaskfunctions
 
-            port = ini_config.getint( "Flask", "PORT" )
+            port = ini_config.getint("Flask", "PORT")
 
-            logging.info( "Starting flaskapis at localhost port [{0}]"
-                          .format( port ) )
+            logging.info("Starting flaskapis at localhost port [{0}]"
+                          .format(port))
 
-            host = ini_config.get( "Flask", "HOST" )
+            host = ini_config.get("Flask", "HOST")
 
-            logging.info( "Start running Flask app." )
+            logging.info("Start running Flask app.")
 
-            globalFlaskApp.run( host=host,
+            globalFlaskApp.run(host=host,
                                 port=port,
                                 debug=is_debug,
-                                use_reloader=True )
+                                use_reloader=True)
 
-    except ( Exception ) as err:
-        sys.stderr.write( str( err ) )
-        logging.exception( err )
+    except (Exception) as err:
+        sys.stderr.write(str(err))
+        logging.exception(err)
         if not err.errno:
-            exit( err.errno )
+            exit(err.errno)
         else:
-            exit( 1 )
+            exit(1)
 
     return
 

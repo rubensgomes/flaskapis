@@ -28,7 +28,7 @@ class SMS:
     MAX_PHONE_LENGTH = 20
 
     @staticmethod
-    def send_text( phone_number, message ):
+    def send_text(phone_number, message):
         """Sends given SMS message using http://textbelt.com/
 
         Parameters
@@ -44,40 +44,40 @@ class SMS:
             nothing.
         """
 
-        if is_blank( phone_number ):
-            raise IllegalArgumentException( "phone_number is required" )
+        if is_blank(phone_number):
+            raise IllegalArgumentException("phone_number is required")
 
-        if not is_number( phone_number ):
-            raise IllegalArgumentException( 
+        if not is_number(phone_number):
+            raise IllegalArgumentException(
                 "phone_number [{0}] needs to be a number."
-                .format( phone_number ) )
+                .format(phone_number))
 
-        if len( phone_number.strip() ) > SMS.MAX_PHONE_LENGTH:
-            raise IllegalArgumentException( 
+        if len(phone_number.strip()) > SMS.MAX_PHONE_LENGTH:
+            raise IllegalArgumentException(
                  "phone_number [{0}] cannot be greater than [{1}]."
-                .format( phone_number, SMS.MAX_PHONE_LENGTH ) )
+                .format(phone_number, SMS.MAX_PHONE_LENGTH))
 
-        if is_blank( message ) :
-            raise IllegalArgumentException ( "message cannot blank" )
+        if is_blank(message) :
+            raise IllegalArgumentException ("message cannot blank")
 
 
-        if len( message.strip() ) > SMS.MAX_MSG_LENGTH:
-            raise IllegalArgumentException( 
+        if len(message.strip()) > SMS.MAX_MSG_LENGTH:
+            raise IllegalArgumentException(
                 "message [{0}] cannot be greater than [{1}]."
-                .format( message, SMS.MAX_MSG_LENGTH ) )
+                .format(message, SMS.MAX_MSG_LENGTH))
 
         url = 'http://textbelt.com/text'
         payload = {'number': phone_number,
                    'message': "iotgw.rubens.home: " + message.strip()}
 
-        logging.debug( "Sending SMS to [{0}] using url [{1}]"
-                      .format( phone_number, url ) )
+        logging.debug("Sending SMS to [{0}] using url [{1}]"
+                      .format(phone_number, url))
 
-        r = requests.post( url, data=payload )
+        r = requests.post(url, data=payload)
 
-        if ( r.status_code != 200 ):
-            logging.debug( "Failed SMS to [{0}] using url [{1}]: status [{2}]"
-                          .format( phone_number, url, r.status_code ) )
+        if (r.status_code != 200):
+            logging.debug("Failed SMS to [{0}] using url [{1}]: status [{2}]"
+                          .format(phone_number, url, r.status_code))
             r.raise_for_status()
 
         return

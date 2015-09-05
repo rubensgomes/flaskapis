@@ -28,15 +28,15 @@ class Product:
     author = __author__
     copyright = __copyright__
     contact = __email__
-    dist = pkg_resources.get_distribution( PROJECT_NAME )
+    dist = pkg_resources.get_distribution(PROJECT_NAME)
     project_name = dist.project_name
     version = dist.version
 
     date = None
-    pattern = re.compile( project_name + "*", re.IGNORECASE )
+    pattern = re.compile(project_name + "*", re.IGNORECASE)
     for package in pip.get_installed_distributions():
-        if pattern.match( package.key ):
-            date = time.ctime( os.path.getctime( package.location ) )
+        if pattern.match(package.key):
+            date = time.ctime(os.path.getctime(package.location))
             break
 
     @staticmethod

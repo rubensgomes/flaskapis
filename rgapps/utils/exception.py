@@ -14,12 +14,12 @@ __all__ = ["Error", "IllegalArgumentException", "ConfigurationException",
            "SensorReadingException"]
 
 
-class Error( Exception ):
+class Error(Exception):
     """Base class for exceptions in this module."""
     pass
 
 
-class SensorReadingException( Error ):
+class SensorReadingException(Error):
     """Exception raised when an expected error occurs while taking a
     measurement from a sensor.
 
@@ -27,11 +27,11 @@ class SensorReadingException( Error ):
         msg  -- explanation of the error
     """
 
-    def __init__( self, msg ):
+    def __init__(self, msg):
         self.msg = msg
 
 
-class IllegalArgumentException ( Error ):
+class IllegalArgumentException (Error):
     """Exception raised when an expected function argument is missing or when
     the argument has an invalid value.
 
@@ -39,11 +39,11 @@ class IllegalArgumentException ( Error ):
         msg  -- explanation of the error
     """
 
-    def __init__( self, msg ):
+    def __init__(self, msg):
         self.msg = msg
 
 
-class ConfigurationException ( Error ):
+class ConfigurationException (Error):
     """Exception raised when a property is missing or is invalid in the
     configuration file.
 
@@ -51,7 +51,7 @@ class ConfigurationException ( Error ):
         msg  -- explanation of the error
     """
 
-    def __init__( self, msg ):
+    def __init__(self, msg):
         self.msg = msg
 
 

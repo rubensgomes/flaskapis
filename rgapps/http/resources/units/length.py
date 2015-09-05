@@ -23,11 +23,11 @@ __status__ = "Experimental"
 __all__ = ["RESTLengthResource"]
 
 
-class RESTLengthResource( Resource ):
+class RESTLengthResource(Resource):
     """REST API Resource to convert lengths
     """
 
-    def get( self, to_unit ):
+    def get(self, to_unit):
         """REST GET implementation for the URI:
 
         http://<server>:<port>/length/<to_unit>?from_unit=<from_unit>&
@@ -59,38 +59,38 @@ class RESTLengthResource( Resource ):
         """
         params = request.args
         if not params:
-            raise BadRequest( "Parameters "
+            raise BadRequest("Parameters "
                              "from_unit=<from_unit>&from_value=<_from_value> "
-                             "are missing" )
+                             "are missing")
 
-        if not isinstance( params, dict ):
-            raise BadRequest( "params must be an instance of dict" )
+        if not isinstance(params, dict):
+            raise BadRequest("params must be an instance of dict")
 
         if "from_unit" not in params:
-            raise BadRequest( "Missing required from_unit parameter" )
+            raise BadRequest("Missing required from_unit parameter")
 
         if "from_value" not in params:
-            raise BadRequest( "Missing required from_value parameter" )
+            raise BadRequest("Missing required from_value parameter")
 
-        from_unit = params.get( "from_unit" )
+        from_unit = params.get("from_unit")
 
-        from_value = params.get( "from_value" )
-        if not is_number( from_value ):
-            raise BadRequest( ( "Parameter from_value=[{0}] not valid. "
-                              "A numeric value must be provided." )
-                             .format( from_value ) )
+        from_value = params.get("from_value")
+        if not is_number(from_value):
+            raise BadRequest(("Parameter from_value=[{0}] not valid. "
+                              "A numeric value must be provided.")
+                             .format(from_value))
 
-        from_value = float( from_value )
+        from_value = float(from_value)
 
         if from_unit == to_unit:
-            raise BadRequest( "from_unit=[{0}] and to_unit=[{1}] units "
-                             "cannot be equal".format( from_unit, to_unit ) )
+            raise BadRequest("from_unit=[{0}] and to_unit=[{1}] units "
+                             "cannot be equal".format(from_unit, to_unit))
 
         # pint unit registry only accepts lower case letters for length units
         from_unit = from_unit.lower().strip()
         to_unit = to_unit.lower().strip()
 
-        result = Length.convert( from_value, from_unit, to_unit )
+        result = Length.convert(from_value, from_unit, to_unit)
 
         data = OrderedDict()
         data["from_unit"] = from_unit
@@ -102,7 +102,7 @@ class RESTLengthResource( Resource ):
         response[STATUS_KEY] = STATUS_SUCCESS
         response[DATA_KEY] = data
 
-        json_result = jsonify( response )
+        json_result = jsonify(response)
         return json_result
 
 

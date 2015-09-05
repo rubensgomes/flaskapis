@@ -23,33 +23,33 @@ __status__ = "Experimental"
 INI_FILE = r"/home/wsgi/flaskapis/application.ini"
 
 # initialize_environment MUST be called first !!!
-initialize_environment( INI_FILE )
+initialize_environment(INI_FILE)
 
-instance_path = ini_config.get( "Flask", "INSTANCE_PATH" )
+instance_path = ini_config.get("Flask", "INSTANCE_PATH")
 
-logging.info( "creating Flask app ..." )
-app = Flask( __name__,
+logging.info("creating Flask app ...")
+app = Flask(__name__,
             instance_path=instance_path,
-            instance_relative_config=True )
+            instance_relative_config=True)
 
-is_debug = ini_config.getboolean( "Flask", "DEBUG" )
-is_testing = ini_config.getboolean( "Flask", "TESTING" )
-is_json_sort_keys = ini_config.getboolean( "Flask", "JSON_SORT_KEYS" )
-max_content_length = ini_config.getint( "Flask", "MAX_CONTENT_LENGTH" )
+is_debug = ini_config.getboolean("Flask", "DEBUG")
+is_testing = ini_config.getboolean("Flask", "TESTING")
+is_json_sort_keys = ini_config.getboolean("Flask", "JSON_SORT_KEYS")
+max_content_length = ini_config.getint("Flask", "MAX_CONTENT_LENGTH")
 
-app.config.update( DEBUG=is_debug,
+app.config.update(DEBUG=is_debug,
                    TESTING=is_testing,
                    JSON_SORT_KEYS=is_json_sort_keys,
-                   MAX_CONTENT_LENGTH=max_content_length )
+                   MAX_CONTENT_LENGTH=max_content_length)
 
 with app.app_context():
-    logging.info( "Configuring the Flask HTTP routing." )
+    logging.info("Configuring the Flask HTTP routing.")
     setup_routes()
 
-    logging.info( "Setting up the Flask functions." )
+    logging.info("Setting up the Flask functions.")
     import rgapps.http.flaskfunctions
 
-    logging.info( "Flask WSGI app is now running ..." )
+    logging.info("Flask WSGI app is now running ...")
 
 
 if __name__ == '__main__':

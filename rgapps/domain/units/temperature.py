@@ -24,7 +24,7 @@ class Temperature:
     """
 
     @staticmethod
-    def convert( from_value, from_unit, to_unit ):
+    def convert(from_value, from_unit, to_unit):
         """convert length units.
 
         Parameters
@@ -41,25 +41,25 @@ class Temperature:
         float:
             the converted value
         """
-        if not is_number( from_value ):
-            raise IllegalArgumentException( 
-                ( "Parameter from_value=[{0}] not valid. "
-                 "A numeric value must be provided." ).format( from_value ) )
+        if not is_number(from_value):
+            raise IllegalArgumentException(
+                ("Parameter from_value=[{0}] not valid. "
+                 "A numeric value must be provided.").format(from_value))
 
-        if is_blank( from_unit ):
-            raise IllegalArgumentException( 
-                ( "Parameter from_unit=[{0}] not valid. A unit be provided." )
-                .format( from_unit ) )
+        if is_blank(from_unit):
+            raise IllegalArgumentException(
+                ("Parameter from_unit=[{0}] not valid. A unit be provided.")
+                .format(from_unit))
 
-        if is_blank( to_unit ):
-            raise IllegalArgumentException( 
-                ( "Parameter to_unit=[{0}] not valid. A unit be provided." )
-                .format( to_unit ) )
+        if is_blank(to_unit):
+            raise IllegalArgumentException(
+                ("Parameter to_unit=[{0}] not valid. A unit be provided.")
+                .format(to_unit))
 
         if from_unit == to_unit:
-            raise IllegalArgumentException( 
-                ( "from_unit=[{0}] and to_unit=[{1}] units cannot be equal" )
-                .format( from_unit, to_unit ) )
+            raise IllegalArgumentException(
+                ("from_unit=[{0}] and to_unit=[{1}] units cannot be equal")
+                .format(from_unit, to_unit))
 
         # pint temperature units need to be lower-cased or degC, degF, degK
         from_unit = from_unit.lower().strip()
@@ -79,8 +79,8 @@ class Temperature:
         elif to_unit == "degk":
             to_unit = "degK"
 
-        result = convert_unit( UNIT_TYPES_ENUM.temperature, from_unit,
-                              from_value, to_unit )
+        result = convert_unit(UNIT_TYPES_ENUM.temperature, from_unit,
+                              from_value, to_unit)
         return result
 
 

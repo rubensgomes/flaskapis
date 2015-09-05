@@ -16,25 +16,25 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 
-class EnumsTestCase( unittest.TestCase ):
+class EnumsTestCase(unittest.TestCase):
 
-    def setUp( self ):
+    def setUp(self):
         return
 
-    def tearDown( self ):
+    def tearDown(self):
         return
 
-    def test_temperature_enum( self ):
-        unit = TEMPERATURE_ENUM.unit_name( "degC" )
-        self.assertEqual( unit.upper(), "CELSIUS" )
-        self.assertRaises( IllegalArgumentException,
+    def test_temperature_enum(self):
+        unit = TEMPERATURE_ENUM.unit_name("degC")
+        self.assertEqual(unit.upper(), "CELSIUS")
+        self.assertRaises(IllegalArgumentException,
                           TEMPERATURE_ENUM.unit_name,
-                          "vasco" )
+                          "vasco")
         return
 
-    def test_duration_enum( self ):
-        status = DURATION_ENUM.is_valid( "vasco" )
-        self.assertFalse( status )
+    def test_duration_enum(self):
+        status = DURATION_ENUM.is_valid("vasco")
+        self.assertFalse(status)
         return
 
 

@@ -29,61 +29,61 @@ def setup_routes():
     """Sets up the routes for the REST resources
     """
     # The Flask RESTful API object
-    api = FlaskRESTfulAPI( current_app )
+    api = FlaskRESTfulAPI(current_app)
 
     # rest_apis: REST APIs that should be enabled.
-    restful_apis = ini_config.get( "REST", "RESTFUL_APIS" )
-    rest_api_list = restful_apis.upper().split( "," )
-    rest_apis = [str( value ).strip() for value in rest_api_list]
+    restful_apis = ini_config.get("REST", "RESTFUL_APIS")
+    rest_api_list = restful_apis.upper().split(",")
+    rest_apis = [str(value).strip() for value in rest_api_list]
 
     # Temperature API
     if "TEMPERATURE" in rest_apis:
-        api.add_resource( RESTTemperatureResource,
-                         '/temperature/<string:to_unit>' )
-        logging.info( "temperature REST API is enabled" )
+        api.add_resource(RESTTemperatureResource,
+                         '/temperature/<string:to_unit>')
+        logging.info("temperature REST API is enabled")
 
     # Weight API
     if "WEIGHT" in rest_apis:
-        api.add_resource( RESTWeightResource,
-                         '/weight/<string:to_unit>' )
-        logging.info( "weight REST API is enabled" )
+        api.add_resource(RESTWeightResource,
+                         '/weight/<string:to_unit>')
+        logging.info("weight REST API is enabled")
 
     # Length API
     if "LENGTH" in rest_apis:
-        api.add_resource( RESTLengthResource,
-                         '/length/<string:to_unit>' )
-        logging.info( "length REST API is enabled" )
+        api.add_resource(RESTLengthResource,
+                         '/length/<string:to_unit>')
+        logging.info("length REST API is enabled")
 
     # PRODUCT_INFO
     if "PRODUCT_INFO" in rest_apis:
-        api.add_resource( RESTProductInfoResource,
-                         '/information/product' )
-        logging.info( "Product Info REST API is enabled" )
+        api.add_resource(RESTProductInfoResource,
+                         '/information/product')
+        logging.info("Product Info REST API is enabled")
 
     # IoT - Sensor Temperature API
     if "SENSOR_TEMPERATURE" in rest_apis:
-        api.add_resource( RESTSensorTemperatureResource,
-                         '/temperature/sensors/<string:serial>' )
-        logging.info( "Sensor Temperature REST API is enabled" )
+        api.add_resource(RESTSensorTemperatureResource,
+                         '/temperature/sensors/<string:serial>')
+        logging.info("Sensor Temperature REST API is enabled")
 
     # IoT - Sensor Information API
     if "SENSOR_INFO" in rest_apis:
-        api.add_resource( RESTSensorInfoResource,
+        api.add_resource(RESTSensorInfoResource,
                          '/information/sensors',
-                         '/information/sensors/<string:serial>' )
-        logging.info( "Sensor Information REST API is enabled" )
+                         '/information/sensors/<string:serial>')
+        logging.info("Sensor Information REST API is enabled")
 
     # IoT - Sensor Temperature Analytics API
     if "SENSOR_TEMPERATURE_ANALYTICS" in rest_apis:
-        api.add_resource( RESTSensorTemperatureAnalyticsResource,
-                         '/analytics/temperature/sensors/<string:serial>' )
-        logging.info( "Sensor Temperature Analytics REST API is enabled" )
+        api.add_resource(RESTSensorTemperatureAnalyticsResource,
+                         '/analytics/temperature/sensors/<string:serial>')
+        logging.info("Sensor Temperature Analytics REST API is enabled")
 
     # URL API
     if "URL" in rest_apis:
-        api.add_resource( RESTUrlResource,
-                         '/resource' )
-        logging.info( "URL REST API is enabled" )
+        api.add_resource(RESTUrlResource,
+                         '/resource')
+        logging.info("URL REST API is enabled")
 
 
 if __name__ == '__main__':

@@ -23,7 +23,7 @@ class Measurement:
     """An data structure to represent a device (sensor) reading measurement.
     """
 
-    def __init__( self, value, unit, utc ):
+    def __init__(self, value, unit, utc):
         """constructor.
 
         Parameters
@@ -35,34 +35,34 @@ class Measurement:
         utc: string (required)
             the UTC timestamp
         """
-        if not is_number( value ):
-            raise IllegalArgumentException( "value is invalid." )
+        if not is_number(value):
+            raise IllegalArgumentException("value is invalid.")
 
-        if is_blank( unit ):
-            raise IllegalArgumentException( "unit is required." )
+        if is_blank(unit):
+            raise IllegalArgumentException("unit is required.")
 
-        if is_blank( utc ):
-            raise IllegalArgumentException( "utc is required." )
+        if is_blank(utc):
+            raise IllegalArgumentException("utc is required.")
 
         self.value = value
         self.unit = unit
         self.utc = utc
         return
 
-    def __str__( self ):
+    def __str__(self):
         # to string method.
-        return str( "value [{0}], unit [{1}], utc [{2}]"
-                    .format( str( self.value ), self.unit, self.utc ) )
+        return str("value [{0}], unit [{1}], utc [{2}]"
+                    .format(str(self.value), self.unit, self.utc))
 
-    def get_value( self ):
+    def get_value(self):
         # the reading numeric float value
         return self.value
 
-    def get_unit( self ):
+    def get_unit(self):
         # the reading string text unit
         return self.unit
 
-    def get_utc( self ):
+    def get_utc(self):
         # the reading string text UTC timestamp
         return self.utc
 
@@ -73,7 +73,7 @@ class Sensor:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def get_serial( self ):
+    def get_serial(self):
         """The sensor serial or other identification .
 
         Returns
@@ -84,7 +84,7 @@ class Sensor:
         pass
 
     @abstractmethod
-    def get_measurement( self ):
+    def get_measurement(self):
         """The sensor reading measurement.
 
         Returns

@@ -1,4 +1,4 @@
 include ez_setup.py setup.py flaskapis.wsgi application.ini requirements.txt \
 AUTHORS.rst BUILD.rst LICENSE.rst README.rst SETUP.rst
-recursive-include db *.sql
+recursive-include db *.sql *.js
 recursive-include rgapps *.py

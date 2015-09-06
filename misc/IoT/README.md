@@ -131,7 +131,7 @@ change the properties of application.cfg accordingly
 copy flaskapis.wsgi from "flaskapis" to "/home/wsgi/flaskapis".
 
 create SQLite database named "flaskapis.db" in the "/home/wsgi/flaskapis".
-Then, use the flaskapis/db/db_schema.sql to set up the database schema.
+Then, use the flaskapis/db/sqlite_db_schema.sql to set up the database schema.
 
 ### Python Virtual Environment
 

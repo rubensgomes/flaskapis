@@ -95,8 +95,8 @@ def deploy_rest_apis():
             "fi".format( RESTAPIS_INSTALLDIR ) )
         run( "cp -v flaskapis.wsgi {0}".format( RESTAPIS_INSTALLDIR ) )
         run( "if [ ! -f {0}/flaskapis.db ]; then "
-            "sqlite3 {0}/flaskapis.db < db/db_schema.sql;"
-            "sqlite3 {0}/flaskapis.db < db/db_data.sql;"
+            "sqlite3 {0}/flaskapis.db < db/sqlite_db_schema.sql;"
+            "sqlite3 {0}/flaskapis.db < db/sqlite_db_data.sql;"
             "fi".format( RESTAPIS_INSTALLDIR ) )
     # now that all is set up, delete the folder again
     run( "rm -fr /tmp/flaskapis/dist; rm -f /tmp/flaskapis.tar.gz" )

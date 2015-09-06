@@ -19,7 +19,7 @@ from setuptools import setup
 setup( 
     name="FlaskAPIs",
     ### ADD VERSION BELOW TO README.rst FILE !!!
-    version="2015.9.dev1",
+    version="2015.9.dev2",
     author="Rubens S. Gomes",
     author_email="rubens.s.gomes@gmail.com",
     contact_email="rubens.s.gomes@gmail.com",
@@ -47,7 +47,8 @@ setup(
       "paho-mqtt>=1.1",
       "beautifulsoup4>=4.4.0",
       "RPi.GPIO>=0.5.11",
-      "six>=1.9.0"
+      "six>=1.9.0",
+      "pymongo>=3.0.3"
     ],
     keywords="flask flask-restful REST RESTful APIs"
  )

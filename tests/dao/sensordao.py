@@ -22,11 +22,12 @@ LOG_FILE_PATH = r"C:\personal\flaskapis\testing.log"
 INI_FILE = r"C:\personal\flaskapis\devsettings.ini"
 SERIAL = "TESTING"
 
+
 class DaoTestCase(unittest.TestCase):
 
     def setUp(self):
         initialize_environment(INI_FILE,
-                                log_file_path=LOG_FILE_PATH)
+                               log_file_path=LOG_FILE_PATH)
         DaoTestCase.sensor_db = SensorDAO()
         utc = str(datetime.utcnow())
         logging.debug("adding testing semsor to DB")
@@ -40,6 +41,9 @@ class DaoTestCase(unittest.TestCase):
                                          "For testing purposes only")
         logging.debug("adding testing measurement to DB")
         DaoTestCase.sensor_db.add_reading("Celsius", 10, utc, SERIAL)
+        DaoTestCase.sensor_db.add_reading("Celsius", 20, utc, SERIAL)
+        DaoTestCase.sensor_db.add_reading("Celsius", 30, utc, SERIAL)
+        DaoTestCase.sensor_db.add_reading("Celsius", 40, utc, SERIAL)
         return
 
     def tearDown(self):

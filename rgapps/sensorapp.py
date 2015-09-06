@@ -97,14 +97,14 @@ def read_store_readings ():
                                    "value [{1}], utc [{2}], serial [{3}] to "
                                    "database."
                                    .format(readings["unit"],
-                                            readings["value"],
-                                            readings["utc"],
-                                            sensor["serial"]))
+                                           readings["value"],
+                                           readings["utc"],
+                                           sensor["serial"]))
 
                     SensorDAO.add_reading(readings["unit"],
-                                               readings["value"],
-                                               readings["utc"],
-                                               sensor["serial"])
+                                          readings["value"],
+                                          readings["utc"],
+                                          sensor["serial"])
 
             # python 3.4: ConnectionRefusedError
             except (ConnectionError, Timeout) as err:  # e.g., server is down.

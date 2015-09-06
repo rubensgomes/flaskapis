@@ -54,6 +54,10 @@ SQLite Installation
 - Add environment variable "SQLITE" to point to "C:\SQLite"
 - Add "C:\SQLite" to the Path environment.
 
+MongoDB Installation
+--------------------
+
+- Download and install MongoDB
 
 Server Deployment Machine Configuration
 =======================================
@@ -90,5 +94,5 @@ The following steps were done on Rubens' VM Linux server:
     pyvenv /home/wsgi/flaskapis/venv
 
 - create "flaskapis.db" SQLite database in "/home/wsgi/flaskapis"
-- Load "db/db_schema.sql" schema onto "flaskapis.db" database
+- Load "db/sqlite_db_schema.sql" schema onto "flaskapis.db" database
 

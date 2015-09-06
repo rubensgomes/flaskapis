@@ -127,7 +127,7 @@ class _SensorSQLite:
                        "between [{1}] and [{2}] from SQLite database."
                       .format(serial, past_datetime, current_datetime))
 
-        sql = ("SELECT utc, unit, value FROM readings WHERE serial = '{0}' "
+        sql = ("SELECT utc, serial, unit, value FROM readings WHERE serial = '{0}' "
                "AND utc BETWEEN '{1}' AND '{2}' "
                "ORDER BY utc ASC"
                .format(serial, past_datetime, current_datetime))
@@ -283,6 +283,76 @@ class _SensorMongoDB:
     """
 
     @staticmethod
+    def _get_mongodb_client():
+        """
+        Returns a valid and connected MongoClient object.
+
+        Returns
+        -------
+        A MongoClient instance.
+
+        Raises
+        ------
+        Raises MongoDB exception if MongoDB is not up and running, and the
+        client could NOT connect to the database
+        """
+
+        # do not wait to connect to the server
+        client = MongoClient(serverSelectionTimeoutMS=0)
+
+        # run following call to check the server is up and running
+        info = client.server_info()
+
+        logging.debug("Connected to MongoDB [{0}] version [{1}] on OS [{2}]."
+                      .format(client, info["version"], info["targetMinOS"]))
+
+        return client
+
+
+    @staticmethod
+    def _get_mongodb(name):
+        """
+        Returns a valid and connected Mongo Database object.
+
+        Parameters:
+        ----------
+        name: str (required)
+            the name of the MongoDB database
+
+        Returns
+        -------
+        A Mongo Database instance.
+
+        Raises
+        ------
+        Raises MongoDB exception if MongoDB is not up and running, and the
+        client could NOT connect to the database
+        """
+
+        client = _SensorMongoDB._get_mongodb_client()
+
+        db_found = False
+        dbs = client.database_names()
+
+        for db_name in dbs:
+            if (db_name == name):
+                db_found = True
+                break
+
+        if not db_found:
+            client.close()
+            raise IllegalArgumentException("MongoDB DB name [{0}] not found!"
+                                           .format(name))
+
+        db = client['{0}'.format(name)]
+
+        logging.debug("MongoDB with database name [{0}] found."
+                      .format(name))
+
+        return db
+
+
+    @staticmethod
     def add_reading(unit, value, utc, serial):
         """
         Adds given measurement data to sensor database
@@ -303,11 +373,8 @@ class _SensorMongoDB:
             nothing.
         """
 
-        client = MongoClient()
-        logging.debug("Connected to MongoDB")
-
-        db_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = client['{0}'.format(db_name)]
+        mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
+        db = _SensorMongoDB._get_mongodb(mongodb_name)
 
         coll = db['readings']
 
@@ -317,15 +384,16 @@ class _SensorMongoDB:
                                   "serial": serial
                                  })
 
-        logging.debug("Measurement with id [{0}] has been inserted "
+        logging.debug("Sensor reading with id [{0}] has been inserted "
                       "into MongoDB database"
                       .format(result.inserted_id))
 
-        client.close()
+        db.client.close()
 
         logging.debug("Disconnected from MongoDB")
 
         return
+
 
     @staticmethod
     def del_readings(serial):
@@ -342,23 +410,21 @@ class _SensorMongoDB:
             nothing.
         """
 
-        logging.debug("Deleting all measurements in MongoDB database for "
-                      "serial [{0}]".format(serial))
-
-        client = MongoClient()
-        logging.debug("Connected to MongoDB")
-
-        db_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = client['{0}'.format(db_name)]
+        mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
+        db = _SensorMongoDB._get_mongodb(mongodb_name)
 
         coll = db['readings']
 
-        result = coll.delete_many({"serial": serial})
+        logging.debug("Deleting all readings in the MongoDB collection [{0}] "
+                      "for sensor serial [{1}]."
+                      .format(coll, serial))
 
-        logging.debug("[{0}] measurements have been deleted from " 
+        result = coll.delete_many( { "serial": serial } )
+
+        logging.debug("[{0}] sensor readings have been deleted from " 
                       "MongoDB database".format(result.deleted_count))
 
-        client.close()
+        db.client.close()
 
         logging.debug("Disconnected from MongoDB")
 
@@ -386,32 +452,31 @@ class _SensorMongoDB:
             corresponding values.
         """
 
-        logging.debug("Retrieving readings from sensor with serial [{0}] "
-                       "between [{1}] and [{2}] from MongoDB database."
-                      .format(serial, past_datetime, current_datetime))
-
-        client = MongoClient()
-        logging.debug("Connected to MongoDB")
-
-        db_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = client['{0}'.format(db_name)]
+        mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
+        db = _SensorMongoDB._get_mongodb(mongodb_name)
 
         coll = db['readings']
 
-        cursor = coll.find({"serial": serial, 
-                            "utc": {"$lt": current_datetime},
-                            "utc": {"$gt": past_datetime}
+        logging.debug("Retrieving readings for sensor with serial [{0}] "
+                       "between [{1}] and [{2}] from MongoDB database."
+                      .format(serial, past_datetime, current_datetime))
+
+        cursor = coll.find({ "serial": serial, 
+                             "utc": { "$lt": current_datetime },
+                             "utc": { "$gt": past_datetime }
                            }).sort("utc", pymongo.ASCENDING)
 
-        data = list(cursor)
+        data = None
 
-        client.close()
+        if (cursor.count() > 0):
+            data = list(cursor)
+
+        logging.debug("Readings [{0}] retrieved from MongoDB for sensor with " 
+                      "serial [{1}]".format(data, serial))
+
+        db.client.close()
 
         logging.debug("Disconnected from MongoDB")
-
-        if not data:
-            # return None for empty list
-            return None
 
         return data
 
@@ -446,19 +511,17 @@ class _SensorMongoDB:
             nothing.
         """
 
-        logging.debug("Inserting sensor in MongoDB database: "
+        mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
+        db = _SensorMongoDB._get_mongodb(mongodb_name)
+
+        coll = db['sensors']
+
+        logging.debug("Adding following sensor to MongoDB database: "
                       "serial [{0}], state [{1}], name [{2}], type [{3}]"
                       .format(serial, state, name, sensor_type))
 
-        client = MongoClient()
-        logging.debug("Connected to MongoDB")
-
-        db_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = client['{0}'.format(db_name)]
-
-        coll = db['sensor']
-
-        result = coll.insert_one({"serial": serial,
+        result = coll.insert_one({"_id" : serial,
+                                  "serial": serial,
                                   "geolocation": geolocation,
                                   "location": location,
                                   "address": address,
@@ -466,13 +529,13 @@ class _SensorMongoDB:
                                   "name": name,
                                   "type": sensor_type,
                                   "description": description
-                                 })
+                                })
 
-        logging.debug("Measurement with id [{0}] has been inserted "
+        logging.debug("Sensor with id [{0}] has been inserted "
                       "into MongoDB database"
                       .format(result.inserted_id))
 
-        client.close()
+        db.client.close()
 
         logging.debug("Disconnected from MongoDB")
 
@@ -494,34 +557,30 @@ class _SensorMongoDB:
             nothing.
         """
 
-        logging.debug("Deleting sensor in MongoDB database for "
-                      "serial [{0}]".format(serial))
+        mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
+        db = _SensorMongoDB._get_mongodb(mongodb_name)
 
+        coll = db['sensors']
 
-        client = MongoClient()
-        logging.debug("Connected to MongoDB")
-
-        db_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = client['{0}'.format(db_name)]
-
-        coll = db['sensor']
+        logging.debug("Deleting sensor with serial [{0}] from MongoDB DB."
+                      .format(serial))
 
         result = coll.delete_many({"serial": serial})
 
-        logging.debug("[{0}] sensors have been deleted from " 
-                      "MongoDB database".format(result.deleted_count))
+        logging.debug("[{0}] sensors have been deleted from MongoDB database"
+                      .format(result.deleted_count))
 
-        client.close()
+        db.client.close()
 
         logging.debug("Disconnected from MongoDB")
 
         return
-    
-    
+
+
     @staticmethod
     def get_sensor(serial):
         """
-        Returns a tuble corresponding to the sensor table in the database
+        Returns a tuple corresponding to the sensor table in the database
         for the given sensor serial.
 
         Parameters
@@ -536,29 +595,35 @@ class _SensorMongoDB:
             corresponding values.
         """
 
+        mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
+        db = _SensorMongoDB._get_mongodb(mongodb_name)
+
+        coll = db['sensors']
+
         logging.debug("Retrieving sensor with serial [{0}] "
                       "from MongoDB database.".format(serial))
 
-        client = MongoClient()
-        logging.debug("Connected to MongoDB")
-
-        db_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = client['{0}'.format(db_name)]
-
-        coll = db['sensor']
-
         cursor = coll.find({"serial": serial})
 
-        data = list(cursor)
+        # at most we are only allowed to have one sensor per serial
+        if (cursor.count() > 1):
+            db.client.close()
+            raise RuntimeError(
+                    "More than one sensor found in MongoDB [{0}] "
+                    "for sensor serial [{1}]"
+                    .format(db, serial))
 
-        client.close()
+        data = None
+        for document in cursor:
+            data = document
+
+        logging.debug("[{0}] sensors have been retrieved from MongoDB DB"
+                      .format(data))
+
+        db.client.close()
 
         logging.debug("Disconnected from MongoDB")
 
-        if not data:
-            # return None for empty list
-            return None
-        
         return data
 
 

@@ -11,6 +11,7 @@ __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
 __all__ = ["DATA_KEY", "NAME_KEY", "PRODUCT_KEY", "SENSOR_KEY", "VERSION_KEY",
+           "DATABASE_KEY",
            "STATUS_KEY", "URL_KEY", "STATUS_ERROR", "AUTHOR_KEY",
            "STATUS_SUCCESS", "CONTACT_KEY", "DATE_KEY", "COPYRIGHT_KEY"]
 
@@ -20,6 +21,7 @@ AUTHOR_KEY = "author"
 CONTACT_KEY = "contact"
 COPYRIGHT_KEY = "copyright"
 DATA_KEY = "data"
+DATABASE_KEY = "database"
 DATE_KEY = "date"
 NAME_KEY = "name"
 PRODUCT_KEY = "product"

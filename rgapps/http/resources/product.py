@@ -8,10 +8,11 @@ import logging
 from flask import jsonify
 from flask_restful import Resource
 
+from rgapps.config import ini_config
 from rgapps.domain.product import Product
 from rgapps.utils.constants import NAME_KEY, VERSION_KEY, STATUS_KEY, \
     STATUS_SUCCESS, PRODUCT_KEY, AUTHOR_KEY, DATE_KEY, COPYRIGHT_KEY, \
-    CONTACT_KEY
+    CONTACT_KEY, DATABASE_KEY
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -47,6 +48,11 @@ class RESTProductInfoResource(Resource):
         product[VERSION_KEY] = Product.get_version()
         product[AUTHOR_KEY] = Product.get_author()
         product[DATE_KEY] = Product.get_date()
+
+        if (ini_config.getboolean("SqlLite", "SQLITE_DB_ENABLE")):
+            product[DATABASE_KEY] = "SQLite 3"
+        elif (ini_config.getboolean("MongoDB", "MONGO_DB_ENABLE")):
+            product[DATABASE_KEY] = "MongoDB 3.0.6"
 
         response = OrderedDict()
         response[STATUS_KEY] = STATUS_SUCCESS

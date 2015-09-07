@@ -99,7 +99,7 @@ class EMail:
         msg['Subject'] = subject
         msg.attach(MIMEText(message))
 
-        logging.debug("Sending email to [{0}] usgin Gmail account [{1}]"
+        logging.debug("Sending email to [{0}] using Gmail account [{1}]"
                       .format(recipient, gmail_user))
 
         mail_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)

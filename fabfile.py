@@ -56,7 +56,7 @@ def pack():
 
 
 @task
-def copy_expand_dist():
+def deploy_dist():
     """Used to copy/expand python dist package file to remote server.
     """
     pack()
@@ -74,10 +74,10 @@ def copy_expand_dist():
 
 
 @task
-def deploy_rest_apis():
+def deploy_restapis():
     """Used to deploy the RESTFul APIs to remote server.
     """
-    copy_expand_dist()
+    deploy_dist()
     print( "---installing application in the remote server" )
     # figure out the release name and version
     fullname = local( "python setup.py --fullname", capture=True )
@@ -120,7 +120,7 @@ def deploy_rest_apis():
 def deploy_sensorapp():
     """Used to deploy the sensorapp daemon to remote server.
     """
-    copy_expand_dist()
+    deploy_dist()
     print( "------installing sensorapp in the remote server" )
     # figure out the release name and version
     fullname = local( "python setup.py --fullname", capture=True )
@@ -148,7 +148,7 @@ def deploy_sensorapp():
 
 
 @task
-def deploy_rest_doc():
+def deploy_restdoc():
     """Used to deploy swagger REST API documentation to remote server.
     """
     print( "---deploying the swagger-doc site files to remote server" )

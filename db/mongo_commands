@@ -1,0 +1,10 @@
+To start the mongodb database server on windows:
+
+> c:\mongodb\bin\mongod --verbose --config "c:\mongodb\mongod.cfg"
+
+To stop the mongodb database server on windows:
+
+> c:\mongodb\bin\mongo --verbose
+use admin
+db.shutdownServer()
+

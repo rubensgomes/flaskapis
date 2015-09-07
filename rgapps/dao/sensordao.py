@@ -2,14 +2,17 @@
 
 This is where all the sensor database code is placed.
 """
+import json
 import logging
 import sqlite3
 
 import arrow
+from bson import json_util
 from pymongo import MongoClient
 import pymongo
 
 from rgapps.config import ini_config
+from rgapps.dao.mongodb import MongoDB
 from rgapps.utils.enums import DURATION_ENUM
 from rgapps.utils.exception import IllegalArgumentException
 from rgapps.utils.utility import dict_factory, is_blank, is_number
@@ -148,6 +151,7 @@ class _SensorSQLite:
 
         return data
 
+
     @staticmethod
     def add_sensor(serial, geolocation, location, address, state, name,
                     sensor_type, description):
@@ -202,6 +206,7 @@ class _SensorSQLite:
 
         return
 
+
     @staticmethod
     def del_sensor(serial):
         """
@@ -235,8 +240,8 @@ class _SensorSQLite:
         logging.debug("Disconnected from SQLite DB [{0}]".format(sql_db))
 
         return
-    
-    
+
+
     @staticmethod
     def get_sensor(serial):
         """
@@ -276,81 +281,10 @@ class _SensorSQLite:
         return data
 
 
-
 # PRIVATE USE ONLY
 class _SensorMongoDB:
     """ Private class to provide sensor MongoDB database API code
     """
-
-    @staticmethod
-    def _get_mongodb_client():
-        """
-        Returns a valid and connected MongoClient object.
-
-        Returns
-        -------
-        A MongoClient instance.
-
-        Raises
-        ------
-        Raises MongoDB exception if MongoDB is not up and running, and the
-        client could NOT connect to the database
-        """
-
-        # do not wait to connect to the server
-        client = MongoClient(serverSelectionTimeoutMS=0)
-
-        # run following call to check the server is up and running
-        info = client.server_info()
-
-        logging.debug("Connected to MongoDB [{0}] version [{1}] on OS [{2}]."
-                      .format(client, info["version"], info["targetMinOS"]))
-
-        return client
-
-
-    @staticmethod
-    def _get_mongodb(name):
-        """
-        Returns a valid and connected Mongo Database object.
-
-        Parameters:
-        ----------
-        name: str (required)
-            the name of the MongoDB database
-
-        Returns
-        -------
-        A Mongo Database instance.
-
-        Raises
-        ------
-        Raises MongoDB exception if MongoDB is not up and running, and the
-        client could NOT connect to the database
-        """
-
-        client = _SensorMongoDB._get_mongodb_client()
-
-        db_found = False
-        dbs = client.database_names()
-
-        for db_name in dbs:
-            if (db_name == name):
-                db_found = True
-                break
-
-        if not db_found:
-            client.close()
-            raise IllegalArgumentException("MongoDB DB name [{0}] not found!"
-                                           .format(name))
-
-        db = client['{0}'.format(name)]
-
-        logging.debug("MongoDB with database name [{0}] found."
-                      .format(name))
-
-        return db
-
 
     @staticmethod
     def add_reading(unit, value, utc, serial):
@@ -374,7 +308,7 @@ class _SensorMongoDB:
         """
 
         mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = _SensorMongoDB._get_mongodb(mongodb_name)
+        db = MongoDB.database(mongodb_name)
 
         coll = db['readings']
 
@@ -411,7 +345,7 @@ class _SensorMongoDB:
         """
 
         mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = _SensorMongoDB._get_mongodb(mongodb_name)
+        db = MongoDB.database(mongodb_name)
 
         coll = db['readings']
 
@@ -453,7 +387,7 @@ class _SensorMongoDB:
         """
 
         mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = _SensorMongoDB._get_mongodb(mongodb_name)
+        db = MongoDB.database(mongodb_name)
 
         coll = db['readings']
 
@@ -477,6 +411,11 @@ class _SensorMongoDB:
         db.client.close()
 
         logging.debug("Disconnected from MongoDB")
+
+        if data is not None:
+            # convert any MongoDB ObjectId and others (ie Binary, Code, etc) 
+            # to a string equivalent such as "$oid." and revert back to dict.
+            data = json.loads(json_util.dumps(data))
 
         return data
 
@@ -512,7 +451,7 @@ class _SensorMongoDB:
         """
 
         mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = _SensorMongoDB._get_mongodb(mongodb_name)
+        db = MongoDB.database(mongodb_name)
 
         coll = db['sensors']
 
@@ -558,7 +497,7 @@ class _SensorMongoDB:
         """
 
         mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = _SensorMongoDB._get_mongodb(mongodb_name)
+        db = MongoDB.database(mongodb_name)
 
         coll = db['sensors']
 
@@ -596,7 +535,7 @@ class _SensorMongoDB:
         """
 
         mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = _SensorMongoDB._get_mongodb(mongodb_name)
+        db = MongoDB.database(mongodb_name)
 
         coll = db['sensors']
 
@@ -623,6 +562,11 @@ class _SensorMongoDB:
         db.client.close()
 
         logging.debug("Disconnected from MongoDB")
+
+        if data is not None:
+            # convert any MongoDB ObjectId and others (ie Binary, Code, etc) 
+            # to a string equivalent such as "$oid." and revert back to dict.
+            data = json.loads(json_util.dumps(data))
 
         return data
 

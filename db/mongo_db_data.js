@@ -1,4 +1,5 @@
 use flaskapis;
+db.sensors.drop()
 db.sensors.insert(
         { "_id" : "000006c01f0b",
           "serial" : "000006c01f0b",

@@ -7,7 +7,6 @@ import os
 import unittest
 
 from rgapps.config import ini_config
-from rgapps.config.config import initialize_environment
 from rgapps.domain.sms import SMS
 
 
@@ -18,14 +17,11 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-LOG_FILE_PATH = r"C:\personal\flaskapis\testing.log"
-INI_FILE = r"C:\personal\flaskapis\devsettings.ini"
-
 class SMSTestCase(unittest.TestCase):
 
+    LOG_FILE_PATH = ini_config.get("Logging","LOG_FILE")
+
     def setUp(self):
-        initialize_environment(INI_FILE,
-                                log_file_path=LOG_FILE_PATH)
         return
 
     def tearDown(self):
@@ -33,8 +29,8 @@ class SMSTestCase(unittest.TestCase):
         for handler in handlers:
             handler.close()
             logging.getLogger().removeHandler(handler)
-        if os.path.isfile(LOG_FILE_PATH):
-            os.remove(LOG_FILE_PATH)
+        if os.path.isfile(SMSTestCase.LOG_FILE_PATH):
+            os.remove(SMSTestCase.LOG_FILE_PATH)
 
     def test_send_text(self):
         logging.debug("testing sms send_text")

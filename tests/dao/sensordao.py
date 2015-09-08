@@ -2,12 +2,12 @@
 
 Unit test for rgapps.dao.sensordao module
 """
+from datetime import datetime
 import logging
 import os
 import unittest
-from datetime import datetime
 
-from rgapps.config.config import initialize_environment
+from rgapps.config import ini_config
 from rgapps.dao.sensordao import SensorDAO
 
 
@@ -18,16 +18,14 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-LOG_FILE_PATH = r"C:\personal\flaskapis\testing.log"
-INI_FILE = r"C:\personal\flaskapis\devsettings.ini"
 SERIAL = "TESTING"
 
 
 class DaoTestCase(unittest.TestCase):
 
+    LOG_FILE_PATH = ini_config.get("Logging","LOG_FILE")
+
     def setUp(self):
-        initialize_environment(INI_FILE,
-                               log_file_path=LOG_FILE_PATH)
         DaoTestCase.sensor_db = SensorDAO()
         utc = str(datetime.utcnow())
         logging.debug("adding testing semsor to DB")
@@ -55,8 +53,8 @@ class DaoTestCase(unittest.TestCase):
         for handler in handlers:
             handler.close()
             logging.getLogger().removeHandler(handler)
-        if os.path.isfile(LOG_FILE_PATH):
-            os.remove(LOG_FILE_PATH)
+        if os.path.isfile(DaoTestCase.LOG_FILE_PATH):
+            os.remove(DaoTestCase.LOG_FILE_PATH)
 
     def test_get_sensor(self):
         logging.debug("testing sensor add_reading")

@@ -6,7 +6,7 @@ import logging
 import os
 import unittest
 
-from rgapps.config.config import initialize_environment
+from rgapps.config import ini_config
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
@@ -16,14 +16,12 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-LOG_FILE_PATH = r"C:\personal\flaskapis\testing.log"
-INI_FILE = r"C:\personal\flaskapis\devsettings.ini"
-
 class ConfigTestCase(unittest.TestCase):
 
+    LOG_FILE_PATH = ini_config.get("Logging","LOG_FILE")
+
     def setUp(self):
-        initialize_environment(INI_FILE,
-                                log_file_path=LOG_FILE_PATH)
+        logging.debug("Testing ConfigTestCase...")
         return
 
     def tearDown(self):
@@ -31,11 +29,12 @@ class ConfigTestCase(unittest.TestCase):
         for handler in handlers:
             handler.close()
             logging.getLogger().removeHandler(handler)
-        if os.path.isfile(LOG_FILE_PATH):
-            os.remove(LOG_FILE_PATH)
+        if os.path.isfile(ConfigTestCase.LOG_FILE_PATH):
+            os.remove(ConfigTestCase.LOG_FILE_PATH)
         return
 
     def test_logging(self):
-        logging.debug("testing logging")
+        logging.debug("Log file [{0}]"
+                      .format(ConfigTestCase.LOG_FILE_PATH))
         return
 

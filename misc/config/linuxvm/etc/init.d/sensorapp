@@ -1,0 +1,143 @@
+#!/bin/sh -ah
+#
+# Startup script for the sensorapp daemon
+#
+# chkconfig: 345 90 10
+#
+### BEGIN INIT INFO
+# Provides: sensorapp
+# Required-Start: $network $syslog
+# Required-Stop: $network $syslog
+# Default-Start:
+# Default-Stop:
+# Description: Run control script for sensorapp on Linux.
+# Short-Description: start and stop sensorapp
+### END INIT INFO
+#
+
+prog="sensorapp.py"
+
+# Source function library.
+. /etc/init.d/functions
+
+
+# return status
+RETVAL=0
+
+# process PID
+PID=
+
+# the user to run the sensorapp daemon process
+SENSORAPP_USER="wsgi"
+
+# application.ini and sensorapp.py must be installed here
+SENSORAPP_HOME="/home/wsgi/sensorserver"
+
+# The path to the configuration file
+FLASKAPIS_INI_FILE="${SENSORAPP_HOME}/application.ini"
+export FLASKAPIS_INI_FILE
+
+# Path to the python virtual environment created for the sensorapp daemon
+PYTHONHOME="${SENSORAPP_HOME}/venv"
+export PYTHONHOME
+
+# Path that Python uses to search for modules to load
+PYTHONPATH="${PYTHONHOME}/lib/python3.4"
+export PYTHONPATH
+
+# set a minimalist PATH
+PATH="${PYTHONHOME}/bin:/sbin:/usr/sbin:/bin:/usr/bin"
+export PATH
+
+# For SELinux we need to use 'runuser' not 'su'
+if [ -x "/sbin/runuser" ]; then
+  SU="/sbin/runuser -s /bin/sh"
+else
+  SU="/bin/su"
+fi
+
+start()
+{
+  echo -n $"Starting ${prog}: "
+
+  INSTANCES=`ps --columns 1024 -aef | grep python | \
+             grep ${prog} | wc -l`
+  if [ ${INSTANCES} -ne 0 ]; then
+    RETVAL=0
+  else
+    daemon --user="${SENSORAPP_USER}" \
+           "source ${PYTHONHOME}/bin/activate; \
+            python ${SENSORAPP_HOME}/${prog} 2>&1"
+    RETVAL=${?}
+    [ ${RETVAL} = 0 ] && touch /var/lock/subsys/${prog}
+  fi
+
+  if [ ${RETVAL} -eq 0 ]; then
+    echo_success
+    echo
+  else
+    echo_failure
+    echo
+  fi
+}
+
+stop()
+{
+  echo -n $"Stoping ${prog}: "
+
+  INSTANCES=`ps --columns 1024 -aef | grep python | \
+             grep ${prog} | wc -l`
+  if [ ${INSTANCES} -eq 0 ]; then
+    RETVAL=0
+  else
+    PIDS=`ps --columns 1024 -aef | grep python | \
+          grep ${prog} | awk '{print $2}'`
+    for pid in ${PIDS}; do
+      ${SU} - ${SENSORAPP_USER} \
+            -c "/bin/kill ${pid} 2>&1"
+    done
+    RETVAL=$?
+    [ ${RETVAL} = 0 ] && rm -f /var/lock/subsys/${prog}
+  fi
+
+  if [ ${RETVAL} -eq 0 ]; then
+    echo_success
+    echo
+  else
+    echo_failure
+    echo
+  fi
+}
+
+# See how we were called.
+case "${1}" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    sleep 2
+    start
+    ;;
+  status)
+    INSTANCES=`ps --columns 1024 -aef | grep python | \
+               grep ${prog} | wc -l`
+    if [ ${INSTANCES} -eq 0 ]; then
+      echo "${prog} is stopped"
+    else
+      if [ ${INSTANCES} -eq 1 ]; then
+        echo "${prog} is running 1 instance..."
+      else
+        echo "${prog} is running ${INSTANCES} instances..."
+      fi
+    fi
+    ;;
+  *)
+    echo "Usage: ${prog} {start|stop|restart|status}"
+    exit 1
+esac
+
+exit ${RETVAL}

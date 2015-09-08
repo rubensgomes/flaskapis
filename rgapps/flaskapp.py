@@ -9,7 +9,6 @@ import sys
 from flask import Flask
 
 from rgapps.config import ini_config
-from rgapps.config.config import initialize_environment
 from rgapps.http.routes import setup_routes
 
 
@@ -20,16 +19,11 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-# INI_FILE = r"/home/wsgi/flaskapis/application.ini"
-INI_FILE = r"C:\projects\flaskapis\devsettings.ini"
-
 # global variable: to be defined in run()
 globalFlaskApp = None
 
 def run():
     # the main run funcion
-    print("initializing the environment...")
-    initialize_environment(INI_FILE)
 
     try:
 

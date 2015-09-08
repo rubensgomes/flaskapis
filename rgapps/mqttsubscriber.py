@@ -10,7 +10,6 @@ import sys
 import time
 
 from rgapps.config import ini_config
-from rgapps.config.config import initialize_environment
 from rgapps.mqtt.mqtt import MQTTSubscriber
 from rgapps.utils.utility import write_to_file
 
@@ -21,9 +20,6 @@ __license__ = "All Rights Reserved"
 __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
-
-# INI_FILE = r"/home/wsgi/mqttdaemon/application.ini"
-INI_FILE = r"C:\projects\flaskapis\devsettings.ini"
 
 def subscribe_sensor_data():
     """ Function used to subscribe to topic destination where sensor readings
@@ -74,9 +70,6 @@ def run():
 
     This function should be called to start the system.
     """
-
-    print("initializing the environment...")
-    initialize_environment(INI_FILE)
 
     from rgapps.utils.utility import get_log_file_handles
     logger_fds = get_log_file_handles(logging.getLogger())

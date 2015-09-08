@@ -15,7 +15,6 @@ from requests.exceptions import (ConnectionError, Timeout,
                                  RequestException, HTTPError)
 
 from rgapps.config import ini_config
-from rgapps.config.config import initialize_environment
 from rgapps.dao.sensordao import SensorDAO
 from rgapps.domain.myemail import EMail
 from rgapps.utils.constants import SENSOR_KEY, DATA_KEY
@@ -29,8 +28,6 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-
-INI_FILE = r"/home/wsgi/sensorserver/application.ini"
 
 # global variable: to be defined in run()
 globalFlaskApp = None
@@ -49,8 +46,6 @@ def read_store_readings ():
     error_flag = False
 
     headers = {'content-type': 'application/json'}
-
-    logging.debug("reading INI settings from {0} file".format(INI_FILE))
 
     sensor_url = ini_config.get("Sensor", "SENSOR_TEMPERATURE_URL")
     sensor_serial = ini_config.get("Sensor", "SENSOR_TEMPERATURE_SERIAL")
@@ -211,9 +206,6 @@ def run():
 
     This function should be called to start the system.
     """
-
-    print("initializing the environment...")
-    initialize_environment(INI_FILE)
 
     instance_path = ini_config.get("Flask", "INSTANCE_PATH")
 

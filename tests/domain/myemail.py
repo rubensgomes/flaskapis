@@ -6,7 +6,7 @@ import logging
 import os
 import unittest
 
-from rgapps.config.config import initialize_environment
+from rgapps.config import ini_config
 from rgapps.domain.myemail import EMail
 
 
@@ -17,14 +17,11 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
-LOG_FILE_PATH = r"C:\personal\flaskapis\testing.log"
-INI_FILE = r"C:\personal\flaskapis\devsettings.ini"
-
 class MyEmailTestCase(unittest.TestCase):
 
+    LOG_FILE_PATH = ini_config.get("Logging","LOG_FILE")
+
     def setUp(self):
-        initialize_environment(INI_FILE,
-                                log_file_path=LOG_FILE_PATH)
         return
 
     def tearDown(self):
@@ -32,8 +29,8 @@ class MyEmailTestCase(unittest.TestCase):
         for handler in handlers:
             handler.close()
             logging.getLogger().removeHandler(handler)
-        if os.path.isfile(LOG_FILE_PATH):
-            os.remove(LOG_FILE_PATH)
+        if os.path.isfile(MyEmailTestCase.LOG_FILE_PATH):
+            os.remove(MyEmailTestCase.LOG_FILE_PATH)
         return
 
     def test_send_email(self):

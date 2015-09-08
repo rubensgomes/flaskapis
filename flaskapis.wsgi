@@ -10,4 +10,14 @@ __maintainer__ = "Rubens Gomes"
 __email__ = "rubens.s.gomes@gmail.com"
 __status__ = "Experimental"
 
+"""
+
+ATTENTION: It is not possible to pass SetEnv environment variables
+defined in the HTTP configuration files to the WSGI script.  Therefore,
+we *MUST* define the following environment variable here.
+
+"""
+import os
+os.environ["FLASKAPIS_INI_FILE"] = "/home/wsgi/flaskapis/application.ini"
+
 from rgapps.http.wsgiapp import app as application

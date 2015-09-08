@@ -2,21 +2,18 @@
 
 This is where all the sensor database code is placed.
 """
-import json
+
+
 import logging
-import sqlite3
 
 import arrow
-from bson import json_util
-from pymongo import MongoClient
-import pymongo
 
 from rgapps.config import ini_config
-from rgapps.dao.mongodb import MongoDB
 from rgapps.utils.enums import DURATION_ENUM
 from rgapps.utils.exception import IllegalArgumentException
-from rgapps.utils.utility import dict_factory, is_blank, is_number
-
+from rgapps.utils.utility import is_blank, is_number
+from rgapps.dao.mongosensor import MongoSensor
+from rgapps.dao.sqlitesensor import SQLiteSensor
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
 __copyright__ = "Copyright (c) 2015 Rubens S. Gomes"
@@ -27,553 +24,19 @@ __status__ = "Experimental"
 
 __all__ = ["SensorDAO"]
 
-# PRIVATE USE ONLY
-class _SensorSQLite:
-    """ Private class to provide sensor SQLite database API code
-    """
-
-    @staticmethod
-    def add_reading(unit, value, utc, serial):
-        """
-        Adds given measurement data to sensor database
-
-        Parameters
-        ----------
-        unit:  str (required)
-            degF, degC, degF.
-        value:  float (required)
-            a float number
-        utc: str (required)
-            UTC timestamp of the reading
-        serial: str (required)
-            sensor unique serial number
-
-        Returns
-        -------
-            nothing.
-        """
-      
-        sql_db = ini_config.get("SqlLite", "SQLITE_DB")
-        conn = sqlite3.connect(sql_db)
-        logging.debug("Connected to SQLite DB [{0}]".format(sql_db))
-
-        c = conn.cursor()
-        c.execute("INSERT INTO readings (id, unit, value, utc, serial) "
-                  "VALUES (?,?,?,?,?)",
-                  (None, unit, value, utc, serial))
-
-        conn.commit()
-        logging.debug("Measurement has been committed in SQLite database")
-        conn.close()
-
-        logging.debug("Disconnected from SQLite DB [{0}]".format(sql_db))
-
-        return
-
-    @staticmethod
-    def del_readings(serial):
-        """
-        Deletes all measurement data for the given serial
-
-        Parameters
-        ----------
-        serial: str (required)
-            sensor unique serial number
-
-        Returns
-        -------
-            nothing.
-        """
-
-        logging.debug("Deleting all measurements in SQLite database for "
-                      "serial [{0}]".format(serial))
-
-        sql_db = ini_config.get("SqlLite", "SQLITE_DB")
-        conn = sqlite3.connect(sql_db)
-        logging.debug("Connected to SQLite DB [{0}]".format(sql_db))
-
-        c = conn.cursor()
-        c.execute("DELETE FROM readings WHERE serial = '{0}' "
-                   .format(serial))
-
-        conn.commit()
-        logging.debug("Measurements have been deleted from SQLite database")
-        conn.close()
-
-        logging.debug("Disconnected from SQLite DB [{0}]".format(sql_db))
-
-        return
-
-
-    @staticmethod
-    def get_readings(serial, current_datetime, past_datetime):
-        """
-        Returns .....
-
-        Parameters
-        ----------
-        serial: str (required)
-            sensor unique serial number
-        current_datetime: str (required)
-            a valid UTC timestamp
-        past_datetime: str (required)
-            a valid UTC timestamp
-
-        Returns
-        -------
-        dict:
-            A sensor dictionary containing column names as keys, and
-            corresponding values.
-        """
-
-        logging.debug("Retrieving readings from sensor with serial [{0}] "
-                       "between [{1}] and [{2}] from SQLite database."
-                      .format(serial, past_datetime, current_datetime))
-
-        sql = ("SELECT utc, serial, unit, value FROM readings WHERE serial = '{0}' "
-               "AND utc BETWEEN '{1}' AND '{2}' "
-               "ORDER BY utc ASC"
-               .format(serial, past_datetime, current_datetime))
-
-        sql_db = ini_config.get("SqlLite", "SQLITE_DB")
-        conn = sqlite3.connect(sql_db)
-        logging.debug("Connected to SQLite DB [{0}]".format(sql_db))
-
-        c = conn.cursor()
-        c.row_factory = dict_factory
-        cursor = c.execute(sql)
-        data = cursor.fetchall()
-
-        conn.commit()
-        conn.close()
-
-        logging.debug("Disconnected from SQLite DB [{0}]".format(sql_db))
-
-        return data
-
-
-    @staticmethod
-    def add_sensor(serial, geolocation, location, address, state, name,
-                    sensor_type, description):
-        """
-        Adds given sensor data to sensor database
-
-        Parameters
-        ----------
-        serial:  str (required)
-            sensor unique serial number.
-        geolocation:  str (optional)
-            GEO Location: LATITUDE, LONGITUDE 
-        location: str (optional)
-            ENGINE, HOME, PATIO, ...
-        address: str (optional)
-            Address where sensor is located
-        state: str (required)
-            UP, DOWN, ...
-        name: str (required)
-            name to help identify this sensor
-        sensor_type: str (required)
-            HUMIDITY, PRESSURE, TEMPERATURE, VELOCITY,  ...
-        description: str(optional)
-            helps describe this sensor
-
-        Returns
-        -------
-            nothing.
-        """
-
-        logging.debug("Inserting sensor in SQLite database: "
-                      "serial [{0}], state [{1}], name [{2}], type [{3}]"
-                      .format(serial, state, name, sensor_type))
-
-        sql_db = ini_config.get("SqlLite", "SQLITE_DB")
-        conn = sqlite3.connect(sql_db)
-        logging.debug("Connected to SQLite DB [{0}]".format(sql_db))
-
-        c = conn.cursor()
-
-        c.execute("INSERT INTO sensor ( serial, geolocation, location, "
-                    " address, state, name, type, description ) "
-                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                  (serial, geolocation, location, address, state, name,
-                    sensor_type, description))
-
-        conn.commit()
-        logging.debug("sensor has been committed in database")
-        conn.close()
-
-        logging.debug("Disconnected from SQLite DB [{0}]".format(sql_db))
-
-        return
-
-
-    @staticmethod
-    def del_sensor(serial):
-        """
-        Deletes sensor data for the given serial
-
-        Parameters
-        ----------
-        serial: str (required)
-            sensor unique serial number
-
-        Returns
-        -------
-            nothing.
-        """
-
-        logging.debug("Deleting sensor in database for "
-                      "serial [{0}]".format(serial))
-
-        sql_db = ini_config.get("SqlLite", "SQLITE_DB")
-        conn = sqlite3.connect(sql_db)
-        logging.debug("Connected to SQLite DB [{0}]".format(sql_db))
-
-        c = conn.cursor()
-        c.execute("DELETE FROM sensor WHERE serial = '{0}' "
-                   .format(serial))
-
-        conn.commit()
-        logging.debug("Sensor has been deleted from database")
-        conn.close()
-
-        logging.debug("Disconnected from SQLite DB [{0}]".format(sql_db))
-
-        return
-
-
-    @staticmethod
-    def get_sensor(serial):
-        """
-        Returns a tuble corresponding to the sensor table in the database
-        for the given sensor serial.
-
-        Parameters
-        ----------
-        serial: str (required)
-            sensor unique serial number
-
-        Returns
-        -------
-        dict:
-            A sensor dictionary containing column names as keys, and
-            corresponding values.
-        """
-
-        logging.debug("Retrieving sensor with serial [{0}] from database."
-                      .format(serial))
-
-        sql_db = ini_config.get("SqlLite", "SQLITE_DB")
-        conn = sqlite3.connect(sql_db)
-        logging.debug("Connected to SQLite DB [{0}]".format(sql_db))
-
-        c = conn.cursor()
-        c.row_factory = dict_factory
-        cursor = c.execute(("SELECT * FROM sensor WHERE serial = '{0}'"
-                             .format(serial)))
-        data = cursor.fetchone()
-
-        conn.commit()
-        conn.close()
-
-        logging.debug("Disconnected from SQLite DB [{0}]".format(sql_db))
-
-        return data
-
-
-# PRIVATE USE ONLY
-class _SensorMongoDB:
-    """ Private class to provide sensor MongoDB database API code
-    """
-
-    @staticmethod
-    def add_reading(unit, value, utc, serial):
-        """
-        Adds given measurement data to sensor database
-
-        Parameters
-        ----------
-        unit:  str (required)
-            degF, degC, degF.
-        value:  float (required)
-            a float number
-        utc: str (required)
-            UTC timestamp of the reading
-        serial: str (required)
-            sensor unique serial number
-
-        Returns
-        -------
-            nothing.
-        """
-
-        mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = MongoDB.database(mongodb_name)
-
-        coll = db['readings']
-
-        result = coll.insert_one({"unit": unit,
-                                  "value": value,
-                                  "utc": utc,
-                                  "serial": serial
-                                 })
-
-        logging.debug("Sensor reading with id [{0}] has been inserted "
-                      "into MongoDB database"
-                      .format(result.inserted_id))
-
-        db.client.close()
-
-        logging.debug("Disconnected from MongoDB")
-
-        return
-
-
-    @staticmethod
-    def del_readings(serial):
-        """
-        Deletes all measurement data for the given serial
-
-        Parameters
-        ----------
-        serial: str (required)
-            sensor unique serial number
-
-        Returns
-        -------
-            nothing.
-        """
-
-        mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = MongoDB.database(mongodb_name)
-
-        coll = db['readings']
-
-        logging.debug("Deleting all readings in the MongoDB collection [{0}] "
-                      "for sensor serial [{1}]."
-                      .format(coll, serial))
-
-        result = coll.delete_many( { "serial": serial } )
-
-        logging.debug("[{0}] sensor readings have been deleted from " 
-                      "MongoDB database".format(result.deleted_count))
-
-        db.client.close()
-
-        logging.debug("Disconnected from MongoDB")
-
-        return
-
-
-    @staticmethod
-    def get_readings(serial, current_datetime, past_datetime):
-        """
-        Returns .....
-
-        Parameters
-        ----------
-        serial: str (required)
-            sensor unique serial number
-        current_datetime: str (required)
-            a valid UTC timestamp
-        past_datetime: str (required)
-            a valid UTC timestamp
-
-        Returns
-        -------
-        dict:
-            A sensor dictionary containing column names as keys, and
-            corresponding values.
-        """
-
-        mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = MongoDB.database(mongodb_name)
-
-        coll = db['readings']
-
-        logging.debug("Retrieving readings for sensor with serial [{0}] "
-                       "between [{1}] and [{2}] from MongoDB database."
-                      .format(serial, past_datetime, current_datetime))
-
-        cursor = coll.find({ "serial": serial, 
-                             "utc": { "$lt": current_datetime },
-                             "utc": { "$gt": past_datetime }
-                           }).sort("utc", pymongo.ASCENDING)
-
-        data = None
-
-        if (cursor.count() > 0):
-            data = list(cursor)
-
-        logging.debug("Readings [{0}] retrieved from MongoDB for sensor with " 
-                      "serial [{1}]".format(data, serial))
-
-        db.client.close()
-
-        logging.debug("Disconnected from MongoDB")
-
-        if data is not None:
-            # convert any MongoDB ObjectId and others (ie Binary, Code, etc) 
-            # to a string equivalent such as "$oid." and revert back to dict.
-            data = json.loads(json_util.dumps(data))
-
-        return data
-
-
-    @staticmethod
-    def add_sensor(serial, geolocation, location, address, state, name,
-                    sensor_type, description):
-        """
-        Adds given sensor data to sensor database
-
-        Parameters
-        ----------
-        serial:  str (required)
-            sensor unique serial number.
-        geolocation:  str (optional)
-            GEO Location: LATITUDE, LONGITUDE 
-        location: str (optional)
-            ENGINE, HOME, PATIO, ...
-        address: str (optional)
-            Address where sensor is located
-        state: str (required)
-            UP, DOWN, ...
-        name: str (required)
-            name to help identify this sensor
-        sensor_type: str (required)
-            HUMIDITY, PRESSURE, TEMPERATURE, VELOCITY,  ...
-        description: str(optional)
-            helps describe this sensor
-
-        Returns
-        -------
-            nothing.
-        """
-
-        mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = MongoDB.database(mongodb_name)
-
-        coll = db['sensors']
-
-        logging.debug("Adding following sensor to MongoDB database: "
-                      "serial [{0}], state [{1}], name [{2}], type [{3}]"
-                      .format(serial, state, name, sensor_type))
-
-        result = coll.insert_one({"_id" : serial,
-                                  "serial": serial,
-                                  "geolocation": geolocation,
-                                  "location": location,
-                                  "address": address,
-                                  "state": state,
-                                  "name": name,
-                                  "type": sensor_type,
-                                  "description": description
-                                })
-
-        logging.debug("Sensor with id [{0}] has been inserted "
-                      "into MongoDB database"
-                      .format(result.inserted_id))
-
-        db.client.close()
-
-        logging.debug("Disconnected from MongoDB")
-
-        return
-
-
-    @staticmethod
-    def del_sensor(serial):
-        """
-        Deletes sensor data for the given serial
-
-        Parameters
-        ----------
-        serial: str (required)
-            sensor unique serial number
-
-        Returns
-        -------
-            nothing.
-        """
-
-        mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = MongoDB.database(mongodb_name)
-
-        coll = db['sensors']
-
-        logging.debug("Deleting sensor with serial [{0}] from MongoDB DB."
-                      .format(serial))
-
-        result = coll.delete_many({"serial": serial})
-
-        logging.debug("[{0}] sensors have been deleted from MongoDB database"
-                      .format(result.deleted_count))
-
-        db.client.close()
-
-        logging.debug("Disconnected from MongoDB")
-
-        return
-
-
-    @staticmethod
-    def get_sensor(serial):
-        """
-        Returns a tuple corresponding to the sensor table in the database
-        for the given sensor serial.
-
-        Parameters
-        ----------
-        serial: str (required)
-            sensor unique serial number
-
-        Returns
-        -------
-        dict:
-            A sensor dictionary containing column names as keys, and
-            corresponding values.
-        """
-
-        mongodb_name = ini_config.get("MongoDB", "MONGO_DB")
-        db = MongoDB.database(mongodb_name)
-
-        coll = db['sensors']
-
-        logging.debug("Retrieving sensor with serial [{0}] "
-                      "from MongoDB database.".format(serial))
-
-        cursor = coll.find({"serial": serial})
-
-        # at most we are only allowed to have one sensor per serial
-        if (cursor.count() > 1):
-            db.client.close()
-            raise RuntimeError(
-                    "More than one sensor found in MongoDB [{0}] "
-                    "for sensor serial [{1}]"
-                    .format(db, serial))
-
-        data = None
-        for document in cursor:
-            data = document
-
-        logging.debug("[{0}] sensors have been retrieved from MongoDB DB"
-                      .format(data))
-
-        db.client.close()
-
-        logging.debug("Disconnected from MongoDB")
-
-        if data is not None:
-            # convert any MongoDB ObjectId and others (ie Binary, Code, etc) 
-            # to a string equivalent such as "$oid." and revert back to dict.
-            data = json.loads(json_util.dumps(data))
-
-        return data
 
 
 class SensorDAO:
     """ Class API to provide sensor database API code
     """
+
+    SENSOR_DB = None
+    # Strategy design pattern along with duck typing.
+    if (ini_config.getboolean("SqlLite", "SQLITE_DB_ENABLE")):
+        SENSOR_DB = SQLiteSensor()
+    elif (ini_config.getboolean("MongoDB", "MONGO_DB_ENABLE")):
+        SENSOR_DB = MongoSensor()
+
 
     @staticmethod
     def add_reading(unit, value, utc, serial):
@@ -617,12 +80,10 @@ class SensorDAO:
                                             "is not registered in the system."
                                             .format(serial))
 
-        if (ini_config.getboolean("SqlLite", "SQLITE_DB_ENABLE")):
-            _SensorSQLite.add_reading(unit, value, utc, serial)
-        elif (ini_config.getboolean("MongoDB", "MONGO_DB_ENABLE")):
-            _SensorMongoDB.add_reading(unit, value, utc, serial)
+        SensorDAO.SENSOR_DB.add_reading(unit, value, utc, serial)
 
         return
+
 
     @staticmethod
     def del_readings(serial):
@@ -642,10 +103,7 @@ class SensorDAO:
         if is_blank(serial):
             raise IllegalArgumentException("serial is required.")
 
-        if (ini_config.getboolean("SqlLite", "SQLITE_DB_ENABLE")):
-            _SensorSQLite.del_readings(serial)
-        elif (ini_config.getboolean("MongoDB", "MONGO_DB_ENABLE")):
-            _SensorMongoDB.del_readings(serial)
+        SensorDAO.SENSOR_DB.del_readings(serial)
 
         return
 
@@ -740,14 +198,11 @@ class SensorDAO:
         current_datetime = str(arrow_utcnow)
         past_datetime = str(arrow_utcpast)
 
-        if (ini_config.getboolean("SqlLite", "SQLITE_DB_ENABLE")):
-            data = _SensorSQLite.get_readings(serial, current_datetime,
-                                              past_datetime)
-        elif (ini_config.getboolean("MongoDB", "MONGO_DB_ENABLE")):
-            data = _SensorMongoDB.get_readings(serial, current_datetime, 
-                                               past_datetime)
+        data = SensorDAO.SENSOR_DB.get_readings(serial, current_datetime, 
+                                                past_datetime)
 
         return data
+
 
     @staticmethod
     def add_sensor(serial, geolocation, location, address, state, name,
@@ -797,16 +252,11 @@ class SensorDAO:
                                             "is already registered."
                                             .format(serial))
 
-        if (ini_config.getboolean("SqlLite", "SQLITE_DB_ENABLE")):
-            _SensorSQLite.add_sensor(serial, geolocation,
-                                     location, address, state,
-                                     name, sensor_type, description)
-        elif (ini_config.getboolean("MongoDB", "MONGO_DB_ENABLE")):
-            _SensorMongoDB.add_sensor(serial, geolocation, location, 
-                                      address, state, name, sensor_type, 
-                                      description)
+        SensorDAO.SENSOR_DB.add_sensor(serial, geolocation, location, address, 
+                                       state, name, sensor_type, description)
 
         return
+
 
     @staticmethod
     def del_sensor(serial):
@@ -826,14 +276,11 @@ class SensorDAO:
         if is_blank(serial):
             raise IllegalArgumentException("serial is required.")
 
-        if (ini_config.getboolean("SqlLite", "SQLITE_DB_ENABLE")):
-            _SensorSQLite.del_sensor(serial)
-        elif (ini_config.getboolean("MongoDB", "MONGO_DB_ENABLE")):
-            _SensorMongoDB.del_sensor(serial)
+        SensorDAO.SENSOR_DB.del_sensor(serial)
 
         return
-    
-    
+
+
     @staticmethod
     def get_sensor(serial):
         """
@@ -855,10 +302,7 @@ class SensorDAO:
         if is_blank(serial):
             raise IllegalArgumentException("serial is required.")
 
-        if (ini_config.getboolean("SqlLite", "SQLITE_DB_ENABLE")):
-            data = _SensorSQLite.get_sensor(serial)
-        elif (ini_config.getboolean("MongoDB", "MONGO_DB_ENABLE")):
-            data = _SensorMongoDB.get_sensor(serial)
+        data = SensorDAO.SENSOR_DB.get_sensor(serial)
 
         return data
 

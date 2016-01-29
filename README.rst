@@ -1,6 +1,6 @@
-==================
-The rgapps Project
-==================
+=================
+misc-python-projs
+=================
 
 The "misc-python-projs" is a folder containing **experimental** software development 
 project written in the Python_ programming language.  This folder was created by

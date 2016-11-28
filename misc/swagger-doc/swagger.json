@@ -15,8 +15,8 @@
         },
         "version": "0.1"
     },
-    "host": "restportal.com",
-    "basePath": "/api",
+    "host": "api.restportal.com",
+    "basePath": "/",
     "schemes": [
         "http"
     ],

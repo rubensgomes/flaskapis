@@ -8,7 +8,7 @@ written in the Python_ programming language.  This folder was created by
 IoT (Internet of Thing) sensor collector application running on the 
 `Raspberry Pi`_.
 
-Version of Python used: 3.5
+Version of Python used: **3.5**
 
 RESTFul APIs
 ------------

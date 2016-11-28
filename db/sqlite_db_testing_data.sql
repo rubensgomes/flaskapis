@@ -20,7 +20,7 @@ INSERT INTO sensor (
   '000006c01f0b',
   '51.5033630,-0.1276250',
   'Living Room',
-  '4102 Drew Hill Lane, Chapel Hill, NC - USA',
+  '2800 BRAZOS BLVD, EULESS, TX - USA',
   'UP',
   'DS18B20',
   'TEMPERATURE',

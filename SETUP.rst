@@ -31,51 +31,98 @@ Fix For winrandom Module Not Found
 
 ImportError: No module named 'winrandom'::
 
-To fix this, you have to go in the source code for the Crypto lib and fix an import statement. 
-If Python is installed in C:\Python\Python35\. The full path of the file to change is:
+  To fix this, you have to go in the source code for the Crypto lib and fix an import statement. 
+  If Python is installed in C:\Python\Python35\. The full path of the file to change is:
 
-C:\Python\Python35\Lib\site-packages\Crypto\Random\OSRNG\nt.py
+  C:\Python\Python35\Lib\site-packages\Crypto\Random\OSRNG\nt.py
 
-In that file, change
+  In that file, change
 
-import winrandom
-to
+  import winrandom
+  to
 
-from . import winrandom
+  from . import winrandom
 
 Python Virtualenv
 -----------------
 
-- Set up a virtualenv in the "<project root>" where <project root> is where 
-  this project is installed.  For example if <project root> is "C:\projects_GIT>" 
+- Set up a virtualenv in the "<project root>" where 
+  this project is installed.  For example if <project root> is "C:\\projects_GIT>"::
+
     C:\projects_GIT> virtualenv venv
     C:\projects_GIT> cd venv
-- Activate the virtualenv, and install the required Python flaskapis libraries:
+- Activate the virtualenv, and install the required Python flaskapis libraries::
+
     C:\projects_GIT> Scripts\activate.bat
     (venv) C:\projects_GIT\venv>pip install -r ..\requirements.txt
-- Deactivate, and exit the shell prompt
+- Deactivate, and exit the shell prompt::
+
     (venv) C:\projects_GIT\venv> Scripts\deactivate.bat
 
 Eclipse PyDev Installation
 --------------------------
 
-- Download and innstall eclipse and the eclipse PyDev plugin
-- Configure PyDev Python Interpreter to point to the virtualenv (for example):
+- Download and innstall eclipse and the eclipse `PyDev`_ plugin
+- Configure PyDev Python Interpreter to point to the virtualenv (for example)::
+
     "C:\projects_GIT\venv\Scripts\python.exe"
-- Add the "C:\projects_GIT\venv\Libs\site-packages" to the PyDev Interpreter 
-  System PYTHONPATH
+- Add the "C:\\projects_GIT\\venv\\Libs\\site-packages" to the PyDev Interpreter System PYTHONPATH
 
 SQLite Installation
 -------------------
 
-- install SQLite (.exe binary file) from http://www.sqlite.org/ in "C:\SQLite"
-- Add environment variable "SQLITE" to point to "C:\SQLite"
-- Add "C:\SQLite" to the Path environment.
+- install the latest **3** version of `SQLite`_ (.exe binary file) in "C:\\SQLite"
+- Add environment variable "SQLITE" to point to "C:\\SQLite"
+- Add "C:\\SQLite" to the Path environment.
+
+SQLite Database Instance Configuration
+--------------------------------------
+
+**ATTENTION**:  The *rgapps* Python applications support either the SQLite or the MongoDB 
+database based on configuration in the corresponding application .ini file.
+  
+- In order to use the SQLite database create a SQLite database instance.  For example, 
+  to create a database instance *flaskapis.db* under the "C:\\SQLite",  from the current 
+  folder shell prompt, run::
+
+    sqlite3 c:\SQLite\flaskapis.db < db\sqlite_db_schema.sql
+
+- Now load the above database instance, running the following command from the same 
+  current folder shell prompt::
+
+    sqlite3 c:\SQLite\flaskapis.db < db\sqlite_db_data.sql
 
 MongoDB Installation
 --------------------
 
-- Download and install MongoDB
+- Download and install the latest community ediction (without SSL support) 
+  of  `MongoDB`_.
+
+MongoDB Database Instance Configuration
+---------------------------------------
+
+**ATTENTION**:  The *rgapps* Python applications support either the SQLite or the MongoDB 
+database based on configuration in the corresponding application .ini file.
+  
+- Set up the mongodb environment dbpath as per configuration in "db\\mongod.conf"::
+
+    md C:\MongoDB\data\db
+
+- Start the mongodb daemon process as follows from the current folder shell::
+
+    mongod --verbose --config "db\mongod.conf"
+
+- Connect to the mongodb daemon process and create a MongoDB instance by running
+  the following command from the current folder shell::
+
+    mongo --verbose < db\mongo_db_data.js
+
+- Stop the mongodb daemon process as follows::
+
+    mongo --verbose
+    use admin
+    db.shutdownServer()
+    quit()
 
 Server Deployment Machine Configuration
 =======================================
@@ -115,5 +162,8 @@ The following steps were done on Rubens' VM Linux server:
 - Load "db/sqlite_db_schema.sql" schema onto "flaskapis.db" database
 
 
+.. _MongoDB: http://www.mongodb.com/
+.. _PyDev http://www.pydev.org/
 .. _Python: http://www.python.org/
+.. _SQLite: http://www.sqlite.org/
 

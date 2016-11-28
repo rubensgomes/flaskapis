@@ -5,7 +5,18 @@ db.sensors.insert(
           "serial" : "000006c01f0b",
           "geolocation" : "51.5033630,-0.1276250",
           "location" : "Living Room",
-          "address" : "4102 Drew Hill Lane, Chapel Hill, NC - USA",
+          "address" : "2800 BRAZOS BLVD, EULESS, TX - USA",
+          "state" : "UP",
+          "name" : "DS18B20",
+          "type" : "TEMPERATURE",
+          "description": "Dallas Semiconductor digital temperature sensor"
+         } );
+db.sensors.insert(
+        { "_id" : "testing",
+          "serial" : "testing",
+          "geolocation" : "51.5033630,-0.1276250",
+          "location" : "Living Room",
+          "address" : "2800 BRAZOS BLVD, EULESS, TX - USA",
           "state" : "UP",
           "name" : "DS18B20",
           "type" : "TEMPERATURE",

@@ -2,11 +2,13 @@
 misc-python-projs
 =================
 
-The "misc-python-projs" is a folder containing **experimental** software development 
-project written in the Python_ programming language.  This folder was created by
-`Rubens Gomes`_ to develop a few utility RESTful APIs, and to experiment with programming
-an IoT (Internet of Thing) sensor collector application running on the `Raspberry Pi`_.
+The "misc-python-projs" is a folder containing **experimental** software  
+written in the Python_ programming language.  This folder was created by
+`Rubens Gomes`_ to develop utility RESTful APIs, and to program an 
+IoT (Internet of Thing) sensor collector application running on the 
+`Raspberry Pi`_.
 
+Version of Python used: 3.5
 
 RESTFul APIs
 ------------

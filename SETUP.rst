@@ -2,48 +2,66 @@
 Environment Setup Configuration
 ===============================
 
+Windows Client Development Machine Configuration
+================================================
 
-Client Development Machine Configuration
-========================================
+Microsoft Visual C++
+--------------------
 
-The following steps were done on the local development machine:
+Download and install 
+`Microsoft Visual C++ Build Tools
+<http://landinghub.visualstudio.com/visual-cpp-build-tools>`_.
 
 Python Configuration
 --------------------
 
-- install Microsoft Visual C++ Compiler for Python 2.7 from 
-  http://aka.ms/vcpython27
-- install latest Python 2.7 in "C:\Python27"
-    Configure  the following environment variables
-    PYTHONHOME="C:\Python27"
-    Path=...;%PYTHONHOME%;%PYTHONHOME%\Scripts
-- install pip following instructions from 
-  https://pip.pypa.io/en/latest/installing.html
-- install both Fabric/Virtualenv. Fabric  is needed on the local machine to do 
-  remote deployment.  And virtualenv is needed to set up the development 
-  environment
-    pip install fabric
+Install and configure Python on Windows PC:
+
+- Download and install the latest version of `Python`_ 3.5 in "C:\Python\Python35"
+- Configure  the following Windows environment variables
+    PYTHONHOME="C:\Python\Python35"
+    Path=...;%PYTHONHOME%;%PYTHONHOME%\Scripts;...
+- Install virtualenv
     pip install virtualenvwrapper
+- Install fabric3
+    pip install fabric3
+
+Fix For winrandom Module Not Found
+----------------------------------
+
+ImportError: No module named 'winrandom'::
+
+To fix this, you have to go in the source code for the Crypto lib and fix an import statement. 
+If Python is installed in C:\Python\Python35\. The full path of the file to change is:
+
+C:\Python\Python35\Lib\site-packages\Crypto\Random\OSRNG\nt.py
+
+In that file, change
+
+import winrandom
+to
+
+from . import winrandom
 
 Python Virtualenv
 -----------------
 
-- Set up a virtualenv in "C:\<project root>\" where <project root> is where 
-  this project is installed.  In the example, below <project root> is 
-  "C:\projects_GIT"
-  C:\projects_GIT> virtualenv venv
-  C:\projects_GIT> cd venv
+- Set up a virtualenv in the "<project root>" where <project root> is where 
+  this project is installed.  For example if <project root> is "C:\projects_GIT>" 
+    C:\projects_GIT> virtualenv venv
+    C:\projects_GIT> cd venv
 - Activate the virtualenv, and install the required Python flaskapis libraries:
-  C:\projects_GIT> Scripts\activate.bat
-  (venv) C:\projects_GIT\venv>pip install -r ..\flaskapis\requirements.txt
+    C:\projects_GIT> Scripts\activate.bat
+    (venv) C:\projects_GIT\venv>pip install -r ..\requirements.txt
 - Deactivate, and exit the shell prompt
-  (venv) C:\projects_GIT\venv> Scripts\deactivate.bat
+    (venv) C:\projects_GIT\venv> Scripts\deactivate.bat
 
 Eclipse PyDev Installation
 --------------------------
-- install eclipse and PyDev
-- Configure PyDev Python Interpreter to point to the virtualenv:
-  "C:\projects_GIT\venv\Scripts\python.exe"
+
+- Download and innstall eclipse and the eclipse PyDev plugin
+- Configure PyDev Python Interpreter to point to the virtualenv (for example):
+    "C:\projects_GIT\venv\Scripts\python.exe"
 - Add the "C:\projects_GIT\venv\Libs\site-packages" to the PyDev Interpreter 
   System PYTHONPATH
 
@@ -95,4 +113,7 @@ The following steps were done on Rubens' VM Linux server:
 
 - create "flaskapis.db" SQLite database in "/home/wsgi/flaskapis"
 - Load "db/sqlite_db_schema.sql" schema onto "flaskapis.db" database
+
+
+.. _Python: http://www.python.org/
 

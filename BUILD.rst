@@ -50,8 +50,8 @@ the root of the *rgapps* project folder in a Windows DOS shell prompt::
 To Deploy the REST API doc
 --------------------------
 
-To deploy the *rgapps* REST swagger-doc site files to a remote server,
-run the following command from the root of the *rgapps* project folder in
+To deploy the REST swagger-doc site files to a remote server,
+run the following command from the root of the project folder in
 a Windows DOS shell prompt::
 
-    fab -u <username> -p <password> -H <host:port> deploy_rest_doc
+    fab -u <username> -p <password> -H <host:port> deploy_restdoc

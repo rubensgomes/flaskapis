@@ -187,12 +187,6 @@ The following steps were done on Rubens' VM Linux server:
 - Load "db/sqlite_db_schema.sql" schema onto "flaskapis.db" database
 
 
-Miscellaneous
--------------
-
-:Author:
-    `Rubens Gomes`_
-
 .. _MongoDB: http://www.mongodb.com/
 .. _PyDev: http://www.pydev.org/
 .. _Python: http://www.python.org/

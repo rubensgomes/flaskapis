@@ -21,9 +21,7 @@ paho-mqtt>=1.1
 beautifulsoup4>=4.4.0
 six>=1.9.0
 pymongo>=3.0.3
-#Following is only needed on the raspberry pi
-#RPi.GPIO>=0.5.11
-
-
 # Fabric is needed on the remote client machine where builds are deployed from.
 Fabric3>=1.12
+# ATTENTION: the RPi.GPIO should only be installed on the Raspberry Pi
+#RPi.GPIO>=0.5.11

@@ -17,13 +17,18 @@ Python Configuration
 
 Install and configure Python on Windows PC:
 
-- Download and install the latest version of `Python`_ 3.5 in "C:\Python\Python35"
-- Configure  the following Windows environment variables
+- Download and install the latest **3.5** version of `Python`_ in "C:\\Python\\Python35"
+- Configure  the following Windows environment variables::
+
     PYTHONHOME="C:\Python\Python35"
     Path=...;%PYTHONHOME%;%PYTHONHOME%\Scripts;...
-- Install virtualenv
+
+- Install virtualenv::
+
     pip install virtualenvwrapper
-- Install fabric3
+
+- Install fabric3::
+
     pip install fabric3
 
 Fix For winrandom Module Not Found
@@ -51,10 +56,16 @@ Python Virtualenv
 
     C:\projects_GIT> virtualenv venv
     C:\projects_GIT> cd venv
+
 - Activate the virtualenv, and install the required Python flaskapis libraries::
 
     C:\projects_GIT> Scripts\activate.bat
     (venv) C:\projects_GIT\venv>pip install -r ..\requirements.txt
+
+- Install the project "FlaskAPIs" package::
+
+    (venv) C:\projects_GIT\venv>python -v ..\setup.py install
+
 - Deactivate, and exit the shell prompt::
 
     (venv) C:\projects_GIT\venv> Scripts\deactivate.bat
@@ -66,7 +77,21 @@ Eclipse PyDev Installation
 - Configure PyDev Python Interpreter to point to the virtualenv (for example)::
 
     "C:\projects_GIT\venv\Scripts\python.exe"
-- Add the "C:\\projects_GIT\\venv\\Libs\\site-packages" to the PyDev Interpreter System PYTHONPATH
+
+- Under the project properties, configure PyDev - Interpreter to point to the above virtualenv.
+- Under the project properties, configure PyDev - PYTHONPATH to include the virtualenv Libs 
+  site-packages.  For example::
+
+    Add the "C:\\projects_GIT\\venv\\Libs\\site-packages" to the PyDev - PYTHONPATH
+
+Fix for Unresolved import in Eclipse PyDev
+------------------------------------------
+
+- Under the Eclipse Preferences -> PyDev -> Interpreters -> Python Interpreter, select the tab::
+
+    Forced Builtins
+    Click on New
+    Add six and Apply changes
 
 SQLite Installation
 -------------------
@@ -162,8 +187,15 @@ The following steps were done on Rubens' VM Linux server:
 - Load "db/sqlite_db_schema.sql" schema onto "flaskapis.db" database
 
 
+Miscellaneous
+-------------
+
+:Author:
+    `Rubens Gomes`_
+
 .. _MongoDB: http://www.mongodb.com/
-.. _PyDev http://www.pydev.org/
+.. _PyDev: http://www.pydev.org/
 .. _Python: http://www.python.org/
+.. _Rubens Gomes: http://www.rubens-gomes.com/
 .. _SQLite: http://www.sqlite.org/
 

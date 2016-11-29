@@ -25,13 +25,14 @@ setup(
     contact_email="rubens.s.gomes@gmail.com",
     maintainer="Rubens S. Gomes",
     maintainer_email="rubens.s.gomes@gmail.com",
-    url="http://restportal.com/",
+    url="http://api.restportal.com/",
     description="The RGApps Python project",
     long_description=__doc__,
     platforms=["Linux", "Windows"],
     packages=["rgapps"],
     include_package_data=True,
     zip_safe=False,
+    ## Following libraries should also be defined in the requirements.txt file
     install_requires=[
       "arrow>=0.5.4",
       "enum34>=1.0.4",
@@ -46,9 +47,11 @@ setup(
       "w1thermsensor>=0.2.1",
       "paho-mqtt>=1.1",
       "beautifulsoup4>=4.4.0",
-      "RPi.GPIO>=0.5.11",
       "six>=1.9.0",
-      "pymongo>=3.0.3"
+      "pymongo>=3.0.3",
+      "Fabric3>=1.12"
+# ATTENTION: the RPi.GPIO should only be installed on the Raspberry Pi
+#      "RPi.GPIO>=0.5.11"
     ],
     keywords="flask flask-restful REST RESTful APIs"
  )

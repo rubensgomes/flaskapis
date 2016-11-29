@@ -2,37 +2,48 @@
 misc-python-projs
 =================
 
-The "misc-python-projs" is a folder containing **experimental** software  
-written in the Python_ programming language.  This folder was created by
-`Rubens Gomes`_ to develop utility RESTful APIs, and to program an 
-IoT (Internet of Thing) sensor collector application running on the 
-`Raspberry Pi`_.
+The "misc-python-projs" is a project containing **experimental** software  
+written in the `Python`_ programming language.  This project was created by
+`Rubens Gomes`_ to develop RESTful APIs and an IoT (Internet of Thing) sensor 
+collector application for the `Raspberry Pi`_.
 
-Version of Python used: **3.5**
+Two `Python`_ applications are implemented:
 
-RESTFul APIs
-------------
+- **rgapps.sensorapp.py** is a background daemon job written for the `Raspberry Pi`_.
+  This program periodically collects data from `DS18B20`_ temperature digital sensors 
+  connected to the `Raspberry Pi`_ GPIO (general purpose input/output) pins.  And then it stores 
+  the readings in a local `SQLite`_ database. The DS18B20 is a digital temperature sensor
+  from `Dallas Semiconductor`_ (acquired by Maxim Integrated in 2001)
 
-The REST API documentation for the *rgapps* REST APIs are found at
-http://restportal.com/.
+- **rgapps.flaskapp.py** is a background daemon job that implements several utility RESTful
+  APIs documented at `RESTPortal`_.A mobile AngularJS web application that consumes some of 
+  these RESTful APIs can be found at http://www.rubens-gomes.com/appsgo/.
 
-Also, a mobile web application that is consuming some of the *rgapps* REST
-APIs can be found at http://appsgo.mobi/.
+Prerequisites
+-------------
 
-IoT - Internet of Things
-------------------------
+Python **3.5**
 
-The *rgapps* project implements an application that collects sensor readings
-and stores in a local SQLite_ database.  The samples are collected from a
-DS18B20_ digital temperature sensor connected thru wiring to a Raspberry Pi
-Model B SBC (Single Board Computer). The DS18B20 is a digital temperature sensor
-from `Dallas Semiconductor`_ (acquired by Maxim Integrated in 2001)
-
-Library Source Code
--------------------
+Source Code
+-----------
 
 All the library (classes, functions) that support the applications are found
 in the rgapps `source folder <rgapps/>`_.
+
+Installing
+----------
+
+To install the "FlaskAPIs" application, follow the instructions in `SETUP <SETUP.rst/>`_.
+
+Usage
+-----
+
+To run the "FlaskAPIs" RESTFul backend application, follow the instructions in `RUNNING <RUNNING.rst/>`_.
+
+License
+-------
+
+Refer to `LICENSE <LICENSE.rst/>`_.
 
 Miscellaneous
 -------------
@@ -42,11 +53,10 @@ Miscellaneous
 
 :Version: 2015.9.dev4
 
-:Dedication: To my parents.
-
 .. _Dallas Semiconductor: http://www.maximintegrated.com/
 .. _DS18B20: misc/IoT/docs/DS18B20.pdf
 .. _Python: http://www.python.org/
 .. _Raspberry Pi: http://www.raspberrypi.org/
+.. _RESTPortal: http://restportal.com/
 .. _Rubens Gomes: http://www.rubens-gomes.com/
 .. _SQLite: http://www.sqlite.org/

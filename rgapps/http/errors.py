@@ -11,7 +11,7 @@ import re
 from xml.sax import saxutils
 
 from flask import request, jsonify, Response
-from flask.ext.restful import Api
+from flask_restful import Api
 from pint import DimensionalityError
 
 from rgapps.utils.constants import STATUS_KEY, STATUS_ERROR

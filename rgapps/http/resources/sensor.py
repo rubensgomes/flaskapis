@@ -5,7 +5,7 @@ This is where all the sensor flask-rest Resource code is placed.
 from collections import OrderedDict
 
 from flask import request, jsonify
-from flask.ext.restful import Resource
+from flask_restful import Resource
 from werkzeug.exceptions import BadRequest, NotFound
 
 from rgapps.dao.sensordao import SensorDAO

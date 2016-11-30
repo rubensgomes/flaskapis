@@ -149,41 +149,75 @@ database based on configuration in the corresponding application .ini file.
     db.shutdownServer()
     quit()
 
-Server Deployment Machine Configuration
-=======================================
+CentOS 7 Deployment Machine Configuration
+=========================================
 
-The following steps were done on Rubens' VM Linux server:
+- Update your CentOS Linux server::
 
-- installed latest SQLite 3 binary in /opt/sqlite/
-- installed latest SQLite package::
+    sudo yum update
 
+- install mongodb and SQLite databases::
+
+    sudo yum install mongodb-org
     sudo yum install sqlite
+    sudo yum install sqlite-devel
 
-- install sqlite-devel prior to installing python::
+- install latest version of Python 3.5.  For example::
 
-    yum install sqlite-devel
+    wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz
+    gunzip -c Python-3.5.2.tgz | tar xvf -
+    ./configure --prefix=/opt/python3.5 --enable-shared LDFLAGS="-L/opt/python3.5/lib -Wl,--rpath=/opt/python3.5/lib"
+    make; sudo make install
 
-- install latest Python 3.4::
+- Configure /etc/ld.so.conf.d/python3.5.x86_64.conf as follows::
 
-    ./configure --prefix=/opt/python3.4 \
-   --enable-shared LDFLAGS="-L/opt/python3.4/lib \
-   -Wl,--rpath=/opt/python3.4/lib"
-     make; sudo make install
+    /opt/python3.5/lib/
 
-- install Apache mod_wsgi::
+- Download latest Apache mod_wsgi.  For example,::
 
-    ./configure --with-python=/opt/python3.4/bin/python3.4
-    LD_RUN_PATH=/opt/python3.4/lib make
+    wget https://github.com/GrahamDumpleton/mod_wsgi/archive/4.5.9.tar.gz
+    gunzip -c mod_wsgi-4.5.9.tar.gz | tar xvf -
+
+- Prior to building mod_wsgi ensure the following environment is set::
+
+    PYTHONHOME="/opt/python3.5"
+    export PYTHONHOME
+
+    PATH="${PYTHONHOME}/bin:${PATH}"
+    export PATH
+
+    LD_LIBRARY_PATH="${PYTHONHOME}/lib:${LD_LIBRARY_PATH}"
+    export LD_LIBRARY_PATH
+
+    C_INCLUDE_PATH="${PYTHONHOME}/include/python3.5m/:${C_INCLUDE_PATH}"
+    export C_INCLUDE_PATH
+
+    CPLUS_INCLUDE_PATH="${PYTHONHOME}/include/python3.5m/:${CPLUS_INCLUDE_PATH}"
+    export CPLUS_INCLUDE_PATH
+
+- Configure and build mod_wsgi::
+
+    ./configure --with-python=/opt/python3.5/bin/python3.5
+    make; sudo make install
 
 - create a user called "wsgi", group "wsgi", home dir "/home/wsgi"
+
 - create folder "/home/wsgi/flaskapis"
+
 - copy application.ini to "/home/wsgi/flaskapis" folder
+
 - copy flaskapis.wsgi to "/home/wsgi/flaskapis" folder
-- create a python 3.4 virtual environment in "/home/wsgi/flaskapis/venv"::
+
+- create a python 3.5 virtual environment in "/home/wsgi/flaskapis/venv"::
 
     pyvenv /home/wsgi/flaskapis/venv
 
+- create a python 3.5 virtual environment in "/home/wsgi/sensorserver/venv"::
+
+    pyvenv /home/wsgi/sensorserver/venv
+
 - create "flaskapis.db" SQLite database in "/home/wsgi/flaskapis"
+
 - Load "db/sqlite_db_schema.sql" schema onto "flaskapis.db" database
 
 

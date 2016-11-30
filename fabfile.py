@@ -6,7 +6,10 @@ written to run from a Windows DOS prompt, and it should run from the
 ROOT folder of the application.
 
 
-ATTENTION: This code should be run from a DOS prompt.
+ATTENTION: This code should be run from a DOS prompt.  Run the following
+command in the DOS prompt to fix encoding issues:
+
+chcp 65001
 
 To clean:
 fab clean
@@ -107,8 +110,8 @@ def deploy_restapis():
         run( "source venv/bin/activate; "
             "python --version | grep -n -i \"python 3\"; "
             "if [ ${?} -eq 0 ]; then "
-            "2to3 -v -W venv/lib/python3.4/site-packages/flaskapis; "
-            "2to3 -v -W venv/lib/python3.4/site-packages/validate_email.py; "
+            "2to3 -v -W venv/lib/python3.5/site-packages/flaskapis; "
+            "2to3 -v -W venv/lib/python3.5/site-packages/validate_email.py; "
             "fi; "
             "deactivate" )
     # and finally touch the .wsgi file so that mod_wsgi triggers
@@ -141,8 +144,8 @@ def deploy_sensorapp():
         run( "source venv/bin/activate; "
             "python --version | grep -n -i \"python 3\"; "
             "if [ ${?} -eq 0 ]; then "
-            "2to3 -v -W venv/lib/python3.4/site-packages/flaskapis; "
-            "2to3 -v -W venv/lib/python3.4/site-packages/validate_email.py; "
+            "2to3 -v -W venv/lib/python3.5/site-packages/flaskapis; "
+            "2to3 -v -W venv/lib/python3.5/site-packages/validate_email.py; "
             "fi; "
             "deactivate" )
 

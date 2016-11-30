@@ -1,21 +1,21 @@
 """flaskapis test suite
 
-UNDER DEVELOPMENT !!!
+Unit Testings
 """
 
 
 import unittest
 
-from config.config import ConfigTestCase
-from dao.sensordao import DaoTestCase
-from domain.ds18b20sensor import DS18B20SensorTestCase
-from domain.myemail import MyEmailTestCase
-from domain.sensor import SensorTestCase
-from domain.sms import SMSTestCase
-from domain.units.length import LengthUnitTestCase
-from domain.units.temperature import TemperatureUnitTestCase
-from domain.units.weight import WeightUnitTestCase
-from utils.enums import EnumsTestCase
+from tests.config.config import ConfigTestCase
+from tests.dao.sensordao import DaoTestCase
+from tests.domain.ds18b20sensor import DS18B20SensorTestCase
+from tests.domain.myemail import MyEmailTestCase
+from tests.domain.sensor import SensorTestCase
+from tests.domain.sms import SMSTestCase
+from tests.domain.units.length import LengthUnitTestCase
+from tests.domain.units.temperature import TemperatureUnitTestCase
+from tests.domain.units.weight import WeightUnitTestCase
+from tests.utils.enums import EnumsTestCase
 
 
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"

@@ -9,6 +9,10 @@ Running on Windows Eclipse PyDev - Debug Mode
   must have been previously completed.  It is also assumed that you have a PyDev project 
   properly configured within Eclipse.
 
+- STart mongodb daemon process as follows from the current folder shell::
+
+    mongod --verbose --config "db\mongod.conf"
+
 - Create a WORKING_DIR folder, for example: "C:\\flaskapis"
   
 - Copy the *application.ini* properties file from this project root folder to the above 

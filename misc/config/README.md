@@ -1,2 +1,3 @@
-This folder contains some configuration files implemented on both the
-Raspberry Pi (iotgw) and Rubens' Linux VM server (sensorserver).
+This folder contains some configuration files implemented in the
+Raspberry Pi (iotgw).  The Linux VM server enviromnent settings are
+stored in the lista SVN project.

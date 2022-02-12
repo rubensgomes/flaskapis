@@ -17,19 +17,21 @@ Python Configuration
 
 Install and configure Python on Windows PC:
 
-- Download and install the latest **3.5** version of `Python`_ in "C:\\Python\\Python35"
+- Download and install the latest **3.10** version of `Python`_ in "C:\\Python310"
 - Configure  the following Windows environment variables::
 
-    PYTHONHOME="C:\Python\Python35"
+    PYTHONHOME="C:\Python310"
     Path=...;%PYTHONHOME%;%PYTHONHOME%\Scripts;...
 
+- Ensure you open an Admin PowerShell in Windows 10. For example, on the keyboard
+  Windows+X then select Windows PowerShell (Admin)
 - Install virtualenv::
 
     pip install virtualenvwrapper
 
 - Install fabric3::
 
-    pip install fabric3
+    pip install fabric3 --user
 
 Fix For winrandom Module Not Found
 ----------------------------------

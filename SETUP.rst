@@ -23,7 +23,7 @@ Install and configure Python on Windows PC:
     PYTHONHOME="C:\Python310"
     Path=...;%PYTHONHOME%;%PYTHONHOME%\Scripts;...
 
-- Ensure you open an Admin PowerShell in Windows 10. For example, on the keyboard
+- In Windows 10 ensure to have an Admin PowerShell. For example, on the keyboard
   Windows+X then select "Windows PowerShell (Admin)"
 - Install virtualenv::
 
@@ -53,23 +53,33 @@ ImportError: No module named 'winrandom'::
 Python Virtualenv
 -----------------
 
+- Ensure that the VIRTUALENVWRAPPER_PYTHON environment variable is properly 
+  configured (e.g., to C:\Python310\python.exe)
 - Set up a virtualenv in the "<project root>" where this project is installed.  
   For example if <project root> is "C:\\projects_GIT>"::
 
-    C:\projects_GIT> virtualenv venv
+    $ python -m virtualenv venv
+    $ cd venv
+
+    C:\projects_GIT> python -m virtualenv venv
     C:\projects_GIT> cd venv
 
 - Activate the virtualenv, and install the required Python flaskapis libraries::
+
+    $ source ./Scripts/activate
+    (venv) $ pip install -r ../requirements.txt
 
     C:\projects_GIT> Scripts\activate.bat
     (venv) C:\projects_GIT\venv>pip install -r ..\requirements.txt
 
 - Install the project "FlaskAPIs" package::
 
+    (venv) $ python -v ../setup.py install
     (venv) C:\projects_GIT\venv>python -v ..\setup.py install
 
 - Deactivate, and exit the shell prompt::
 
+    (venv) $ deactivate
     (venv) C:\projects_GIT\venv> Scripts\deactivate.bat
 
 Eclipse PyDev Installation

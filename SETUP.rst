@@ -24,14 +24,14 @@ Install and configure Python on Windows PC:
     Path=...;%PYTHONHOME%;%PYTHONHOME%\Scripts;...
 
 - Ensure you open an Admin PowerShell in Windows 10. For example, on the keyboard
-  Windows+X then select Windows PowerShell (Admin)
+  Windows+X then select "Windows PowerShell (Admin)"
 - Install virtualenv::
 
     pip install virtualenvwrapper
 
 - Install fabric3::
 
-    pip install fabric3 --user
+    pip install fabric3
 
 Fix For winrandom Module Not Found
 ----------------------------------
@@ -53,8 +53,8 @@ ImportError: No module named 'winrandom'::
 Python Virtualenv
 -----------------
 
-- Set up a virtualenv in the "<project root>" where 
-  this project is installed.  For example if <project root> is "C:\\projects_GIT>"::
+- Set up a virtualenv in the "<project root>" where this project is installed.  
+  For example if <project root> is "C:\\projects_GIT>"::
 
     C:\projects_GIT> virtualenv venv
     C:\projects_GIT> cd venv

@@ -17,7 +17,6 @@ from rgapps.config import ini_config
 from rgapps.utils.exception import IllegalArgumentException
 from rgapps.utils.utility import is_blank
 
-
 __author__ = "Rubens S. Gomes <rubens.s.gomes@gmail.com>"
 __copyright__ = "Copyright (c) 2015 Rubens S. Gomes"
 __license__ = "All Rights Reserved"
@@ -34,17 +33,13 @@ class EMail:
 
     @staticmethod
     def send_email(recipient, subject, message):
-        """Sends given message using Gmail credentials defined in the
-        configuration file.
+        """Sends given message using Gmail credentials defined in the configuration file.
 
         Parameters
         ----------
-        recipient:  str (required)
-            recipient email address
-        subject:  str (optional)
-            email subject
-        message: str (optional)
-            message to send
+        recipient:  str (required) recipient email address
+        subject:  str (optional) email subject
+        message: str (optional) message to send
 
         Returns
         -------
@@ -52,22 +47,15 @@ class EMail:
 
         Raises
         ------
-        SMTPHeloError:
-            The server didn't reply properly to the helo greeting.
-        SMTPAuthenticationError:
-            The server didn't accept the username/password combination.
-        SMTPException:
-            No suitable authentication method was found.
-        SMTPRecipientsRefused:
-          The server rejected ALL recipients (no mail was sent).
-        SMTPSenderRefused:
-            The server didn't accept the from_addr.
-        SMTPDataError:
-            The server replied with an unexpected error code (other than a
-            refusal of a recipient).
+        SMTPHeloError: The server didn't reply properly to the helo greeting.
+        SMTPAuthenticationError: The server didn't accept the username/password combination.
+        SMTPException: No suitable authentication method was found.
+        SMTPRecipientsRefused: The server rejected ALL recipients (no mail was sent).
+        SMTPSenderRefused: The server didn't accept the from_addr.
+        SMTPDataError: The server replied with an unexpected error code (other than a refusal of a recipient).
         """
 
-        if is_blank (recipient):
+        if is_blank(recipient):
             raise IllegalArgumentException("recipient is required.")
 
         # ensure valid GMail Account

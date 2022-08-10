@@ -1,10 +1,11 @@
 =================
-misc-python-projs
+Justification for this project
 =================
 
-The "misc-python-projs" is a project containing **experimental** software  
-written in the `Python`_ programming language.  This project was created by
-`Rubens Gomes`_ to develop RESTful APIs and an IoT (Internet of Thing) sensor 
+NOTE: This code is not fully tested, and should be considered under development code.
+
+The project contains **experimental** software  written in the `Python`_ programming
+language.  In this project, I wrote RESTful APIs and an IoT (Internet of Thing) sensor
 collector application for the `Raspberry Pi`_.
 
 Two `Python`_ applications are implemented:

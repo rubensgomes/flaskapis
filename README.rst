@@ -3,6 +3,7 @@ Justification for this project
 =================
 
 NOTE: This code is not fully tested, and should be considered under development code.
+The source code that is provided are  mainly used for demonostrations and learning purposes only.
 
 The project contains **experimental** software  written in the `Python`_ programming
 language.  In this project, I wrote RESTful APIs and an IoT (Internet of Thing) sensor

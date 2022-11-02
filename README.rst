@@ -2,6 +2,8 @@
 Justification for this project
 =================
 
+**ATTENTION THIS PROJECT IS NO LONGER LIVE. I DECOMMISSIONED THIS PROJECT IN 2017**
+
 NOTE: This code is not fully tested, and should be considered under development code.
 The source code that is provided are  mainly used for demonostrations and learning purposes only.
 
@@ -18,8 +20,8 @@ Two `Python`_ applications are implemented:
   from `Dallas Semiconductor`_ (acquired by Maxim Integrated in 2001)
 
 - **rgapps.flaskapp.py** is a background daemon job that implements several utility RESTful
-  APIs documented at `RESTPortal`_.A mobile AngularJS web application that consumes some of 
-  these RESTful APIs can be found at http://www.rubens-gomes.com/appsgo/.
+  APIs documented at `RESTPortal`_. A mobile AngularJS web application that consumes some of 
+  these RESTful APIs can be found at https://rubensgomes.com/ (NO LONGER RUNNING)
 
 Prerequisites
 -------------
@@ -59,6 +61,6 @@ Miscellaneous
 .. _DS18B20: misc/IoT/docs/DS18B20.pdf
 .. _Python: http://www.python.org/
 .. _Raspberry Pi: http://www.raspberrypi.org/
-.. _RESTPortal: http://restportal.com/
-.. _Rubens Gomes: http://www.rubens-gomes.com/
+.. _RESTPortal: http://restportal.com/ (NO LONGER LIVE)
+.. _Rubens Gomes: https://rubensgomes.com/
 .. _SQLite: http://www.sqlite.org/
